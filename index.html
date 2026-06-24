@@ -155,5 +155,19 @@
   </div></footer>
 
   <script src="assets/site.js"></script>
+  <script>
+  (function(){
+    var track=document.getElementById('ticker-track'); if(!track) return;
+    var box=track.closest('.ticker');
+    var message=(box&&box.getAttribute('data-message'))||'';
+    var KEY='d7q3ok9r01qosaaqhbc0d7q3ok9r01qosaaqhbcg';
+    var SYMS=[['SPY','SPY'],['QQQ','QQQ'],['DIA','DIA'],['GLD','GLD'],['USO','USO']];
+    function pct(dp){var n=Number(dp);var t=n>=0?'b':'i';var s=n>=0?'+':'';return '<'+t+'>'+s+n.toFixed(2)+'%</'+t+'>';}
+    function render(parts){var u=parts.join(' &nbsp;&middot;&nbsp; ');if(message)u+=' &nbsp;&middot;&nbsp; <em>'+message+'</em>';u+=' &nbsp;&middot;&nbsp; ';track.innerHTML=u+u;}
+    function load(){Promise.all(SYMS.map(function(it){return fetch('https://finnhub.io/api/v1/quote?symbol='+it[0]+'&token='+KEY).then(function(r){return r.json();}).then(function(q){return (q&&typeof q.dp==='number')?it[1]+' '+pct(q.dp):null;}).catch(function(){return null;});})).then(function(res){var p=res.filter(Boolean);if(p.length)render(p);});}
+    load();setInterval(load,60000);
+  })();
+  </script>
+
 </body>
 </html>

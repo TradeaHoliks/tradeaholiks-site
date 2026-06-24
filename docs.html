@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs &amp; How-Tos — Tradeaholiks</title>
+<meta name="description" content="Documentation, guides and how-tos for the TaH Journal and the Tradeaholiks toolkit.">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+  .docs-shell{display:grid;grid-template-columns:250px 1fr;gap:40px;align-items:start;padding:30px 0 70px}
+  .docs-side{position:sticky;top:84px;border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:18px 16px;font-size:14px;max-height:calc(100vh - 104px);overflow:auto}
+  .docs-side h5{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);margin:16px 0 8px}
+  .docs-side h5:first-child{margin-top:0}
+  .docs-side a{display:block;color:var(--muted);padding:6px 8px;border-radius:7px;text-decoration:none}
+  .docs-side a:hover{color:var(--ink);background:var(--panel-2)}
+  .docs-side a.on{color:var(--accent);background:var(--accent-soft)}
+  .docs-main{min-width:0}
+  .doc-sec{border-bottom:1px solid var(--line);padding:10px 0 34px;margin-bottom:8px}
+  .doc-sec:last-child{border-bottom:none}
+  .doc-sec h2{font-size:25px;font-weight:800;margin-bottom:8px;scroll-margin-top:84px}
+  .doc-sec h3{font-size:17px;font-weight:700;margin:22px 0 8px}
+  .doc-sec p{color:var(--muted);font-size:15px;margin-bottom:12px}
+  .doc-sec ol,.doc-sec ul{color:var(--ink);font-size:15px;margin:0 0 14px 20px;display:flex;flex-direction:column;gap:7px}
+  .doc-sec li{padding-left:4px}
+  .doc-sec li b{color:var(--ink)}
+  .doc-note{background:var(--accent-soft);border:1px solid rgba(245,166,35,.4);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink);margin:14px 0}
+  .doc-note b{color:var(--accent)}
+  kbd{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;white-space:nowrap}
+  code{font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--accent)}
+  .doc-meta{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:12px}
+  @media(max-width:880px){.docs-shell{grid-template-columns:1fr}.docs-side{position:static;max-height:none;margin-bottom:8px}}
+</style>
+</head>
+<body>
+
+  <div class="ticker" data-message="TAH JOURNAL &mdash; DOCS &amp; HOW-TOS"><span id="ticker-track">
+    <em>TAH JOURNAL &mdash; DOCS &amp; HOW-TOS</em> &nbsp;&middot;&nbsp; <em>TAH JOURNAL &mdash; DOCS &amp; HOW-TOS</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="docs.html" class="active">Docs</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <header class="hero" style="padding:60px 0 18px"><div class="container">
+    <div class="badge">// DOCS &amp; HOW-TOS</div>
+    <h1 style="font-size:clamp(34px,6vw,54px)">Guides for the <span class="glow">whole toolkit.</span></h1>
+    <p class="lead" style="margin-bottom:0">Install, set up and get the most out of the TaH Journal &mdash; with the free tools to follow.</p>
+  </div></header>
+
+  <div class="container"><div class="docs-shell">
+
+    <aside class="docs-side">
+      <h5>Getting started</h5>
+      <a href="#what-it-is">What the Journal is</a>
+      <a href="#how-it-works">How the pieces fit</a>
+      <a href="#requirements">What you'll need</a>
+      <h5>Install &amp; set up</h5>
+      <a href="#install-bridge">Install the Bridge</a>
+      <a href="#install-journal">Install the Journal</a>
+      <a href="#first-setup">First-run setup</a>
+      <h5>Using the Journal</h5>
+      <a href="#home">The Home view</a>
+      <a href="#accounts">Managing accounts</a>
+      <a href="#account-detail">Account detail &amp; drawdown</a>
+      <a href="#reports">Reports</a>
+      <h5>Configure</h5>
+      <a href="#settings">Settings</a>
+      <a href="#the-bridge">The Bridge</a>
+      <h5>Help</h5>
+      <a href="#troubleshooting">Troubleshooting</a>
+      <a href="#free-tools">Free tools</a>
+      <a href="#faq">FAQ</a>
+    </aside>
+
+    <main class="docs-main">
+
+      <section class="doc-sec" id="what-it-is">
+        <h2>What the TaH Journal is</h2>
+        <p>The TaH Journal is a Windows desktop app that tracks your futures trading across every prop firm and account you use. It does three things well:</p>
+        <ul>
+          <li><b>It records the truth.</b> Every fill, balance and position from NinjaTrader is captured automatically into a local database on your machine &mdash; no cloud, nothing that can lock you out of your own history.</li>
+          <li><b>It shows where you stand.</b> The Home view tells you at a glance whether you're up or down across all accounts, what you've spent on evaluations, and how close any account is to a drawdown breach.</li>
+          <li><b>It keeps you on the right side of the rules.</b> You enter each firm's rules (drawdown, daily loss, targets, min days) and it computes your current floor and target, so you always know how much room you have left.</li>
+        </ul>
+        <p>It's built for one trader running multiple prop-firm accounts &mdash; not a multi-user system, broker tool, or backtester. It's the record of what your live trading actually did.</p>
+      </section>
+
+      <section class="doc-sec" id="how-it-works">
+        <h2>How the pieces fit</h2>
+        <p>Three pieces work together, in a one-way pipeline &mdash; nothing flows back to NinjaTrader or your broker:</p>
+        <ul>
+          <li><b>NinjaTrader 8</b> connects to your brokers, routes orders, and tracks each account's balance and fills. It's the source of truth for what's happening right now.</li>
+          <li><b>The Bridge add-on</b> runs inside NinjaTrader. On a schedule (or when you click <kbd>SYNC</kbd>), it captures every account's state and recent fills and writes them as JSON files to disk. It only reads and writes files &mdash; it never sends orders.</li>
+          <li><b>The TaH Journal</b> sits outside NinjaTrader. On <kbd>SYNC</kbd> it copies the Bridge's files, parses them, and updates its database &mdash; then shows you the new picture.</li>
+        </ul>
+      </section>
+
+      <section class="doc-sec" id="requirements">
+        <h2>What you'll need</h2>
+        <ul>
+          <li>A <b>Windows</b> machine (NinjaTrader is Windows-only).</li>
+          <li><b>NinjaTrader 8</b> with at least one prop-firm broker connection working.</li>
+        </ul>
+        <div class="doc-note"><b>Licence (paid release):</b> the public TaH Journal will require a licence key you enter once on first run, then it checks in quietly each launch (with an offline grace period so a dropped connection never locks you out). That activation step arrives with the paid release.</div>
+      </section>
+
+      <section class="doc-sec" id="install-bridge">
+        <h2>Install the Bridge in NinjaTrader</h2>
+        <p>The Bridge ships as a single C# file, <code>TAHBridge.cs</code>. To install it:</p>
+        <ol>
+          <li>Close NinjaTrader if it's running.</li>
+          <li>Copy <code>TAHBridge.cs</code> into <code>Documents\NinjaTrader 8\bin\Custom\AddOns\</code>.</li>
+          <li>Start NinjaTrader.</li>
+          <li>Open the NinjaScript Editor: <kbd>Tools</kbd> &rarr; <kbd>Edit NinjaScript</kbd> &rarr; <kbd>AddOns</kbd>.</li>
+          <li>Open <code>TAHBridge.cs</code> from the file list.</li>
+          <li>Press <kbd>F5</kbd> to compile.</li>
+          <li>On success, a <b>TAH Bridge</b> item appears under the <kbd>Tools</kbd> menu.</li>
+        </ol>
+        <p>If the compile fails, NinjaScript shows the error at the bottom &mdash; usually a missing reference or namespace; check the error against your NinjaTrader version. Open the Bridge with <kbd>Tools</kbd> &rarr; <kbd>TAH Bridge</kbd>. It starts inactive; you enable it by setting an output folder and turning the schedule on (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</p>
+      </section>
+
+      <section class="doc-sec" id="install-journal">
+        <h2>Install the Journal</h2>
+        <p>The Journal lives in a single folder. The recommended location is <code>C:\TAHJournal\</code> (this guide assumes that path).</p>
+        <ol>
+          <li>Close the Journal if it's running.</li>
+          <li>Extract the Journal archive into <code>C:\TAHJournal\</code>.</li>
+          <li>Confirm you can see <code>tah_journal.py</code>, the <code>ui\</code> folder, and <code>TAH_Journal.bat</code>.</li>
+          <li>Double-click <code>TAH_Journal.bat</code> to launch.</li>
+        </ol>
+        <p>First launch creates two files in the same folder: <code>journal.db</code> (the SQLite database where all your data lives) and <code>journal_config.json</code> (your settings). If those already exist from a previous install, they open as-is and the database schema migrates forward automatically &mdash; nothing extra to run.</p>
+        <div class="doc-note"><b>Moving the folder later?</b> The Journal resolves its data files relative to itself, so renaming or moving <code>C:\TAHJournal\</code> is safe &mdash; just update any shortcuts, and clear the <code>cache_folder</code> setting so it regenerates at the new location.</div>
+      </section>
+
+      <section class="doc-sec" id="first-setup">
+        <h2>First-run setup</h2>
+        <p>On first launch the Home view is mostly empty &mdash; the Journal doesn't know your accounts yet. Two ways to populate it:</p>
+        <h3>Option A — let SYNC discover your accounts (recommended)</h3>
+        <ol>
+          <li>Configure the Bridge and run a sync inside NinjaTrader (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</li>
+          <li>Click <kbd>SYNC</kbd> in the Journal. Every account NinjaTrader knows about appears, marked stage <b>Unknown</b>.</li>
+          <li>Classify each one (Eval, Funded, etc.) and fill in any rule fields the snapshot couldn't determine.</li>
+        </ol>
+        <h3>Option B — add accounts manually</h3>
+        <p>On the Accounts view click <kbd>+ Add Account</kbd> and enter the account name (must match NinjaTrader <b>exactly</b>), the firm, the starting balance and the drawdown rules. The next sync ties your manual entry to the live Bridge data. Most people use Option A first, and Option B only for slave or simulator accounts that don't match automatically.</p>
+        <div class="doc-note"><b>Folders the Journal expects:</b> <code>C:\TAHJournal\</code> (the app + database), <code>C:\TAHJournal\BridgeCache\</code> (its working copy of snapshots), and the NinjaTrader <code>Bridge\</code> folder. If your Bridge writes to a network/VPS drive (e.g. <code>T:\</code>), set that under Settings &rarr; Bridge folder.</div>
+      </section>
+
+      <section class="doc-sec" id="home">
+        <h2>The Home view</h2>
+        <p>What you see first &mdash; a quick read on whether you're up or down and what needs attention. Five regions, top to bottom:</p>
+        <ul>
+          <li><b>Net P&amp;L</b> &mdash; earned minus spent across every real (non-sim) account, lifetime. Green when positive, red when negative.</li>
+          <li><b>Spent / Earned / ROI</b> &mdash; total costs (eval fees, resets, seats) in red; actual cash withdrawn in green; and ROI = (Earned &minus; Spent) / Spent. Negative ROI is normal for the first few months.</li>
+          <li><b>Account stages</b> &mdash; a donut of your accounts by stage: <b>Funded</b>, <b>Eval</b>, <b>EvalPass</b>, <b>Breached</b>, <b>Retired</b>, <b>Unknown</b>. The centre shows the active count (everything except Retired).</li>
+          <li><b>Spend by firm</b> &mdash; a bar chart of where your costs go, biggest first.</li>
+          <li><b>Calendar</b> &mdash; daily P&amp;L tinted on each cell (green profit / red loss), with dots for high-impact news and a marker for earnings. Click any day for the day-detail modal (P&amp;L breakdown, earnings, news).</li>
+          <li><b>Alerts</b> &mdash; things needing attention (new accounts detected, breached accounts), or "All clear."</li>
+        </ul>
+      </section>
+
+      <section class="doc-sec" id="accounts">
+        <h2>Managing accounts</h2>
+        <p>The <b>Accounts</b> view is the master table of every account &mdash; firm, name, stage, lifetime cost, P&amp;L, withdrawn, ROI, active days and trade count. Row colours follow the stage. Filter with the pills (All / Eval / Funded / Breached / Retired) and sort by clicking any column header.</p>
+        <h3>Add an account</h3>
+        <p>Click <kbd>+ Add Account</kbd>. The modal has three sections:</p>
+        <ul>
+          <li><b>Identity</b> &mdash; the account name (must match NinjaTrader exactly), an optional friendly <b>Display name</b>, and the <b>Firm</b> (used for spend grouping).</li>
+          <li><b>Prop firm rules</b> &mdash; starting balance, profit target, drawdown amount, drawdown type (Static / EOD / Trailing), daily loss limit, min trading days, consistency %. Leave blank what doesn't apply. <b>Manual wins:</b> anything you type stays; the Bridge only fills blanks.</li>
+          <li><b>Lifecycle</b> &mdash; the starting stage, and an optional "Linked eval account" so a funded account inherits its eval cost.</li>
+        </ul>
+        <h3>Costs &amp; withdrawals</h3>
+        <p>Use <kbd>+ Add Cost</kbd> for anything you paid (eval fees, resets, monthly seats) and <kbd>+ Add Withdrawal</kbd> for payouts you actually received. Costs feed "Spent," withdrawals feed "Earned." You can't enter a future-dated cost or withdrawal.</p>
+        <h3>Edit &amp; change stage</h3>
+        <p>Double-click (or right-click &rarr; Edit) a row to edit it &mdash; the edit modal adds a <kbd>Refresh from Bridge</kbd> button to re-pull rules. Stage changes are manual: right-click &rarr; <b>Change stage</b> (the Journal never auto-marks an account Breached). Each transition is recorded in the account's history.</p>
+      </section>
+
+      <section class="doc-sec" id="account-detail">
+        <h2>Account detail &amp; the drawdown floor</h2>
+        <p>Click any account to open its detail view (Trading and Journal tabs).</p>
+        <h3>Trading tab</h3>
+        <p>Four tiles (Net P&amp;L, Trades, Win rate, Min balance), a per-account daily P&amp;L calendar, a statistics card (profit factor, avg win/loss, R:R, expectancy, max losing streak, max drawdown, best/worst day), optional strategy stats, and the full trades table (entry/exit, instrument, side, qty, prices, P&amp;L, commission, strategy).</p>
+        <h3>What "Min balance" means</h3>
+        <p>The floor below which the account breaches &mdash; it depends on the drawdown type:</p>
+        <ul>
+          <li><b>Static</b> &mdash; <code>starting balance &minus; drawdown</code>, fixed forever.</li>
+          <li><b>EOD</b> &mdash; re-anchors each day to the prior day's closing balance minus the drawdown (day 1 falls back to starting balance).</li>
+          <li><b>Trailing</b> &mdash; anchors to the all-time peak balance minus the drawdown; goes up, never down. The peak comes from the highest balance the Journal has recorded for the account.</li>
+        </ul>
+        <p>Hover the Min balance tile to see how the floor was calculated.</p>
+      </section>
+
+      <section class="doc-sec" id="reports">
+        <h2>Reports</h2>
+        <p>The cross-account analytics view. A row of time-range pills (30D / 3M / 6M / 1Y / All) filters everything on the page. Below that:</p>
+        <ul>
+          <li><b>Monthly trend</b> &mdash; net P&amp;L per month, green above / red below the zero line.</li>
+          <li><b>Strategy performance</b> &mdash; a sortable table (trades, net P&amp;L, win rate, profit factor, avg R:R, expectancy) plus a comparison bar chart with a metric picker. Sim accounts are excluded; unattributed fills show as <code>(unsigned)</code>.</li>
+          <li><b>Per-firm breakdowns</b> &mdash; one card per firm (accounts, spent, earned, funded/eval/breached counts, ROI).</li>
+          <li><b>All-firms summary</b> &mdash; a lifetime rollup of everything.</li>
+        </ul>
+      </section>
+
+      <section class="doc-sec" id="settings">
+        <h2>Settings</h2>
+        <p>Open Settings from the sidebar. Changes save automatically when you click out of a field &mdash; there's no Save button. Cards:</p>
+        <ul>
+          <li><b>Bridge</b> &mdash; the <b>Bridge folder</b> (must exactly match the Bridge's output folder in NinjaTrader; <code>T:\</code> for a VPS network drive, or the local NinjaTrader Bridge folder) and the <b>Cache folder</b> (the Journal's working copy, normally <code>C:\TAHJournal\BridgeCache\</code>). Also shows last sync time.</li>
+          <li><b>Calendar</b> &mdash; toggle the economic-news layer, pick currencies (default USD), impacts (default High + Holiday), display timezone (default Chicago), refresh policy (Auto/Manual), and tray notifications with lead times.</li>
+          <li><b>Earnings</b> &mdash; toggle the earnings layer and enter a free <b>Finnhub API key</b> (sign up at finnhub.io). Default watched symbols: SPY, QQQ, AAPL, MSFT, NVDA, AMZN, GOOG, META, TSLA.</li>
+          <li><b>Database</b> &mdash; <b>Live</b> (your real data) vs <b>Demo</b> (sample data for showing the app to someone without exposing your numbers). Switching modes needs a restart.</li>
+          <li><b>About</b> &mdash; Journal / schema / expected Bridge version, a changelog link, and a button to open the data folder (for backing up <code>journal.db</code>).</li>
+        </ul>
+      </section>
+
+      <section class="doc-sec" id="the-bridge">
+        <h2>The Bridge</h2>
+        <h3>What the Bridge does</h3>
+        <p>It watches every account NinjaTrader knows about, captures every fill, and writes a snapshot JSON (accounts + fills since last sync + meta) to the output folder on a schedule.</p>
+        <h3>Configure it</h3>
+        <p>Open <kbd>Tools</kbd> &rarr; <kbd>TAH Bridge</kbd>. Three sections:</p>
+        <ul>
+          <li><b>Status</b> &mdash; active/inactive, last sync, accounts and fills seen.</li>
+          <li><b>Schedule</b> &mdash; <b>Sync on startup</b> and/or <b>Periodic sync</b> every N minutes (default 60). You can also click <kbd>Sync now</kbd>.</li>
+          <li><b>Output</b> &mdash; where snapshots are written (default the NinjaTrader Bridge folder; set it to a network drive like <code>T:\</code> if the Journal runs on another machine/VPS).</li>
+        </ul>
+        <div class="doc-note"><b>Why a fresh restart is safe:</b> the Bridge skips any account whose broker connection isn't fully "Connected" yet, so it never records $0 balances during the connect window. Use Bridge <b>v0.10.2 or newer</b> for this protection.</div>
+      </section>
+
+      <section class="doc-sec" id="troubleshooting">
+        <h2>Troubleshooting</h2>
+        <h3>SYNC does nothing</h3>
+        <ul>
+          <li>Check <b>Settings &rarr; Bridge &rarr; Bridge folder</b> matches what the Bridge writes to.</li>
+          <li>Check the Bridge is <b>Active</b> (NinjaTrader &rarr; Tools &rarr; TAH Bridge) with a recent last-sync; if not, toggle the schedule on or click <kbd>Sync now</kbd>.</li>
+          <li>Open the Bridge folder &mdash; you should see recent <code>Bridge_Snapshot_&lt;timestamp&gt;.json</code> files.</li>
+        </ul>
+        <h3>The Home view shows enormous losses</h3>
+        <p>Usually NinjaTrader was restarted mid-day and an old Bridge wrote $0 balances before brokers reconnected. Fix: use Bridge v0.10.2+ going forward; for existing bad data, back up <code>journal.db</code> first, then remove the zero-state rows. <span style="color:var(--faint)">(Advanced &mdash; we can do this with you; reach out via the contact form.)</span></p>
+        <h3>An account in NinjaTrader isn't in the Journal</h3>
+        <ul>
+          <li>The Bridge hasn't synced since you added it &mdash; force a sync, then click <kbd>SYNC</kbd>.</li>
+          <li>The name doesn't match exactly (different case/dashes) &mdash; delete the manual one and let SYNC pick up the real one.</li>
+          <li>It's auto-flagged as a simulator (name starts with Sim/Practice/Demo/Backtest/Playback) &mdash; edit the row and uncheck "is simulator" to track it.</li>
+        </ul>
+        <h3>The drawdown floor looks wrong</h3>
+        <p>Check the drawdown <b>type</b> (Static/EOD/Trailing produce very different floors), confirm the <b>starting balance</b> isn't 0, and for Trailing accounts hover the Min balance tile to check how the peak was determined.</p>
+        <h3>News events aren't showing</h3>
+        <p>Check the news feed is enabled and review your currency and impact filters in Settings &rarr; Calendar (the default is USD with High and Holiday impacts only). If the refresh policy is set to Manual, click refresh; otherwise the calendar shows the last cached fetch.</p>
+      </section>
+
+      <section class="doc-sec" id="free-tools">
+        <h2>Free tools (indicators &amp; add-ons)</h2>
+        <p>How-tos for the free NinjaTrader indicators and add-ons will live here as they're released. Browse what's available on the <a href="tools.html" style="color:var(--accent)">Tools page</a>.</p>
+      </section>
+
+      <section class="doc-sec" id="faq">
+        <h2>FAQ</h2>
+        <h3>Where is my data stored?</h3>
+        <p>Locally, in <code>journal.db</code> on your machine &mdash; there's no cloud and nothing that can lock you out of your history. Back it up via Settings &rarr; About &rarr; open data folder.</p>
+        <h3>How do I get help?</h3>
+        <p>Use the <a href="contact.html" style="color:var(--accent)">contact form</a> or the channels on the contact page.</p>
+        <div class="doc-meta">Based on TaH Journal User Manual v1.0 (May 2026) &middot; Journal schema v10 &middot; Bridge v0.10.2</div>
+      </section>
+
+    </main>
+  </div></div>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The TaH Journal</a>
+        <a href="docs.html">Docs</a>
+        <a href="pricing.html">Pricing</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="dev">// site in development</div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script>
+  (function(){
+    var track=document.getElementById('ticker-track'); if(!track) return;
+    var box=track.closest('.ticker');
+    var message=(box&&box.getAttribute('data-message'))||'';
+    var FH='d7q3ok9r01qosaaqhbc0d7q3ok9r01qosaaqhbcg';
+    var STOCKS=[['SPY','SPY'],['QQQ','QQQ'],['DIA','DIA'],['IWM','IWM'],['NVDA','NVDA'],['TSLA','TSLA'],['META','META'],['GOOG','GOOG'],['AMZN','AMZN'],['AAPL','AAPL'],['MSFT','MSFT'],['NFLX','NFLX'],['AMD','AMD'],['JPM','JPM'],['GLD','GLD'],['SLV','SLV'],['USO','USO'],['SPCX','SPCX']];
+    function price(c){return Number(c).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function part(label,c,dp){var n=Number(dp);var t=n>=0?'b':'i';var s=n>=0?'+':'';return label+' '+price(c)+' <'+t+'>'+s+n.toFixed(2)+'%</'+t+'>';}
+    function load(){
+      var jobs=STOCKS.map(function(it){
+        return fetch('https://finnhub.io/api/v1/quote?symbol='+it[1]+'&token='+FH)
+          .then(function(r){return r.json();})
+          .then(function(q){return (q&&typeof q.dp==='number'&&q.c)?part(it[0],q.c,q.dp):null;})
+          .catch(function(){return null;});
+      });
+      jobs.push(
+        fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD')
+          .then(function(r){return r.json();})
+          .then(function(j){var t=j&&j.result&&Object.values(j.result)[0];if(!t)return null;var c=Number(t.c[0]),o=Number(t.o);return part('BTC',c,o?(c-o)/o*100:0);})
+          .catch(function(){return null;})
+      );
+      Promise.all(jobs).then(function(res){
+        var parts=res.filter(Boolean); if(!parts.length) return;
+        var u=parts.join(' &nbsp;&middot;&nbsp; ');
+        if(message)u+=' &nbsp;&middot;&nbsp; <em>'+message+'</em>';
+        u+=' &nbsp;&middot;&nbsp; ';
+        track.innerHTML=u+u;
+        track.style.animationDuration=Math.max(40, parts.length*5)+'s';
+      });
+    }
+    load(); setInterval(load,60000);
+  })();
+  </script>
+  <script>
+  (function(){
+    var links=[].slice.call(document.querySelectorAll('.docs-side a'));
+    var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+    function onScroll(){
+      var y=window.scrollY+120, idx=0;
+      secs.forEach(function(s,i){ if(s&&s.offsetTop<=y) idx=i; });
+      links.forEach(function(a,i){ a.classList.toggle('on', i===idx); });
+    }
+    window.addEventListener('scroll', onScroll); onScroll();
+  })();
+  </script>
+</body>
+</html>

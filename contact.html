@@ -42,10 +42,14 @@
       <div>
         <div class="eyebrow">// Send a message</div>
         <div class="form-card">
-          <form data-placeholder onsubmit="return false">
-            <div class="field"><label for="n">Name</label><input id="n" type="text" placeholder="Your name" required></div>
-            <div class="field"><label for="e">Email</label><input id="e" type="email" placeholder="you@email.com" required></div>
-            <div class="field"><label for="m">Message</label><textarea id="m" rows="5" placeholder="What's on your mind?" required></textarea></div>
+          <form id="contact-form">
+            <input type="hidden" name="access_key" value="ed790802-2033-447e-a1b6-78f9c313c11f">
+            <input type="hidden" name="subject" value="New message from tradeaholiks.com">
+            <input type="hidden" name="from_name" value="Tradeaholiks website">
+            <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+            <div class="field"><label for="n">Name</label><input id="n" name="name" type="text" placeholder="Your name" required></div>
+            <div class="field"><label for="e">Email</label><input id="e" name="email" type="email" placeholder="you@email.com" required></div>
+            <div class="field"><label for="m">Message</label><textarea id="m" name="message" rows="5" placeholder="What's on your mind?" required></textarea></div>
             <button class="btn btn-block" type="submit">Send message</button>
             <p class="form-msg note" style="display:none;margin-top:14px;color:var(--accent)"></p>
           </form>
@@ -56,15 +60,12 @@
         <h2 style="font-size:26px;font-weight:800;margin-bottom:14px">Reach us directly</h2>
         <p style="color:var(--muted);margin-bottom:22px">Prefer email or social? Here's where to find us.</p>
         <ul class="ticklist" style="gap:14px">
-          <li>Email &mdash; hello@tradeaholiks.com</li>
-          <li>YouTube &mdash; the Tradeaholiks channel</li>
-          <li>X / Twitter &mdash; @tradeaholiks</li>
-          <li>Discord &mdash; the community (coming soon)</li>
+          <li>Email &mdash; <a href="mailto:tradeaholiks@gmail.com" style="color:var(--accent)">tradeaholiks@gmail.com</a></li>
+          <li>YouTube &mdash; <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener" style="color:var(--accent)">@tradeaholiks</a></li>
+          <li>X / Twitter &mdash; <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener" style="color:var(--accent)">@tradeaholiks</a></li>
+          <li>Instagram &mdash; <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener" style="color:var(--accent)">@tradeaholiks</a></li>
         </ul>
-        <div class="notice" style="margin-top:26px">
-          <span>&#9888;</span>
-          <div><b>Heads up.</b> This form isn't connected to email yet &mdash; it'll be wired up before the site goes live. The address above is a placeholder until then.</div>
-        </div>
+        <p class="note" style="margin-top:24px">Messages land straight in our inbox &mdash; we usually reply within a day or two.</p>
       </div>
     </div>
   </div></section>
@@ -88,9 +89,9 @@
         <a href="account.html">Log in</a>
       </div>
       <div class="foot-col"><h4>Follow</h4>
-        <a href="#">YouTube</a>
-        <a href="#">X / Twitter</a>
-        <a href="#">Discord</a>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <div class="foot-bottom">

@@ -42,9 +42,10 @@
       <div class="auth-card primary">
         <h2>You're logged in</h2>
         <div class="sub">Signed in as <b id="live-email"></b></div>
-        <ul class="ticklist" style="margin:18px 0 22px">
+        <div class="eyebrow" style="margin-top:20px">// Your TaH Journal licence</div>
+        <div id="licence-box" style="margin:8px 0 20px"></div>
+        <ul class="ticklist" style="margin:0 0 22px">
           <li>Download all free indicators &amp; add-ons</li>
-          <li>Your TaH Journal licence will appear here</li>
         </ul>
         <a class="btn btn-block" href="tools.html">Browse the free tools</a>
         <button id="logout-btn" class="btn btn-ghost btn-block" style="margin-top:12px">Log out</button>
@@ -176,6 +177,28 @@
       if(authGrid) authGrid.style.display='none';
       if(live) live.style.display='block';
       if(liveEmail) liveEmail.textContent = (user && user.email) || '';
+      loadLicences();
+    }
+    function loadLicences(){
+      var box = document.getElementById('licence-box');
+      if(!box) return;
+      box.innerHTML = '<div style="color:var(--muted)">Checking your licence\u2026</div>';
+      sb.functions.invoke('my-licenses').then(function(res){
+        if(res.error || !res.data){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now \u2014 please try again shortly.</div>'; return; }
+        var lic = res.data.licences || [];
+        if(!lic.length){
+          box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your TaH Journal key will appear here after you buy it.</div>';
+          return;
+        }
+        box.innerHTML = lic.map(function(L){
+          var st = L.suspended ? 'suspended' : ((L.status||'').toLowerCase());
+          var col = (st==='active') ? 'var(--accent)' : '#ff5d5d';
+          return '<div style="background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:10px;padding:12px 14px;margin-bottom:8px">'
+               + '<div style="font-family:var(--mono,monospace);font-size:14px;letter-spacing:1px">'+L.key+'</div>'
+               + '<div style="font-size:12px;color:'+col+';text-transform:uppercase;letter-spacing:1px;margin-top:4px">'+st+'</div>'
+               + '</div>';
+        }).join('');
+      }).catch(function(){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now.</div>'; });
     }
     function showLoggedOut(){
       if(authGrid) authGrid.style.display='';

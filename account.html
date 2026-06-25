@@ -38,16 +38,24 @@
   </div></header>
 
   <section class="section" style="padding-top:18px"><div class="container">
-    <div class="notice" style="max-width:900px;margin:0 auto 32px">
-      <span>&#9888;</span>
-      <div><b>Accounts aren't live yet.</b> This is a preview of the sign-up. Nothing is saved and no account is created &mdash; the real sign-up gets switched on before launch.</div>
+    <div id="account-live" style="display:none;max-width:560px;margin:0 auto">
+      <div class="auth-card primary">
+        <h2>You're logged in</h2>
+        <div class="sub">Signed in as <b id="live-email"></b></div>
+        <ul class="ticklist" style="margin:18px 0 22px">
+          <li>Download all free indicators &amp; add-ons</li>
+          <li>Your TaH Journal licence will appear here</li>
+        </ul>
+        <a class="btn btn-block" href="tools.html">Browse the free tools</a>
+        <button id="logout-btn" class="btn btn-ghost btn-block" style="margin-top:12px">Log out</button>
+      </div>
     </div>
 
-    <div class="auth-grid">
+    <div class="auth-grid" id="auth-grid">
       <div class="auth-card primary">
         <h2>Create account</h2>
         <div class="sub">Free &mdash; unlocks every free tool. No card needed.</div>
-        <form data-placeholder onsubmit="return false">
+        <form id="signup-form">
           <div class="field"><label for="cn">Name</label><input id="cn" type="text" placeholder="Your name" required></div>
           <div class="field"><label for="ce">Email</label><input id="ce" type="email" placeholder="you@email.com" required></div>
           <div class="field"><label for="cp">Password</label><input id="cp" type="password" placeholder="Choose a password" required></div>
@@ -59,7 +67,7 @@
       <div class="auth-card">
         <h2>Log in</h2>
         <div class="sub">Already have an account? Welcome back.</div>
-        <form data-placeholder onsubmit="return false">
+        <form id="login-form">
           <div class="field"><label for="le">Email</label><input id="le" type="email" placeholder="you@email.com" required></div>
           <div class="field"><label for="lp">Password</label><input id="lp" type="password" placeholder="Your password" required></div>
           <button class="btn btn-ghost btn-block" type="submit">Log in</button>
@@ -138,6 +146,90 @@
       });
     }
     load(); setInterval(load,60000);
+  })();
+  </script>
+
+  <!-- Supabase accounts -->
+  <script>
+  window.TAH_SUPABASE_URL = "https://wgbavpqlesskdhzgfmgr.supabase.co";
+  window.TAH_SUPABASE_KEY = "sb_publishable_mxXA9uEjTXcNEt06eRqnOQ_3fAHgdZd";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (function(){
+    if(!window.supabase){ return; }
+    var sb = supabase.createClient(window.TAH_SUPABASE_URL, window.TAH_SUPABASE_KEY);
+    var signupForm = document.getElementById('signup-form');
+    var loginForm  = document.getElementById('login-form');
+    var authGrid   = document.getElementById('auth-grid');
+    var live       = document.getElementById('account-live');
+    var liveEmail  = document.getElementById('live-email');
+
+    function msg(form, text, ok){
+      var m = form.querySelector('.form-msg');
+      if(!m) return;
+      m.textContent = text;
+      m.style.color = ok ? 'var(--accent)' : '#ff5d5d';
+      m.style.display = 'block';
+    }
+    function showLoggedIn(user){
+      if(authGrid) authGrid.style.display='none';
+      if(live) live.style.display='block';
+      if(liveEmail) liveEmail.textContent = (user && user.email) || '';
+    }
+    function showLoggedOut(){
+      if(authGrid) authGrid.style.display='';
+      if(live) live.style.display='none';
+    }
+
+    if(signupForm){
+      signupForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        var name  = (document.getElementById('cn').value||'').trim();
+        var email = (document.getElementById('ce').value||'').trim();
+        var pw    = document.getElementById('cp').value||'';
+        var btn = signupForm.querySelector('button[type=submit]');
+        var ot = btn.textContent; btn.disabled=true; btn.textContent='Creating\u2026';
+        sb.auth.signUp({
+          email: email, password: pw,
+          options: { data: { name: name },
+                     emailRedirectTo: window.location.origin + '/account.html' }
+        }).then(function(res){
+          btn.disabled=false; btn.textContent=ot;
+          if(res.error){ msg(signupForm, res.error.message, false); return; }
+          if(res.data && res.data.session){ showLoggedIn(res.data.user); return; }
+          msg(signupForm, "Account created! Check your email and click the confirmation link to finish \u2014 then come back and log in.", true);
+          signupForm.reset();
+        }).catch(function(){ btn.disabled=false; btn.textContent=ot; msg(signupForm,'Something went wrong. Please try again.',false); });
+      });
+    }
+
+    if(loginForm){
+      loginForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        var email = (document.getElementById('le').value||'').trim();
+        var pw    = document.getElementById('lp').value||'';
+        var btn = loginForm.querySelector('button[type=submit]');
+        var ot = btn.textContent; btn.disabled=true; btn.textContent='Logging in\u2026';
+        sb.auth.signInWithPassword({ email: email, password: pw }).then(function(res){
+          btn.disabled=false; btn.textContent=ot;
+          if(res.error){
+            var m = res.error.message || 'Login failed.';
+            if(/confirm/i.test(m)) m = "Please confirm your email first \u2014 check your inbox for the verification link.";
+            msg(loginForm, m, false); return;
+          }
+          showLoggedIn(res.data.user);
+        }).catch(function(){ btn.disabled=false; btn.textContent=ot; msg(loginForm,'Something went wrong. Please try again.',false); });
+      });
+    }
+
+    var logoutBtn = document.getElementById('logout-btn');
+    if(logoutBtn){ logoutBtn.addEventListener('click', function(){ sb.auth.signOut().then(showLoggedOut); }); }
+
+    sb.auth.getSession().then(function(res){
+      var session = res.data && res.data.session;
+      if(session && session.user){ showLoggedIn(session.user); } else { showLoggedOut(); }
+    });
   })();
   </script>
 

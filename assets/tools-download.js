@@ -8,11 +8,13 @@
 //    Supabase for a short-lived (2-minute) signed link to that file and
 //    start the download. The bucket stays private the whole time.
 //  - A tool with an empty "file" in tools.json shows as "Coming soon".
+//  - A tool with an "image" in tools.json shows a screenshot thumbnail at
+//    the top of its card; clicking it opens the image full-size (lightbox).
 (function () {
   var SB_URL = "https://wgbavpqlesskdhzgfmgr.supabase.co";
   var SB_KEY = "sb_publishable_mxXA9uEjTXcNEt06eRqnOQ_3fAHgdZd";
   var BUCKET = "addons";          // private Storage bucket holding the files
-  var LINK_TTL = 120;            // signed-link lifetime, in seconds
+  var LINK_TTL = 120;             // signed-link lifetime, in seconds
 
   var indGrid = document.getElementById("ind-grid");
   var addonGrid = document.getElementById("addon-grid");
@@ -28,11 +30,36 @@
       .replace(/"/g, "&quot;");
   }
 
+  // Inject the small bit of CSS the thumbnail + lightbox need (once).
+  function injectStyles() {
+    if (document.getElementById("tah-tools-css")) return;
+    var css = ''
+      + '.tool-shot{display:block;width:100%;max-height:300px;object-fit:contain;'
+      + 'background:#0d0f13;border:1px solid var(--line,#2a2e37);border-radius:10px;'
+      + 'margin-bottom:14px;cursor:zoom-in;transition:opacity .15s}'
+      + '.tool-shot:hover{opacity:.9}'
+      + '.tah-lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;'
+      + 'align-items:center;justify-content:center;z-index:9999;padding:24px;cursor:zoom-out}'
+      + '.tah-lb img{max-width:95%;max-height:95%;border-radius:10px;'
+      + 'box-shadow:0 12px 48px rgba(0,0,0,.6);cursor:default}'
+      + '.tah-lb-x{position:absolute;top:14px;right:22px;color:#fff;font-size:34px;'
+      + 'line-height:1;cursor:pointer;font-family:system-ui,sans-serif}';
+    var st = document.createElement("style");
+    st.id = "tah-tools-css";
+    st.textContent = css;
+    document.head.appendChild(st);
+  }
+
   // Build one card. `loggedIn` decides which button we show.
   function card(tool, loggedIn) {
     var hasFile = tool.file && String(tool.file).trim() !== "";
     var meta = esc(tool.platform || "NinjaTrader 8") + " &middot; v" +
                esc(tool.version || "1.0") + (hasFile ? "" : " &middot; coming soon");
+
+    var shot = (tool.image && String(tool.image).trim() !== "")
+      ? '<img class="tool-shot" src="' + esc(tool.image) + '" alt="' + esc(tool.name) +
+        ' screenshot" loading="lazy">'
+      : '';
 
     var btn, note;
     if (!hasFile) {
@@ -49,6 +76,7 @@
 
     return '' +
       '<div class="tool-card">' +
+        shot +
         '<div class="tool-top"><div class="tool-ico">' + esc(tool.icon || "📦") +
           '</div><span class="badge-free">FREE</span></div>' +
         '<h3>' + esc(tool.name) + '</h3>' +
@@ -64,9 +92,31 @@
     grid.innerHTML = list.map(function (t) { return card(t, loggedIn); }).join("");
   }
 
-  // Click handler for the live Download buttons (event delegation).
-  function wireDownloads() {
+  // Full-size image overlay.
+  function openLightbox(src, alt) {
+    var lb = document.createElement("div");
+    lb.className = "tah-lb";
+    lb.innerHTML = '<span class="tah-lb-x" aria-label="Close">&times;</span>' +
+                   '<img src="' + src + '" alt="' + (alt || "") + '">';
+    function close() {
+      lb.remove();
+      document.removeEventListener("keydown", onKey);
+    }
+    function onKey(e) { if (e.key === "Escape") close(); }
+    lb.addEventListener("click", function (e) {
+      // click on backdrop or the X closes; click on the image itself does not
+      if (e.target === lb || e.target.classList.contains("tah-lb-x")) close();
+    });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(lb);
+  }
+
+  // Clicks: Download buttons + screenshot thumbnails (event delegation).
+  function wireClicks() {
     document.addEventListener("click", function (e) {
+      var shot = e.target.closest && e.target.closest(".tool-shot");
+      if (shot) { openLightbox(shot.getAttribute("src"), shot.getAttribute("alt")); return; }
+
       var b = e.target.closest && e.target.closest(".tah-download");
       if (!b) return;
       e.preventDefault();
@@ -104,6 +154,7 @@
   }
 
   function start() {
+    injectStyles();
     loadingState();
     var manifestP = fetch("tools.json", { cache: "no-cache" }).then(function (r) {
       if (!r.ok) throw new Error("manifest " + r.status);
@@ -123,7 +174,7 @@
     }).catch(function () { errorState(); });
   }
 
-  wireDownloads();
+  wireClicks();
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
   } else { start(); }

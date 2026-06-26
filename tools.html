@@ -42,63 +42,13 @@
       <div><b>Free account to download.</b> Every tool below is free, but you'll create a quick (free) account first &mdash; it keeps your downloads together and lets us tell you when a tool updates. <b>Accounts open before launch.</b></div>
     </div>
 
-    <!-- Free indicators -->
+    <!-- Free indicators (cards rendered from tools.json by tools-download.js) -->
     <div style="margin-bottom:18px"><div class="eyebrow">// Free indicators</div><h2 class="section-title" style="font-size:28px">Indicators</h2></div>
-    <div class="tool-grid" style="margin-bottom:56px">
-      <div class="tool-card">
-        <div class="tool-top"><div class="tool-ico">&#128200;</div><span class="badge-free">FREE</span></div>
-        <h3>Indicator name</h3>
-        <p>Short description of what this indicator shows and why it helps. (Placeholder &mdash; send me the real name and blurb.)</p>
-        <div class="tool-meta">NinjaTrader 8 &middot; v1.0 &middot; coming soon</div>
-        <a href="account.html" class="btn btn-block">Create account to download</a>
-        <div class="lock-note"><b>Free</b> &mdash; account required</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-top"><div class="tool-ico">&#128201;</div><span class="badge-free">FREE</span></div>
-        <h3>Indicator name</h3>
-        <p>Short description of what this indicator shows and why it helps. (Placeholder &mdash; send me the real name and blurb.)</p>
-        <div class="tool-meta">NinjaTrader 8 &middot; v1.0 &middot; coming soon</div>
-        <a href="account.html" class="btn btn-block">Create account to download</a>
-        <div class="lock-note"><b>Free</b> &mdash; account required</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-top"><div class="tool-ico">&#128302;</div><span class="badge-free">FREE</span></div>
-        <h3>Indicator name</h3>
-        <p>Short description of what this indicator shows and why it helps. (Placeholder &mdash; send me the real name and blurb.)</p>
-        <div class="tool-meta">NinjaTrader 8 &middot; v1.0 &middot; coming soon</div>
-        <a href="account.html" class="btn btn-block">Create account to download</a>
-        <div class="lock-note"><b>Free</b> &mdash; account required</div>
-      </div>
-    </div>
+    <div class="tool-grid" id="ind-grid" style="margin-bottom:56px"></div>
 
-    <!-- Free add-ons -->
+    <!-- Free add-ons (cards rendered from tools.json by tools-download.js) -->
     <div style="margin-bottom:18px"><div class="eyebrow">// Free add-ons</div><h2 class="section-title" style="font-size:28px">Add-ons</h2></div>
-    <div class="tool-grid" style="margin-bottom:56px">
-      <div class="tool-card">
-        <div class="tool-top"><div class="tool-ico">&#129513;</div><span class="badge-free">FREE</span></div>
-        <h3>Add-on name</h3>
-        <p>Short description of what this add-on does and the time it saves. (Placeholder &mdash; send me the real name and blurb.)</p>
-        <div class="tool-meta">NinjaTrader 8 &middot; v1.0 &middot; coming soon</div>
-        <a href="account.html" class="btn btn-block">Create account to download</a>
-        <div class="lock-note"><b>Free</b> &mdash; account required</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-top"><div class="tool-ico">&#9881;&#65039;</div><span class="badge-free">FREE</span></div>
-        <h3>Add-on name</h3>
-        <p>Short description of what this add-on does and the time it saves. (Placeholder &mdash; send me the real name and blurb.)</p>
-        <div class="tool-meta">NinjaTrader 8 &middot; v1.0 &middot; coming soon</div>
-        <a href="account.html" class="btn btn-block">Create account to download</a>
-        <div class="lock-note"><b>Free</b> &mdash; account required</div>
-      </div>
-      <div class="tool-card">
-        <div class="tool-top"><div class="tool-ico">&#128295;</div><span class="badge-free">FREE</span></div>
-        <h3>Add-on name</h3>
-        <p>Short description of what this add-on does and the time it saves. (Placeholder &mdash; send me the real name and blurb.)</p>
-        <div class="tool-meta">NinjaTrader 8 &middot; v1.0 &middot; coming soon</div>
-        <a href="account.html" class="btn btn-block">Create account to download</a>
-        <div class="lock-note"><b>Free</b> &mdash; account required</div>
-      </div>
-    </div>
+    <div class="tool-grid" id="addon-grid" style="margin-bottom:56px"></div>
 
     <!-- The Journal (paid) -->
     <div style="margin-bottom:18px"><div class="eyebrow">// The paid flagship</div><h2 class="section-title" style="font-size:28px">The TaH Journal</h2></div>
@@ -156,6 +106,9 @@
 
   <script src="assets/site.js"></script>
   <script src="assets/auth-nav.js"></script>
+  <!-- Free-tool list + login-gated downloads -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/tools-download.js"></script>
   <script>
   (function(){
     var track=document.getElementById('ticker-track'); if(!track) return;

@@ -2,7 +2,7 @@
 // downloads behind a logged-in account.
 //
 // How it works:
-//  - Tool files live in a PRIVATE Supabase Storage bucket named "tools".
+//  - Tool files live in a PRIVATE Supabase Storage bucket named "addons".
 //  - Logged-OUT visitors see "Create account to download" -> account.html.
 //  - Logged-IN visitors get a real "Download" button. On click we ask
 //    Supabase for a short-lived (2-minute) signed link to that file and
@@ -11,7 +11,7 @@
 (function () {
   var SB_URL = "https://wgbavpqlesskdhzgfmgr.supabase.co";
   var SB_KEY = "sb_publishable_mxXA9uEjTXcNEt06eRqnOQ_3fAHgdZd";
-  var BUCKET = "tools";          // private Storage bucket holding the files
+  var BUCKET = "addons";          // private Storage bucket holding the files
   var LINK_TTL = 120;            // signed-link lifetime, in seconds
 
   var indGrid = document.getElementById("ind-grid");

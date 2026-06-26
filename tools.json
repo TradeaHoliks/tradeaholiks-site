@@ -37,7 +37,8 @@
       "platform": "NinjaTrader 8",
       "version": "1.0",
       "icon": "📥",
-      "file": "TAH_MassReplayDownloader.zip"
+      "file": "TAH_MassReplayDownloader.zip",
+      "image": "assets/tah_massreplaydownlaoder.png"
     },
     {
       "id": "addon-2",

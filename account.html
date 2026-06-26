@@ -51,6 +51,18 @@
       </div>
     </div>
 
+    <div id="account-reset" style="display:none;max-width:460px;margin:0 auto">
+      <div class="auth-card primary">
+        <h2>Set a new password</h2>
+        <div class="sub">Choose a new password for your account.</div>
+        <form id="reset-form">
+          <div class="field"><label for="np">New password</label><input id="np" type="password" placeholder="New password" required></div>
+          <button class="btn btn-block" type="submit">Update password</button>
+          <p class="form-msg note" style="display:none;margin-top:14px;color:var(--accent)"></p>
+        </form>
+      </div>
+    </div>
+
     <div class="auth-grid" id="auth-grid">
       <div class="auth-card primary">
         <h2>Create account</h2>
@@ -72,6 +84,7 @@
           <div class="field"><label for="lp">Password</label><input id="lp" type="password" placeholder="Your password" required></div>
           <button class="btn btn-ghost btn-block" type="submit">Log in</button>
           <p class="form-msg note" style="display:none;margin-top:14px;color:var(--accent)"></p>
+          <p class="note" style="margin-top:12px;text-align:center"><a href="#" id="forgot-link" style="color:var(--accent)">Forgot password?</a></p>
         </form>
         <ul class="ticklist" style="margin-top:24px">
           <li>Download all free indicators &amp; add-ons</li>
@@ -113,6 +126,7 @@
   </div></footer>
 
   <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
   <script>
   (function(){
     var track=document.getElementById('ticker-track'); if(!track) return;
@@ -251,6 +265,48 @@
       var session = res.data && res.data.session;
       if(session && session.user){ showLoggedIn(session.user); } else { showLoggedOut(); }
     });
+
+    // Forgot password -> send reset email (uses the email typed in the login box)
+    var forgot = document.getElementById('forgot-link');
+    if(forgot && loginForm){
+      forgot.addEventListener('click', function(e){
+        e.preventDefault();
+        var email = (document.getElementById('le').value||'').trim();
+        if(!email){ msg(loginForm, "Type your email in the box above first, then click Forgot password.", false); return; }
+        sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/account.html' }).then(function(res){
+          if(res.error){ msg(loginForm, res.error.message, false); return; }
+          msg(loginForm, "Password reset email sent \u2014 check your inbox for the link.", true);
+        }).catch(function(){ msg(loginForm, 'Something went wrong. Please try again.', false); });
+      });
+    }
+
+    // When the user clicks the reset link in their email, Supabase opens a
+    // recovery session -> show the "set a new password" form.
+    sb.auth.onAuthStateChange(function(event){
+      if(event === 'PASSWORD_RECOVERY'){
+        if(authGrid) authGrid.style.display='none';
+        if(live) live.style.display='none';
+        var reset = document.getElementById('account-reset');
+        if(reset) reset.style.display='block';
+      }
+    });
+
+    var resetForm = document.getElementById('reset-form');
+    if(resetForm){
+      resetForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        var pw = document.getElementById('np').value||'';
+        var btn = resetForm.querySelector('button[type=submit]');
+        var ot = btn.textContent; btn.disabled=true; btn.textContent='Updating\u2026';
+        sb.auth.updateUser({ password: pw }).then(function(res){
+          btn.disabled=false; btn.textContent=ot;
+          if(res.error){ msg(resetForm, res.error.message, false); return; }
+          msg(resetForm, "Password updated \u2014 you're logged in.", true);
+          var reset = document.getElementById('account-reset'); if(reset) reset.style.display='none';
+          sb.auth.getUser().then(function(r){ if(r.data && r.data.user) showLoggedIn(r.data.user); });
+        }).catch(function(){ btn.disabled=false; btn.textContent=ot; msg(resetForm,'Something went wrong. Please try again.',false); });
+      });
+    }
   })();
   </script>
 

@@ -182,7 +182,7 @@ footer.site{border-top:1px solid var(--line);background:var(--panel);margin-top:
 .tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .tool-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;transition:border-color .15s,transform .15s}
 .tool-card:hover{border-color:rgba(245,166,35,.45);transform:translateY(-3px)}
-.tool-card.is-paid{border-color:rgba(245,
+.tool-card.is-paid{border-color:rgba(245,166,35,.5)}
 
 
 /* Account page — Create account + Log in side by side (stack on mobile) */

@@ -168,7 +168,7 @@
     var FH='d7q3ok9r01qosaaqhbc0d7q3ok9r01qosaaqhbcg';
     var STOCKS=[['SPY','SPY'],['QQQ','QQQ'],['DIA','DIA'],['IWM','IWM'],['NVDA','NVDA'],['TSLA','TSLA'],['META','META'],['GOOG','GOOG'],['AMZN','AMZN'],['AAPL','AAPL'],['MSFT','MSFT'],['NFLX','NFLX'],['AMD','AMD'],['JPM','JPM'],['GLD','GLD'],['SLV','SLV'],['USO','USO'],['SPCX','SPCX']];
     function price(c){return Number(c).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
-    function part(label,c,dp){var n=Number(dp);var t=n>=0?'b':'i';var s=n>=0?'+':'';return label+' '+price(c)+' <'+t+'>'+s+n.toFixed(2)+'%</'+t+'>';}
+    function part(label,c,dp){var n=Number(dp);var t=n>=0?'b':'i';var s=n>=0?'+':'';return label+' <w>'+price(c)+'</w> <'+t+'>'+s+n.toFixed(2)+'%</'+t+'>';}
     function load(){
       var jobs=STOCKS.map(function(it){
         return fetch('https://finnhub.io/api/v1/quote?symbol='+it[1]+'&token='+FH)

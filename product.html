@@ -113,7 +113,7 @@
         <li>14-day money-back guarantee</li>
       </ul>
       <div class="hero-actions" style="justify-content:center">
-        <a href="account.html" class="btn" id="buy-journal">Buy the Journal &mdash; $149</a>
+        <a href="#" class="btn" id="buy-journal">Buy the Journal &mdash; $149</a>
       </div>
       <p class="note" style="margin-top:16px;color:var(--faint);font-size:13px">Secure checkout by Paddle. Your licence key arrives by email and in your account.</p>
     </div>
@@ -192,6 +192,48 @@
       });
     }
     load(); setInterval(load,60000);
+  })();
+  </script>
+
+  <!-- Paddle checkout (sandbox) -->
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script>
+  (function(){
+    // ---- config ----
+    var PADDLE_ENV   = "sandbox";                              // switch to "production" when going live
+    var PADDLE_TOKEN = "test_7104044dfef68ef29f54a481cf9";     // client-side token (public, sandbox)
+    var PRICE_ID     = "pri_01kw3j20b3wbqtrb9wbf8a88ea";       // Easy Journal - $149 one-time (sandbox)
+    var SB_REF       = "wgbavpqlesskdhzgfmgr";                 // Supabase project ref (to read login email)
+
+    if (!window.Paddle) return;
+    try {
+      if (PADDLE_ENV === "sandbox") Paddle.Environment.set("sandbox");
+      Paddle.Initialize({ token: PADDLE_TOKEN });
+    } catch (e) { return; }
+
+    // Read the logged-in customer's email from the Supabase session (if any),
+    // so the webhook can tie the licence to their account.
+    function loggedInEmail(){
+      try {
+        var raw = localStorage.getItem("sb-" + SB_REF + "-auth-token");
+        if (!raw) return null;
+        var s = JSON.parse(raw);
+        var sess = (s && s.currentSession) ? s.currentSession : s;
+        return (sess && sess.user && sess.user.email) ? sess.user.email : null;
+      } catch (e) { return null; }
+    }
+
+    var btn = document.getElementById("buy-journal");
+    if (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var email = loggedInEmail();
+        var opts = { items: [{ priceId: PRICE_ID, quantity: 1 }], customData: {} };
+        if (email) { opts.customer = { email: email }; opts.customData.email = email; }
+        try { Paddle.Checkout.open(opts); }
+        catch (err) { window.location.href = "account.html"; } // fallback
+      });
+    }
   })();
   </script>
 

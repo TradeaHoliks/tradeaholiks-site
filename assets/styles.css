@@ -39,6 +39,7 @@ a{color:inherit;text-decoration:none}
 .ticker span{display:inline-block;padding:7px 0;animation:scroll 30s linear infinite}
 .ticker b{color:var(--up)}.ticker i{color:var(--down);font-style:normal}
 .ticker em{color:var(--accent);font-style:normal;font-weight:700}
+.ticker w{color:var(--ink)}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ---------- nav ---------- */
@@ -182,3 +183,12 @@ footer.site{border-top:1px solid var(--line);background:var(--panel);margin-top:
 .tool-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;transition:border-color .15s,transform .15s}
 .tool-card:hover{border-color:rgba(245,166,35,.45);transform:translateY(-3px)}
 .tool-card.is-paid{border-color:rgba(245,
+
+
+/* Account page — Create account + Log in side by side (stack on mobile) */
+.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:900px;margin:0 auto;align-items:start}
+.auth-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px 26px}
+.auth-card.primary{border-color:rgba(245,166,35,.45)}
+.auth-card h2{font-size:22px;margin-bottom:6px}
+.auth-card .sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+@media (max-width:720px){.auth-grid{grid-template-columns:1fr}}

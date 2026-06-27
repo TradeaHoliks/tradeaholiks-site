@@ -186,7 +186,7 @@ footer.site{border-top:1px solid var(--line);background:var(--panel);margin-top:
 
 
 /* Account page — Create account + Log in side by side (stack on mobile) */
-.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:900px;margin:0 auto;align-items:start}
+.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:900px;margin:0 auto;align-items:stretch}
 .auth-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px 26px}
 .auth-card.primary{border-color:rgba(245,166,35,.45)}
 .auth-card h2{font-size:22px;margin-bottom:6px}

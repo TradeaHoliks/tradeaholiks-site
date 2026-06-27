@@ -189,6 +189,7 @@
       if(liveEmail) liveEmail.textContent = (user && user.email) || '';
       loadLicences();
     }
+    var JOURNAL_URL = "https://downloads.tradeaholiks.com/EasyJournal_Setup.zip"; // Journal installer on Cloudflare R2 (update if the file name changes)
     function loadLicences(){
       var box = document.getElementById('licence-box');
       if(!box) return;
@@ -200,7 +201,7 @@
           box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your TaH Journal key will appear here after you buy it.</div>';
           return;
         }
-        box.innerHTML = lic.map(function(L){
+        var html = lic.map(function(L){
           var st = L.suspended ? 'suspended' : ((L.status||'').toLowerCase());
           var col = (st==='active') ? 'var(--accent)' : '#ff5d5d';
           return '<div style="background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:10px;padding:12px 14px;margin-bottom:8px">'
@@ -208,6 +209,8 @@
                + '<div style="font-size:12px;color:'+col+';text-transform:uppercase;letter-spacing:1px;margin-top:4px">'+st+'</div>'
                + '</div>';
         }).join('');
+        html += '<a id="dl-journal" class="btn btn-block" style="margin-top:4px" href="' + JOURNAL_URL + '">Download Easy Journal</a>';
+        box.innerHTML = html;
       }).catch(function(){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now.</div>'; });
     }
     function showLoggedOut(){

@@ -72,6 +72,17 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["health"]:
             return self._send(200, {"ok": True})
 
+        # /ping/<key> -> read-only health for a key: validates the key and
+        # reports queue depths WITHOUT removing anything (safe to call often).
+        if len(parts) == 2 and parts[0] == "ping":
+            if parts[1] != KEY:
+                return self._send(401, {"ok": False, "reason": "bad key"})
+            with _snap_lock:
+                snaps = len([f for f in os.listdir(SNAP_DIR) if f.endswith(".env.json")])
+            with _lock:
+                orders = len([f for f in os.listdir(QUEUE_DIR) if f.endswith(".json")])
+            return self._send(200, {"ok": True, "snapshotsQueued": snaps, "ordersQueued": orders})
+
         # /pull/<key> -> oldest queued ORDER (and delete it), or 204
         if len(parts) == 2 and parts[0] == "pull":
             if parts[1] != KEY:

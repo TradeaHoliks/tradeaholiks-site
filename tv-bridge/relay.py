@@ -25,6 +25,7 @@
 #   Run:  TVBRIDGE_KEY=pick-a-long-secret python3 relay.py
 # =============================================================================
 import json, os, re, time, uuid, threading
+from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 KEY       = os.environ.get("TVBRIDGE_KEY", "CHANGE-ME-long-secret")
@@ -51,6 +52,15 @@ _SNAP_NAME_RE = re.compile(r"^Bridge_Snapshot_[0-9A-Za-z_\-]+\.json$")
 os.makedirs(QUEUE_DIR, exist_ok=True)
 os.makedirs(SNAP_DIR, exist_ok=True)
 
+# Chart pipeline (Trade Chart): Journal posts a request, the Bridge pulls it,
+# fetches bars, posts a response keyed by request_id; the Journal pulls that.
+CHARTREQ_DIR  = os.path.join(QUEUE_DIR, "chartreq")    # pending requests (FIFO)
+CHARTRESP_DIR = os.path.join(QUEUE_DIR, "chartresp")   # answers keyed by id
+_chart_lock   = threading.Lock()
+_ID_RE = re.compile(r"^[0-9A-Za-z_\-]{1,80}$")
+os.makedirs(CHARTREQ_DIR, exist_ok=True)
+os.makedirs(CHARTRESP_DIR, exist_ok=True)
+
 def log(msg):
     print("[%s] %s" % (time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), msg), flush=True)
 
@@ -66,6 +76,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def log_message(self, *a):  # silence default noisy logging
         pass
+
+    def _send_raw(self, code, text):
+        body = (text or "").encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def do_GET(self):
         parts = [p for p in self.path.split("?")[0].split("/") if p]
@@ -121,6 +139,48 @@ class Handler(BaseHTTPRequestHandler):
             log("SNAP-PULL -> %s (%d bytes)" % (env.get("file", "?"), len(env.get("raw", ""))))
             # raw = the exact snapshot JSON text; file = suggested filename
             return self._send(200, {"ok": True, "file": env.get("file", ""), "raw": env.get("raw", "")})
+
+        # /chartreq-pull/<key> -> oldest queued chart REQUEST (Bridge polls), or 204
+        if len(parts) == 2 and parts[0] == "chartreq-pull":
+            if parts[1] != KEY:
+                return self._send(401, {"ok": False, "reason": "bad key"})
+            with _chart_lock:
+                files = sorted(f for f in os.listdir(CHARTREQ_DIR) if f.endswith(".json"))
+                if not files:
+                    return self._send(204, {})
+                fp = os.path.join(CHARTREQ_DIR, files[0])
+                try:
+                    with open(fp, "r", encoding="utf-8") as fh:
+                        raw_text = fh.read()
+                    os.remove(fp)
+                except Exception as e:
+                    log("CHARTREQ-PULL read error: %s" % e)
+                    return self._send(500, {"ok": False})
+            rid = files[0].split("_", 1)[-1].rsplit(".json", 1)[0]
+            log("CHARTREQ-PULL -> %s" % rid)
+            return self._send_raw(200, raw_text)
+
+        # /chartresp-pull/<key>?id=<request_id> -> the answer for that id, or 204
+        if len(parts) == 2 and parts[0] == "chartresp-pull":
+            if parts[1] != KEY:
+                return self._send(401, {"ok": False, "reason": "bad key"})
+            qs = parse_qs(urlparse(self.path).query)
+            rid = (qs.get("id", [""])[0] or "").strip()
+            if not _ID_RE.match(rid):
+                return self._send(400, {"ok": False, "reason": "bad id"})
+            fp = os.path.join(CHARTRESP_DIR, "resp_" + rid + ".json")
+            with _chart_lock:
+                if not os.path.exists(fp):
+                    return self._send(204, {})
+                try:
+                    with open(fp, "r", encoding="utf-8") as fh:
+                        raw_text = fh.read()
+                    os.remove(fp)
+                except Exception as e:
+                    log("CHARTRESP-PULL read error: %s" % e)
+                    return self._send(500, {"ok": False})
+            log("CHARTRESP-PULL -> %s" % rid)
+            return self._send_raw(200, raw_text)
 
         return self._send(404, {"ok": False, "reason": "not found"})
 
@@ -178,6 +238,50 @@ class Handler(BaseHTTPRequestHandler):
                     log("SNAP cap hit -- dropped %d oldest" % (len(allf) - SNAP_MAX))
             log("SNAP  <- %s (%d bytes)" % (suggested, len(raw_text)))
             return self._send(200, {"ok": True, "queued": qname, "file": suggested})
+
+        # /chartreq/<key> -> Journal queues a chart REQUEST
+        if len(parts) == 2 and parts[0] == "chartreq":
+            if parts[1] != KEY:
+                return self._send(401, {"ok": False, "reason": "bad key"})
+            length = int(self.headers.get("Content-Length", "0") or "0")
+            raw = self.rfile.read(length) if length else b""
+            try:
+                req = json.loads(raw.decode("utf-8")) if raw else {}
+            except Exception:
+                return self._send(400, {"ok": False, "reason": "bad json"})
+            rid = str(req.get("request_id", "")).strip()
+            if not _ID_RE.match(rid):
+                return self._send(400, {"ok": False, "reason": "missing/invalid request_id"})
+            raw_text = raw.decode("utf-8", "replace")
+            fname = "%d_%s.json" % (int(time.time() * 1000), rid)
+            with _chart_lock:
+                with open(os.path.join(CHARTREQ_DIR, fname), "w", encoding="utf-8") as fh:
+                    fh.write(raw_text)
+            log("CHARTREQ  <- %s" % rid)
+            return self._send(200, {"ok": True, "queued": rid})
+
+        # /chartresp/<key> -> Bridge posts the answer (keyed by request_id)
+        if len(parts) == 2 and parts[0] == "chartresp":
+            if parts[1] != KEY:
+                return self._send(401, {"ok": False, "reason": "bad key"})
+            length = int(self.headers.get("Content-Length", "0") or "0")
+            raw = self.rfile.read(length) if length else b""
+            try:
+                resp = json.loads(raw.decode("utf-8")) if raw else {}
+            except Exception:
+                return self._send(400, {"ok": False, "reason": "bad json"})
+            rid = str(resp.get("request_id", "")).strip()
+            if not _ID_RE.match(rid):
+                return self._send(400, {"ok": False, "reason": "missing/invalid request_id"})
+            raw_text = raw.decode("utf-8", "replace")
+            dest = os.path.join(CHARTRESP_DIR, "resp_" + rid + ".json")
+            with _chart_lock:
+                tmp = dest + ".tmp"
+                with open(tmp, "w", encoding="utf-8") as fh:
+                    fh.write(raw_text)
+                os.replace(tmp, dest)
+            log("CHARTRESP <- %s (%d bars)" % (rid, len(resp.get("bars", []))))
+            return self._send(200, {"ok": True})
 
         return self._send(404, {"ok": False, "reason": "not found"})
 

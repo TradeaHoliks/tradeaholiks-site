@@ -58,6 +58,7 @@ CHARTREQ_DIR  = os.path.join(QUEUE_DIR, "chartreq")    # pending requests (FIFO)
 CHARTRESP_DIR = os.path.join(QUEUE_DIR, "chartresp")   # answers keyed by id
 _chart_lock   = threading.Lock()
 _ID_RE = re.compile(r"^[0-9A-Za-z_\-]{1,80}$")
+CHARTREQ_STALE_MS = int(os.environ.get("TVBRIDGE_CHARTREQ_STALE_MS", "60000"))  # drop chart requests older than this
 os.makedirs(CHARTREQ_DIR, exist_ok=True)
 os.makedirs(CHARTRESP_DIR, exist_ok=True)
 
@@ -144,11 +145,28 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 2 and parts[0] == "chartreq-pull":
             if parts[1] != KEY:
                 return self._send(401, {"ok": False, "reason": "bad key"})
+            now_ms = int(time.time() * 1000)
             with _chart_lock:
                 files = sorted(f for f in os.listdir(CHARTREQ_DIR) if f.endswith(".json"))
-                if not files:
+                chosen = None
+                for f in files:
+                    # filename is "<ms>_<request_id>.json"; drop anything that
+                    # has been waiting > 60s (a stale click nobody is watching).
+                    try:
+                        ts = int(f.split("_", 1)[0])
+                    except Exception:
+                        ts = now_ms
+                    fp = os.path.join(CHARTREQ_DIR, f)
+                    if now_ms - ts > CHARTREQ_STALE_MS:
+                        try: os.remove(fp)
+                        except Exception: pass
+                        log("CHARTREQ-PULL dropped stale %s" % f)
+                        continue
+                    chosen = (f, fp)
+                    break
+                if chosen is None:
                     return self._send(204, {})
-                fp = os.path.join(CHARTREQ_DIR, files[0])
+                f, fp = chosen
                 try:
                     with open(fp, "r", encoding="utf-8") as fh:
                         raw_text = fh.read()
@@ -156,7 +174,7 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception as e:
                     log("CHARTREQ-PULL read error: %s" % e)
                     return self._send(500, {"ok": False})
-            rid = files[0].split("_", 1)[-1].rsplit(".json", 1)[0]
+            rid = f.split("_", 1)[-1].rsplit(".json", 1)[0]
             log("CHARTREQ-PULL -> %s" % rid)
             return self._send_raw(200, raw_text)
 

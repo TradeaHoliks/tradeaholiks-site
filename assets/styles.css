@@ -40,8 +40,8 @@ a{color:inherit;text-decoration:none}
 .ticker:hover #ticker-track{animation-play-state:paused}
 .tk-grp{display:flex;align-items:center;flex:0 0 auto;padding:7px 0}
 .tk-it{display:inline-flex;align-items:center;padding:0 16px;white-space:nowrap}
-.tk-ic{display:inline-block;width:18px;height:18px;margin-right:7px;border-radius:3px;background:#fff no-repeat center/contain;flex:0 0 auto}
-.tk-gl{font-size:16px;margin-right:5px}
+.tk-ic{display:inline-block;width:22px;height:22px;margin-right:8px;border-radius:3px;background:#fff no-repeat center/contain;flex:0 0 auto}
+.tk-gl{font-size:20px;margin-right:6px}
 .tk-nm{color:#fff;margin-right:5px}
 .ticker b{color:var(--up)}.ticker i{color:var(--down);font-style:normal}
 .ticker em{color:var(--accent);font-style:normal;font-weight:700}

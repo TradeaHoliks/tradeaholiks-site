@@ -65,7 +65,7 @@
     track.innerHTML = '<div class="tk-grp">' + group + '</div>' +
                       '<div class="tk-grp" aria-hidden="true">' + group + '</div>';
     if (!built) {
-      track.style.animationDuration = Math.max(60, items.length * 7) + 's';
+      track.style.animationDuration = Math.max(45, items.length * 5) + 's';
       built = true;
     }
   }

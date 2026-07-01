@@ -20,7 +20,7 @@
   function icon(label) {
     var url = LOGOS[label];
     if (url) {
-      return '<img src="' + url + '" alt="" style="height:18px;width:18px;border-radius:3px;object-fit:contain;vertical-align:middle;margin-right:8px;background:#fff;padding:1px" onerror="this.style.display=&#39;none&#39;">';
+      return '<span style="display:inline-block;width:18px;height:18px;vertical-align:middle;margin-right:7px;border-radius:3px;background:#fff url(' + url + ') center/contain no-repeat"></span>';
     }
     var g = FALLBACK[label];
     return g ? '<span style="margin-right:7px;vertical-align:middle;font-size:16px">' + g + '</span>' : '';

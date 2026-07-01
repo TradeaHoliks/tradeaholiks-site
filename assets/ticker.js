@@ -20,14 +20,14 @@
   function icon(label) {
     var url = LOGOS[label];
     if (url) {
-      return '<img src="' + url + '" alt="" style="height:15px;width:15px;border-radius:3px;object-fit:contain;vertical-align:middle;margin-right:5px;background:#fff;padding:1px" onerror="this.style.display=&#39;none&#39;">';
+      return '<img src="' + url + '" alt="" style="height:18px;width:18px;border-radius:3px;object-fit:contain;vertical-align:middle;margin-right:5px;background:#fff;padding:1px" onerror="this.style.display=&#39;none&#39;">';
     }
     var g = FALLBACK[label];
-    return g ? '<span style="margin-right:4px;vertical-align:middle">' + g + '</span>' : '';
+    return g ? '<span style="margin-right:4px;vertical-align:middle;font-size:16px">' + g + '</span>' : '';
   }
   function part(label, c, dp) {
     var n = Number(dp); var t = n >= 0 ? 'b' : 'i'; var s = n >= 0 ? '+' : '';
-    return icon(label) + '<span style="color:#fff">' + label + '</span> ' + price(c) + ' <' + t + '>' + s + n.toFixed(2) + '%</' + t + '>';
+    return icon(label) + '<span style="color:#fff">' + label + ' ' + price(c) + '</span> <' + t + '>' + s + n.toFixed(2) + '%</' + t + '>';
   }
 
   function fetchLogos() {

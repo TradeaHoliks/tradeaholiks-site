@@ -116,40 +116,7 @@
 
   <script src="assets/site.js"></script>
   <script src="assets/auth-nav.js"></script>
-  <script>
-  (function(){
-    var track=document.getElementById('ticker-track'); if(!track) return;
-    var box=track.closest('.ticker');
-    var message=(box&&box.getAttribute('data-message'))||'';
-    var FH='d7q3ok9r01qosaaqhbc0d7q3ok9r01qosaaqhbcg';
-    var STOCKS=[['SPY','SPY'],['QQQ','QQQ'],['DIA','DIA'],['IWM','IWM'],['NVDA','NVDA'],['TSLA','TSLA'],['META','META'],['GOOG','GOOG'],['AMZN','AMZN'],['AAPL','AAPL'],['MSFT','MSFT'],['NFLX','NFLX'],['AMD','AMD'],['JPM','JPM'],['GLD','GLD'],['SLV','SLV'],['USO','USO'],['SPCX','SPCX']];
-    function price(c){return Number(c).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
-    function part(label,c,dp){var n=Number(dp);var t=n>=0?'b':'i';var s=n>=0?'+':'';return label+' <w>'+price(c)+'</w> <'+t+'>'+s+n.toFixed(2)+'%</'+t+'>';}
-    function load(){
-      var jobs=STOCKS.map(function(it){
-        return fetch('https://finnhub.io/api/v1/quote?symbol='+it[1]+'&token='+FH)
-          .then(function(r){return r.json();})
-          .then(function(q){return (q&&typeof q.dp==='number'&&q.c)?part(it[0],q.c,q.dp):null;})
-          .catch(function(){return null;});
-      });
-      jobs.push(
-        fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD')
-          .then(function(r){return r.json();})
-          .then(function(j){var t=j&&j.result&&Object.values(j.result)[0];if(!t)return null;var c=Number(t.c[0]),o=Number(t.o);return part('BTC',c,o?(c-o)/o*100:0);})
-          .catch(function(){return null;})
-      );
-      Promise.all(jobs).then(function(res){
-        var parts=res.filter(Boolean); if(!parts.length) return;
-        var u=parts.join(' &nbsp;&middot;&nbsp; ');
-        if(message)u+=' &nbsp;&middot;&nbsp; <em>'+message+'</em>';
-        u+=' &nbsp;&middot;&nbsp; ';
-        track.innerHTML=u+u;
-        track.style.animationDuration=Math.max(40, parts.length*5)+'s';
-      });
-    }
-    load(); setInterval(load,60000);
-  })();
-  </script>
+  <script src="assets/ticker.js"></script>
 
 </body>
 </html>

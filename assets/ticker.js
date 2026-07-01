@@ -9,7 +9,7 @@
   var message = (box && box.getAttribute('data-message')) || '';
   var FH = 'd7q3ok9r01qosaaqhbc0d7q3ok9r01qosaaqhbcg';
   var STOCKS = [['SPY','SPY'],['QQQ','QQQ'],['DIA','DIA'],['IWM','IWM'],['NVDA','NVDA'],['TSLA','TSLA'],['META','META'],['GOOG','GOOG'],['AMZN','AMZN'],['AAPL','AAPL'],['MSFT','MSFT'],['NFLX','NFLX'],['AMD','AMD'],['JPM','JPM'],['GLD','GLD'],['SLV','SLV'],['USO','USO'],['SPCX','SPCX']];
-  var FALLBACK = { SPY:'📈', QQQ:'📈', DIA:'📈', IWM:'📈', GLD:'🥇', SLV:'🥈', USO:'🛢️', SPCX:'🚀', BTC:'₿' };
+  var FALLBACK = { SPY:'📈', QQQ:'📈', DIA:'📈', IWM:'📈', GLD:'🥇', SLV:'🥈', USO:'🛢️', SPCX:'🚀', BTC:'₿', ETH:'Ξ' };
 
   var LOGOS = {};
   try { LOGOS = JSON.parse(localStorage.getItem('tah_logos') || '{}') || {}; } catch (e) { LOGOS = {}; }
@@ -20,10 +20,10 @@
   function icon(label) {
     var url = LOGOS[label];
     if (url) {
-      return '<img src="' + url + '" alt="" style="height:18px;width:18px;border-radius:3px;object-fit:contain;vertical-align:middle;margin-right:5px;background:#fff;padding:1px" onerror="this.style.display=&#39;none&#39;">';
+      return '<img src="' + url + '" alt="" style="height:18px;width:18px;border-radius:3px;object-fit:contain;vertical-align:middle;margin-right:8px;background:#fff;padding:1px" onerror="this.style.display=&#39;none&#39;">';
     }
     var g = FALLBACK[label];
-    return g ? '<span style="margin-right:4px;vertical-align:middle;font-size:16px">' + g + '</span>' : '';
+    return g ? '<span style="margin-right:7px;vertical-align:middle;font-size:16px">' + g + '</span>' : '';
   }
   function part(label, c, dp) {
     var n = Number(dp); var t = n >= 0 ? 'b' : 'i'; var s = n >= 0 ? '+' : '';
@@ -54,6 +54,12 @@
       fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD')
         .then(function (r) { return r.json(); })
         .then(function (j) { var t = j && j.result && Object.values(j.result)[0]; if (!t) return null; var c = Number(t.c[0]), o = Number(t.o); return part('BTC', c, o ? (c - o) / o * 100 : 0); })
+        .catch(function () { return null; })
+    );
+    jobs.push(
+      fetch('https://api.kraken.com/0/public/Ticker?pair=ETHUSD')
+        .then(function (r) { return r.json(); })
+        .then(function (j) { var t = j && j.result && Object.values(j.result)[0]; if (!t) return null; var c = Number(t.c[0]), o = Number(t.o); return part('ETH', c, o ? (c - o) / o * 100 : 0); })
         .catch(function () { return null; })
     );
     Promise.all(jobs).then(function (res) {

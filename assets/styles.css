@@ -4,6 +4,7 @@
    site can be recoloured by editing --accent in one place.
    ========================================================= */
 :root{
+  color-scheme:dark;   /* tell Chrome we handle dark mode -> stop force-dark inverting the logo/images */
   --bg:#0a0e14;
   --panel:#0c1119;
   --panel-2:#10161f;

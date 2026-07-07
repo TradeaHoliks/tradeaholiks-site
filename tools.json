@@ -1,34 +1,6 @@
 {
   "_README": "This is the list of free tools shown on tools.html. To add or edit a tool, change the entries below. 'file' is the path inside the private 'tools' bucket in Supabase Storage (e.g. addons/My-Tool.zip). Leave 'file' as an empty string \"\" to show the tool as 'Coming soon' (no download yet). 'icon' is any emoji. Keep the commas and quotes exactly as shown.",
-  "indicators": [
-    {
-      "id": "ind-1",
-      "name": "Indicator name",
-      "blurb": "Short description of what this indicator shows and why it helps. (Placeholder — replace with the real name and blurb.)",
-      "platform": "NinjaTrader 8",
-      "version": "1.0",
-      "icon": "📈",
-      "file": ""
-    },
-    {
-      "id": "ind-2",
-      "name": "Indicator name",
-      "blurb": "Short description of what this indicator shows and why it helps. (Placeholder — replace with the real name and blurb.)",
-      "platform": "NinjaTrader 8",
-      "version": "1.0",
-      "icon": "📉",
-      "file": ""
-    },
-    {
-      "id": "ind-3",
-      "name": "Indicator name",
-      "blurb": "Short description of what this indicator shows and why it helps. (Placeholder — replace with the real name and blurb.)",
-      "platform": "NinjaTrader 8",
-      "version": "1.0",
-      "icon": "🔮",
-      "file": ""
-    }
-  ],
+  "indicators": [],
   "addons": [
     {
       "id": "mass-replay-downloader",
@@ -49,15 +21,6 @@
       "icon": "🧩",
       "file": "TAH_ChartGrid.zip",
       "image": "assets/tah_chartgrid.png"
-    },
-    {
-      "id": "addon-3",
-      "name": "Add-on name",
-      "blurb": "Short description of what this add-on does and the time it saves. (Placeholder — replace with the real name and blurb.)",
-      "platform": "NinjaTrader 8",
-      "version": "1.0",
-      "icon": "🔧",
-      "file": ""
     }
   ]
 }

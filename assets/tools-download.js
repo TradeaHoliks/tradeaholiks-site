@@ -86,9 +86,19 @@
       '</div>';
   }
 
-  function renderInto(grid, list, loggedIn) {
+  // Renders a section's cards. If the list is empty, the whole section
+  // (heading + grid) is hidden until a tool is added to tools.json.
+  function renderInto(grid, headId, list, loggedIn) {
     if (!grid) return;
-    if (!list || !list.length) { grid.innerHTML = ""; return; }
+    var head = headId ? document.getElementById(headId) : null;
+    if (!list || !list.length) {
+      grid.innerHTML = "";
+      grid.style.display = "none";
+      if (head) head.style.display = "none";
+      return;
+    }
+    grid.style.display = "";
+    if (head) head.style.display = "";
     grid.innerHTML = list.map(function (t) { return card(t, loggedIn); }).join("");
   }
 
@@ -169,8 +179,8 @@
     Promise.all([manifestP, sessionP]).then(function (out) {
       var data = out[0] || {};
       var loggedIn = out[1];
-      renderInto(indGrid, data.indicators || [], loggedIn);
-      renderInto(addonGrid, data.addons || [], loggedIn);
+      renderInto(indGrid, "ind-head", data.indicators || [], loggedIn);
+      renderInto(addonGrid, "addon-head", data.addons || [], loggedIn);
     }).catch(function () { errorState(); });
   }
 

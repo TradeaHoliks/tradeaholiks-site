@@ -41,13 +41,14 @@
       "image": "assets/tah_massreplaydownlaoder.png"
     },
     {
-      "id": "addon-2",
-      "name": "Add-on name",
-      "blurb": "Short description of what this add-on does and the time it saves. (Placeholder — replace with the real name and blurb.)",
+      "id": "chart-grid",
+      "name": "TAH Chart Grid",
+      "blurb": "Tile NinjaTrader windows into TradingView-style grid layouts — up to 8 per grid. Pick a layout, click windows into numbered slots, then place the grid on any monitor, half, or quarter of the screen. Windows you click flash on screen so you always know which one you're placing.",
       "platform": "NinjaTrader 8",
-      "version": "1.0",
-      "icon": "⚙️",
-      "file": ""
+      "version": "1.9",
+      "icon": "🧩",
+      "file": "TAH_ChartGrid.zip",
+      "image": "assets/tah_chartgrid.png"
     },
     {
       "id": "addon-3",

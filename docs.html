@@ -79,9 +79,11 @@
       <h5>Configure</h5>
       <a href="#settings">Settings</a>
       <a href="#the-bridge">The Bridge</a>
+      <h5>Free tools</h5>
+      <a href="#free-tools">Overview</a>
+      <a href="#chart-grid">TAH Chart Grid</a>
       <h5>Help</h5>
       <a href="#troubleshooting">Troubleshooting</a>
-      <a href="#free-tools">Free tools</a>
       <a href="#faq">FAQ</a>
     </aside>
 
@@ -264,7 +266,33 @@
 
       <section class="doc-sec" id="free-tools">
         <h2>Free tools (indicators &amp; add-ons)</h2>
-        <p>How-tos for the free NinjaTrader indicators and add-ons will live here as they're released. Browse what's available on the <a href="tools.html" style="color:var(--accent)">Tools page</a>.</p>
+        <p>How-tos for the free NinjaTrader indicators and add-ons live here as they're released. Browse and download everything on the <a href="tools.html" style="color:var(--accent)">Tools page</a> (free account required).</p>
+      </section>
+
+      <section class="doc-sec" id="chart-grid">
+        <h2>TAH Chart Grid (add-on)</h2>
+        <p>Tiles your NinjaTrader windows into a clean grid &mdash; like TradingView's multi-chart layouts, but for any NT window: charts, SuperDOM, Market Analyzer, even the Control Center. Up to 8 windows per grid, on any monitor, or on just a half or quarter of a screen.</p>
+        <h3>Install</h3>
+        <ol>
+          <li>Download <b>TAH_ChartGrid.zip</b> from the <a href="tools.html" style="color:var(--accent)">Tools page</a>. Don't unzip it.</li>
+          <li>In NinjaTrader: <kbd>Tools</kbd> &rarr; <kbd>Import</kbd> &rarr; <kbd>NinjaScript Add-On...</kbd> and pick the zip.</li>
+          <li>Restart NinjaTrader. A <b>TAH Chart Grid</b> item appears under <kbd>Control Center</kbd> &rarr; <kbd>New</kbd>.</li>
+        </ol>
+        <h3>Use it</h3>
+        <ol>
+          <li>Open and set up your charts and windows first, then open <kbd>Control Center</kbd> &rarr; <kbd>New</kbd> &rarr; <kbd>TAH Chart Grid</kbd>.</li>
+          <li><b>Pick a layout</b> by clicking a thumbnail &mdash; equal grids (2 / 4 / 6 / 8) or mixed layouts with big and small panes. The preview below the thumbnails shows the layout's numbered slots.</li>
+          <li><b>Place windows:</b> click a slot in the preview to arm it, then click a window in the list to drop it there. The real window flashes its slot number on screen, so you always know exactly which window you just placed. Click an assigned window to remove it &mdash; and clicking any window with no slot armed simply flashes its name, handy when several charts look alike.</li>
+          <li><b>Pick where:</b> choose the monitor (the <kbd>Identify</kbd> button flashes a number on each screen) and a region &mdash; full monitor, a half, or a corner quarter.</li>
+          <li>Click <kbd>Tile</kbd>. Only the windows you assigned move; everything else stays exactly where it was.</li>
+        </ol>
+        <h3>Tips</h3>
+        <ul>
+          <li><b>Stack grids:</b> the picker stays open after tiling &mdash; assign a new set of windows and tile them onto a different region (e.g. a 6-grid on the right half of one monitor, then a 2-grid on the left half).</li>
+          <li><b>Save the result:</b> save a NinjaTrader workspace after tiling and NT restores the whole arrangement next time it starts.</li>
+          <li>NinjaTrader doesn't allow add-ons to open charts or change instruments &mdash; that's an NT platform limit. Set your charts up once, tile, then save the workspace.</li>
+        </ul>
+        <div class="doc-meta">Add-on version 1.9 &middot; NinjaTrader 8 &middot; Windows</div>
       </section>
 
       <section class="doc-sec" id="faq">

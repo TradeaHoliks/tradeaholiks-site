@@ -83,13 +83,13 @@
             <div class="lead-wrap">
               <button id="annLeadBtn" type="button" title="When to announce, before each event">5M &#9662;</button>
               <div id="annLeadMenu" hidden>
-                <label><input type="checkbox" value="900"> 15 min before</label>
-                <label><input type="checkbox" value="600"> 10 min before</label>
-                <label><input type="checkbox" value="300" checked> 5 min before</label>
-                <label><input type="checkbox" value="120"> 2 min before</label>
-                <label><input type="checkbox" value="60"> 1 min before</label>
-                <label><input type="checkbox" value="30"> 30 sec before</label>
                 <label><input type="checkbox" value="20"> 20 sec before</label>
+                <label><input type="checkbox" value="30"> 30 sec before</label>
+                <label><input type="checkbox" value="60"> 1 min before</label>
+                <label><input type="checkbox" value="120"> 2 min before</label>
+                <label><input type="checkbox" value="300" checked> 5 min before</label>
+                <label><input type="checkbox" value="600"> 10 min before</label>
+                <label><input type="checkbox" value="900"> 15 min before</label>
               </div>
             </div>
             <button id="annBtn" class="ann-btn" type="button">&#128263; ANNOUNCE: OFF</button>
@@ -191,7 +191,7 @@
                                      : '&#128263; ANNOUNCE: OFF';
             btn.classList.toggle('on', prefs.on && armed);
             selImpact.value = prefs.impact;
-            var sorted = prefs.leads.slice().sort(function(a,b){ return b - a; });
+            var sorted = prefs.leads.slice().sort(function(a,b){ return a - b; });
             leadBtn.innerHTML = sorted.map(fmtLead).join(' &middot; ') + ' &#9662;';
             leadBoxes.forEach(function(b){ b.checked = prefs.leads.indexOf(parseInt(b.value,10)) !== -1; });
           }

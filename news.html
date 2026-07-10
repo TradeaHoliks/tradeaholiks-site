@@ -54,7 +54,17 @@
     <div class="news-stack">
       <div class="widget-card">
         <div class="eyebrow">// Economic calendar</div>
-        <div class="cal-scroll"><iframe scrolling="no" title="Economic calendar by FinancialJuice" src="https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&amp;mode=Table&amp;container=financialjuice-eco-widget-container&amp;width=100%25&amp;height=2800px&amp;backC=0c1119&amp;fontC=e6edf3"></iframe></div>
+        <div class="cal-scroll"><iframe id="ecocal" scrolling="no" title="Economic calendar by FinancialJuice"></iframe></div>
+        <script>
+        /* FinancialJuice needs an exact pixel width — measure the card and build the widget URL to match
+           (the +18 is the strip clipped off the right edge to hide the widget's white scrollbar;
+            the /0.85 compensates for the zoom that tightens the rows) */
+        (function(){
+          var f = document.getElementById('ecocal');
+          var w = Math.round((f.parentElement.clientWidth + 18) / 0.85);
+          f.src = 'https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&mode=Table&container=financialjuice-eco-widget-container&width=' + w + 'px&height=2800px&backC=0c1119&fontC=e6edf3';
+        })();
+        </script>
         <div class="widget-note">calendar: FinancialJuice</div>
       </div>
       <div class="widget-card">

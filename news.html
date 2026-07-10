@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market News — Tradeaholiks</title>
+<meta name="description" content="Live market-moving headlines and the economic calendar — free for futures and index traders, from the Tradeaholiks toolkit.">
+<link rel="stylesheet" href="assets/styles.css?v=4">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+.news-stack{display:flex;flex-direction:column;gap:18px}
+.widget-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px 10px;overflow:hidden}
+.widget-card .eyebrow{margin-bottom:12px}
+.widget-card .widget-note{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;padding:8px 2px 6px}
+.cal-scroll{height:480px;overflow-y:auto;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
+.cal-scroll::-webkit-scrollbar{width:8px}
+.cal-scroll::-webkit-scrollbar-track{background:var(--panel)}
+.cal-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.cal-scroll iframe{width:900px;max-width:100%;height:2800px;border:0;display:block;margin:0 auto;background:var(--panel)}
+.news-frame{width:100%;height:620px;border:0;display:block;background:var(--panel)}
+</style>
+</head>
+<body>
+  <div class="ticker" data-message="MARKET NEWS &mdash; LIVE HEADLINES &amp; ECONOMIC CALENDAR FOR FUTURES TRADERS"><span id="ticker-track">
+    <em>MARKET NEWS &mdash; LIVE HEADLINES &amp; ECONOMIC CALENDAR FOR FUTURES TRADERS</em> &nbsp;&middot;&nbsp; <em>MARKET NEWS &mdash; LIVE HEADLINES &amp; ECONOMIC CALENDAR FOR FUTURES TRADERS</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="news.html" class="active">News</a>
+      <a href="docs.html">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <header class="hero" style="padding:60px 0 18px"><div class="container">
+    <div class="badge">// MARKET NEWS</div>
+    <h1 style="font-size:clamp(34px,6vw,54px)">The market, <span class="glow">as it breaks.</span></h1>
+    <p class="lead" style="margin-bottom:0">Live market-moving headlines and the full economic calendar &mdash; the same feed the pros watch, free on Tradeaholiks.</p>
+  </div></header>
+
+  <section class="section tight"><div class="container">
+    <div class="news-stack">
+      <div class="widget-card">
+        <div class="eyebrow">// Economic calendar</div>
+        <div class="cal-scroll"><iframe scrolling="no" title="Economic calendar by FinancialJuice" src="https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&amp;mode=Table&amp;container=financialjuice-eco-widget-container&amp;width=900px&amp;height=2800px&amp;backC=0c1119&amp;fontC=e6edf3"></iframe></div>
+        <div class="widget-note">calendar: FinancialJuice</div>
+      </div>
+      <div class="widget-card">
+        <div class="eyebrow">// Live headlines</div>
+        <iframe class="news-frame" scrolling="no" title="Live headlines by FinancialJuice" src="https://feed.financialjuice.com/widgets/headlines.aspx?wtype=NEWS&amp;mode=Dark&amp;container=financialjuice-news-widget-container&amp;width=100%25&amp;height=620px&amp;backC=0c1119&amp;fontC=e6edf3"></iframe>
+        <div class="widget-note">feed: FinancialJuice</div>
+      </div>
+    </div>
+    <div class="notice" style="margin-top:18px"><b>Tip:</b> red-folder calendar events (CPI, NFP, FOMC) move futures hard and fast. If you trade the TaH way, know when they land before you take a position.</div>
+  </div></section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The TaH Journal</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+</body>
+</html>

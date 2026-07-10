@@ -8,11 +8,18 @@
 <link rel="stylesheet" href="assets/styles.css?v=4">
 <link rel="icon" type="image/png" href="assets/icon-tah.png">
 <style>
-.news-stack{display:flex;flex-direction:column;gap:18px}
+.cal-tabs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.cal-tabs .tab-group{display:flex;gap:0}
+.cal-tabs .tab-group button{font-family:var(--mono);font-size:11px;letter-spacing:.5px;cursor:pointer;padding:7px 18px;border:1px solid var(--line);background:var(--panel);color:var(--faint)}
+.cal-tabs .tab-group button:first-child{border-radius:6px 0 0 6px}
+.cal-tabs .tab-group button:last-child{border-radius:0 6px 6px 0}
+.cal-tabs .tab-group button + button{margin-left:-1px}
+.cal-tabs .tab-group button.on{background:rgba(245,166,35,.12);color:var(--accent);border-color:var(--accent);position:relative;z-index:1}
+.tab-pane[hidden]{display:none}
 .widget-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px 10px;overflow:hidden}
 .widget-card .eyebrow{margin-bottom:12px}
 .widget-card .widget-note{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;padding:8px 2px 6px}
-.cal-scroll{position:relative;height:480px;overflow-y:auto;overflow-x:hidden;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
+.cal-scroll{--cal-zoom:.85;position:relative;height:920px;overflow-y:auto;overflow-x:hidden;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
 .cal-scroll::-webkit-scrollbar{width:8px}
 .cal-scroll::-webkit-scrollbar-track{background:var(--panel)}
 .cal-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
@@ -23,10 +30,10 @@
 /* color-scheme:light is CRITICAL — our site is dark but FinancialJuice's widget page is light,
    and Chrome paints a mismatched frame's transparent areas solid WHITE. Declaring the frame
    light restores see-through, so our dark panel shows behind the widget everywhere. */
-.cal-scroll iframe{--cal-zoom:.85;zoom:var(--cal-zoom);color-scheme:light;position:relative;z-index:0;width:calc((100% + 44px)/var(--cal-zoom));height:2800px;border:0;display:block;background:var(--panel)}
-/* covers the widget's white bar pinned to its bottom edge (2800px x 0.85 zoom = 2380 visual) */
-.cal-mask{position:absolute;left:0;right:0;top:2324px;height:56px;background:var(--panel);z-index:5}
-.news-frame{width:100%;height:620px;border:0;display:block;background:var(--panel)}
+.cal-scroll iframe{zoom:var(--cal-zoom);color-scheme:light;position:relative;z-index:0;width:calc((100% + 44px)/var(--cal-zoom));height:2800px;border:0;display:block;background:var(--panel)}
+/* covers the widget's white bar pinned to its bottom edge (2800px x zoom, minus the bar) */
+.cal-mask{position:absolute;left:0;right:0;top:calc(2800px*var(--cal-zoom) - 56px);height:56px;background:var(--panel);z-index:5}
+.news-frame{width:100%;height:1180px;border:0;display:block;background:var(--panel)}
 .cal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .cal-head .eyebrow{margin-bottom:0}
 .cal-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -39,6 +46,18 @@
 #annLeadMenu[hidden]{display:none}
 #annLeadMenu label{font-family:var(--mono);font-size:11px;color:var(--faint);display:flex;gap:8px;align-items:center;cursor:pointer;white-space:nowrap}
 #annLeadMenu input{accent-color:var(--accent);margin:0}
+.earn-scroll{max-height:920px;overflow-y:auto;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
+.earn-scroll::-webkit-scrollbar{width:8px}
+.earn-scroll::-webkit-scrollbar-track{background:var(--panel)}
+.earn-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.earn-scroll table{width:100%;border-collapse:collapse;font-size:13px}
+.earn-h th{font-family:var(--mono);font-size:10px;letter-spacing:.5px;color:var(--faint);padding:4px 8px;text-align:right;border-bottom:1px solid var(--line)}
+.earn-h th:first-child,.earn-h th:nth-child(2){text-align:left}
+.earn-day td{padding:12px 8px 4px;color:#e6edf3;font-weight:700;border-bottom:1px solid var(--line)}
+.earn-row td{padding:5px 8px;color:#e6edf3;border-bottom:1px solid rgba(38,48,65,.45)}
+.earn-sym{font-family:var(--mono);color:var(--accent);font-weight:700}
+.earn-tag{font-family:var(--mono);font-size:10px;color:var(--faint)}
+.earn-empty{font-family:var(--mono);font-size:12px;color:var(--faint);padding:14px 8px}
 </style>
 </head>
 <body>
@@ -66,15 +85,18 @@
   <header class="hero" style="padding:60px 0 18px"><div class="container">
     <div class="badge">// MARKET NEWS</div>
     <h1 style="font-size:clamp(34px,6vw,54px)">The market, <span class="glow">as it breaks.</span></h1>
-    <p class="lead" style="margin-bottom:0">Live market-moving headlines and the full economic calendar &mdash; the same feed the pros watch, free on Tradeaholiks.</p>
+    <p class="lead" style="margin-bottom:0;max-width:none;white-space:nowrap">Live headlines and the full economic calendar &mdash; the feed the pros watch, free.</p>
   </div></header>
 
   <section class="section tight"><div class="container">
-    <div class="news-stack">
-      <div class="widget-card">
-        <div class="cal-head">
-          <div class="eyebrow">// Economic calendar</div>
-          <div class="cal-controls">
+    <div class="widget-card">
+        <div class="cal-tabs">
+          <div class="tab-group">
+            <button id="tabCal" class="on" type="button">CALENDAR</button>
+            <button id="tabNews" type="button">HEADLINES</button>
+            <button id="tabEarn" type="button">EARNINGS</button>
+          </div>
+          <div class="cal-controls" style="margin-left:auto">
             <select id="annImpact" title="Which events get announced">
               <option value="high">High impact only</option>
               <option value="highmed" selected>High + Medium</option>
@@ -93,21 +115,36 @@
               </div>
             </div>
             <button id="annBtn" class="ann-btn" type="button">&#128263; ANNOUNCE: OFF</button>
+            <button id="annNews" class="ann-btn" type="button">&#128483; READ NEWS: OFF</button>
           </div>
         </div>
+        <div id="paneCal" class="tab-pane">
         <div class="cal-scroll"><iframe id="ecocal" scrolling="no" title="Economic calendar by FinancialJuice"></iframe><div class="cal-mask"></div></div>
         <script>
-        /* FinancialJuice needs an exact pixel width — measure the card and size the TABLE to exactly
-           fill the visible area (divided by 0.85 to compensate for the zoom that tightens the rows).
-           The iframe itself is wider (see CSS) so the widget's white scroll pill lands in the
-           clipped-off strip, not on top of the chart-icon column. */
+        /* FinancialJuice needs an exact pixel width — measure the panel and size the widget to
+           exactly fill the visible area (divided by the zoom that tightens the rows; the zoom
+           value lives in CSS as --cal-zoom on .cal-scroll). The iframe itself is wider (see CSS)
+           so the widget's white scroll pill lands in the clipped-off strip.
+           +22 pushes the widget's chart-icon column (broken on FinancialJuice's end — their
+           code errors when clicked) into the clipped strip; remove it if they ever fix it. */
         (function(){
           var f = document.getElementById('ecocal');
-          /* +22 pushes the widget's last column (the chart icon — broken on FinancialJuice's
-             end, their code errors when clicked) into the clipped strip so it's hidden.
-             Remove the +22 to bring the icons back if they ever fix it. */
-          var w = Math.round(f.parentElement.clientWidth / 0.85) + 22;
+          var zoom = parseFloat(getComputedStyle(f.parentElement).getPropertyValue('--cal-zoom')) || 1;
+          var w = Math.round(f.parentElement.clientWidth / zoom) + 22;
           f.src = 'https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&mode=Table&container=financialjuice-eco-widget-container&width=' + w + 'px&height=2800px&backC=0c1119&fontC=e6edf3';
+        })();
+
+        /* ── Tabs ── */
+        (function(){
+          var tabs = [['tabCal','paneCal'],['tabEarn','paneEarn'],['tabNews','paneNews']];
+          tabs.forEach(function(pair, idx){
+            document.getElementById(pair[0]).onclick = function(){
+              tabs.forEach(function(p, i){
+                document.getElementById(p[0]).classList.toggle('on', i === idx);
+                document.getElementById(p[1]).hidden = (i !== idx);
+              });
+            };
+          });
         })();
 
         /* ── Event announcer ─────────────────────────────────────────────────
@@ -126,14 +163,17 @@
           var leadMenu = document.getElementById('annLeadMenu');
           if (!btn || !('speechSynthesis' in window)) { if (btn) btn.style.display = 'none'; return; }
           var leadBoxes = [].slice.call(leadMenu.querySelectorAll('input'));
+          var newsBtn = document.getElementById('annNews');
 
-          /* prefs.leads = seconds before each event to announce (can be several) */
-          var prefs = {on:false, impact:'highmed', leads:[300]};
+          /* prefs.leads = seconds before each event to announce (can be several);
+             prefs.news = read fresh headlines aloud */
+          var prefs = {on:false, impact:'highmed', leads:[300], news:false};
           try { var p = JSON.parse(localStorage.getItem('tah_announce') || '{}');
                 if (p.impact) prefs.impact = p.impact;
                 if (Array.isArray(p.leads) && p.leads.length) prefs.leads = p.leads;
                 else if (p.lead) prefs.leads = [p.lead * 60]; /* migrate old single choice */
-                if (typeof p.on === 'boolean') prefs.on = p.on; } catch(e){}
+                if (typeof p.on === 'boolean') prefs.on = p.on;
+                if (typeof p.news === 'boolean') prefs.news = p.news; } catch(e){}
           var events = [], announced = {}, armed = false, fetchedAt = 0;
 
           function save(){ try { localStorage.setItem('tah_announce', JSON.stringify(prefs)); } catch(e){} }
@@ -190,6 +230,9 @@
             btn.innerHTML = prefs.on ? (armed ? '&#128266; ANNOUNCE: ON' : '&#128266; CLICK TO ARM')
                                      : '&#128263; ANNOUNCE: OFF';
             btn.classList.toggle('on', prefs.on && armed);
+            newsBtn.innerHTML = prefs.news ? (armed ? '&#128483; READ NEWS: ON' : '&#128483; CLICK TO ARM')
+                                           : '&#128483; READ NEWS: OFF';
+            newsBtn.classList.toggle('on', prefs.news && armed);
             selImpact.value = prefs.impact;
             var sorted = prefs.leads.slice().sort(function(a,b){ return a - b; });
             leadBtn.innerHTML = sorted.map(fmtLead).join(' &middot; ') + ' &#9662;';
@@ -246,16 +289,134 @@
             };
           });
 
+          /* ── Headline reader (READ NEWS) ─────────────────────────────────
+             Polls our news-feed relay (investinglive.com RSS) once a minute and
+             reads each new headline aloud. Different provider than the visible
+             FinancialJuice feed, so wording can differ slightly. */
+          var NEWS_FEED = 'https://wgbavpqlesskdhzgfmgr.supabase.co/functions/v1/news-feed';
+          var lastNewsT = 0, newsTimer = null;
+          function decodeEntities(s){ var d = document.createElement('textarea'); d.innerHTML = s; return d.value; }
+          function fetchNews(cb){
+            fetch(NEWS_FEED).then(function(r){ return r.text(); }).then(function(xml){
+              var doc = new DOMParser().parseFromString(xml, 'text/xml');
+              var items = [].slice.call(doc.querySelectorAll('item')).map(function(it){
+                var pd = it.querySelector('pubDate'), ti = it.querySelector('title');
+                return { t: pd ? Date.parse(pd.textContent) : 0,
+                         title: ti ? decodeEntities(ti.textContent).trim() : '' };
+              }).filter(function(x){ return x.t && x.title; })
+                .sort(function(a,b){ return b.t - a.t; });
+              cb(items);
+            }).catch(function(){ cb(null); });
+          }
+          function pollNews(){
+            if (!prefs.news || !armed) return;
+            fetchNews(function(items){
+              if (!items || !items.length) return;
+              if (!lastNewsT) { lastNewsT = items[0].t; return; } /* first pass = baseline, no backlog */
+              var fresh = items.filter(function(x){ return x.t > lastNewsT; });
+              if (!fresh.length) return;
+              lastNewsT = items[0].t;
+              /* read at most the 3 newest, oldest first, so a burst doesn't talk forever */
+              fresh.slice(0, 3).reverse().forEach(function(x){ speak('News: ' + x.title); });
+            });
+          }
+          function startNewsTimer(){ if (!newsTimer) newsTimer = setInterval(pollNews, 60000); }
+          newsBtn.onclick = function(){
+            if (!prefs.news || !armed) {
+              prefs.news = true; armed = true; save();
+              fetchNews(function(items){
+                var msg = 'Headline reading on.';
+                if (items && items.length) { msg += ' Latest: ' + items[0].title; lastNewsT = items[0].t; }
+                speak(msg); render();
+              });
+              startNewsTimer(); render();
+            } else {
+              prefs.news = false; save(); render();
+            }
+          };
+          if (prefs.news) startNewsTimer();
+
           render();
           loadFeed();
           setInterval(tick, 5000); /* checks every 5s so the 20/30-second options fire on time */
         })();
+
+        /* ── Earnings card ───────────────────────────────────────────────────
+           Next 7 days of earnings from Finnhub (same public key as the ticker),
+           filtered to companies that matter: est. revenue $1B+ or household
+           names. EPS actual turns green/red vs estimate once reported.
+           Cached in the browser for 30 min to stay inside Finnhub's limits. */
+        function initEarnings(){
+          var box = document.getElementById('earnList');
+          if (!box) return;
+          var FH = 'd7q3ok9r01qosaaqhbc0d7q3ok9r01qosaaqhbcg'; /* public key, same as ticker.js */
+          var FAMOUS = {};
+          ('AAPL MSFT NVDA AMZN GOOGL GOOG META TSLA NFLX AMD INTC MU AVGO QCOM TSM PLTR ' +
+           'JPM BAC GS MS WFC C V MA COIN HOOD SOFI PYPL SQ ' +
+           'WMT COST NKE SBUX MCD KO PEP DIS BA CAT XOM CVX ' +
+           'CRM ORCL UBER ABNB SHOP RBLX T VZ PFE JNJ UNH LLY').split(' ')
+            .forEach(function(s){ FAMOUS[s] = 1; });
+          function fmtRev(v){
+            if (v == null) return '–';
+            if (Math.abs(v) >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
+            if (Math.abs(v) >= 1e6) return '$' + Math.round(v / 1e6) + 'M';
+            return '$' + Math.round(v / 1e3) + 'K';
+          }
+          function fmtEps(v){ return v == null ? '–' : Number(v).toFixed(2); }
+          function hourTag(h){ return h === 'bmo' ? 'PRE-MKT' : (h === 'amc' ? 'AFTER CLS' : '—'); }
+          function keep(e){ return (e.revenueEstimate && e.revenueEstimate >= 1e9) || FAMOUS[e.symbol]; }
+          function renderEarn(list){
+            if (!list.length) { box.innerHTML = '<div class="earn-empty">No major earnings in the next 7 days.</div>'; return; }
+            list.sort(function(a,b){
+              return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.revenueEstimate || 0) - (a.revenueEstimate || 0);
+            });
+            var html = '<table><tr class="earn-h"><th>Company</th><th>Session</th><th>EPS est</th><th>EPS actual</th><th>Revenue est</th></tr>';
+            var day = '';
+            list.forEach(function(e){
+              if (e.date !== day) {
+                day = e.date;
+                var d = new Date(e.date + 'T12:00:00');
+                html += '<tr class="earn-day"><td colspan="5">' +
+                        d.toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}) + '</td></tr>';
+              }
+              var beat = (e.epsActual != null && e.epsEstimate != null) ? (e.epsActual >= e.epsEstimate) : null;
+              html += '<tr class="earn-row"><td class="earn-sym">' + e.symbol + '</td>' +
+                      '<td class="earn-tag">' + hourTag(e.hour) + '</td>' +
+                      '<td style="text-align:right">' + fmtEps(e.epsEstimate) + '</td>' +
+                      '<td style="text-align:right;' + (beat === null ? 'color:var(--faint)' : 'color:' + (beat ? '#3fd07f' : '#ff5c5c')) + '">' + fmtEps(e.epsActual) + '</td>' +
+                      '<td style="text-align:right">' + fmtRev(e.revenueEstimate) + '</td></tr>';
+            });
+            box.innerHTML = html + '</table>';
+          }
+          function iso(d){ return d.toISOString().slice(0, 10); }
+          var cached = null;
+          try { cached = JSON.parse(localStorage.getItem('tah_earn') || 'null'); } catch(e){}
+          if (cached && Array.isArray(cached.d) && Date.now() - cached.t < 30 * 60 * 1000) { renderEarn(cached.d); return; }
+          fetch('https://finnhub.io/api/v1/calendar/earnings?from=' + iso(new Date()) +
+                '&to=' + iso(new Date(Date.now() + 7 * 86400000)) + '&token=' + FH)
+            .then(function(r){ return r.json(); })
+            .then(function(r){
+              var d = ((r && r.earningsCalendar) || []).filter(keep);
+              try { localStorage.setItem('tah_earn', JSON.stringify({t: Date.now(), d: d})); } catch(e){}
+              renderEarn(d);
+            })
+            .catch(function(){
+              if (cached && Array.isArray(cached.d)) renderEarn(cached.d);
+              else box.innerHTML = '<div class="earn-empty">Earnings feed unavailable right now — try a refresh in a minute.</div>';
+            });
+        }
+        /* the earnings list sits below this script in the page, so wait for the page to finish loading */
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initEarnings);
+        else initEarnings();
         </script>
         <div class="widget-note">calendar: FinancialJuice</div>
-      </div>
-      <div class="widget-card">
-        <div class="eyebrow">// Live headlines</div>
-        <iframe class="news-frame" scrolling="no" title="Live headlines by FinancialJuice" src="https://feed.financialjuice.com/widgets/headlines.aspx?wtype=NEWS&amp;mode=Dark&amp;container=financialjuice-news-widget-container&amp;width=100%25&amp;height=620px&amp;backC=0c1119&amp;fontC=e6edf3"></iframe>
+        </div>
+        <div id="paneEarn" class="tab-pane" hidden>
+        <div id="earnList" class="earn-scroll"><div class="earn-empty">loading&hellip;</div></div>
+        <div class="widget-note">earnings: Finnhub &mdash; major companies only &middot; PRE-MKT = before US open, AFTER CLS = after US close</div>
+        </div>
+        <div id="paneNews" class="tab-pane" hidden>
+        <iframe class="news-frame" scrolling="no" title="Live headlines by FinancialJuice" src="https://feed.financialjuice.com/widgets/headlines.aspx?wtype=NEWS&amp;mode=Dark&amp;container=financialjuice-news-widget-container&amp;width=100%25&amp;height=1210px&amp;backC=0c1119&amp;fontC=e6edf3"></iframe>
         <div class="widget-note">feed: FinancialJuice</div>
       </div>
     </div>

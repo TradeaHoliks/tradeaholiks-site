@@ -20,7 +20,10 @@
    the extra is clipped off the right edge — that hides the widget's floating white scroll pill
    WITHOUT cutting the chart-icon column, because the table itself (sized by the script below)
    only spans the visible area. */
-.cal-scroll iframe{--cal-zoom:.85;zoom:var(--cal-zoom);position:relative;z-index:0;width:calc((100% + 44px)/var(--cal-zoom));height:2800px;border:0;display:block;background:var(--panel)}
+/* color-scheme:light is CRITICAL — our site is dark but FinancialJuice's widget page is light,
+   and Chrome paints a mismatched frame's transparent areas solid WHITE. Declaring the frame
+   light restores see-through, so our dark panel shows behind the widget everywhere. */
+.cal-scroll iframe{--cal-zoom:.85;zoom:var(--cal-zoom);color-scheme:light;position:relative;z-index:0;width:calc((100% + 44px)/var(--cal-zoom));height:2800px;border:0;display:block;background:var(--panel)}
 /* covers the widget's white bar pinned to its bottom edge (2800px x 0.85 zoom = 2380 visual) */
 .cal-mask{position:absolute;left:0;right:0;top:2324px;height:56px;background:var(--panel);z-index:5}
 .news-frame{width:100%;height:620px;border:0;display:block;background:var(--panel)}
@@ -66,7 +69,10 @@
            clipped-off strip, not on top of the chart-icon column. */
         (function(){
           var f = document.getElementById('ecocal');
-          var w = Math.round(f.parentElement.clientWidth / 0.85);
+          /* +22 pushes the widget's last column (the chart icon — broken on FinancialJuice's
+             end, their code errors when clicked) into the clipped strip so it's hidden.
+             Remove the +22 to bring the icons back if they ever fix it. */
+          var w = Math.round(f.parentElement.clientWidth / 0.85) + 22;
           f.src = 'https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&mode=Table&container=financialjuice-eco-widget-container&width=' + w + 'px&height=2800px&backC=0c1119&fontC=e6edf3';
         })();
         </script>

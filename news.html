@@ -27,6 +27,12 @@
 /* covers the widget's white bar pinned to its bottom edge (2800px x 0.85 zoom = 2380 visual) */
 .cal-mask{position:absolute;left:0;right:0;top:2324px;height:56px;background:var(--panel);z-index:5}
 .news-frame{width:100%;height:620px;border:0;display:block;background:var(--panel)}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cal-head .eyebrow{margin-bottom:0}
+.cal-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cal-controls select{font-family:var(--mono);font-size:11px;color:var(--faint);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 6px;cursor:pointer}
+.ann-btn{font-family:var(--mono);font-size:11px;letter-spacing:.5px;cursor:pointer;background:var(--panel);color:var(--faint);border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+.ann-btn.on{color:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(245,166,35,.25)}
 </style>
 </head>
 <body>
@@ -60,7 +66,23 @@
   <section class="section tight"><div class="container">
     <div class="news-stack">
       <div class="widget-card">
-        <div class="eyebrow">// Economic calendar</div>
+        <div class="cal-head">
+          <div class="eyebrow">// Economic calendar</div>
+          <div class="cal-controls">
+            <select id="annImpact" title="Which events get announced">
+              <option value="high">High impact only</option>
+              <option value="highmed" selected>High + Medium</option>
+              <option value="all">All events</option>
+            </select>
+            <select id="annLead" title="How far ahead to announce">
+              <option value="2">2 min before</option>
+              <option value="5" selected>5 min before</option>
+              <option value="10">10 min before</option>
+              <option value="15">15 min before</option>
+            </select>
+            <button id="annBtn" class="ann-btn" type="button">&#128263; ANNOUNCE: OFF</button>
+          </div>
+        </div>
         <div class="cal-scroll"><iframe id="ecocal" scrolling="no" title="Economic calendar by FinancialJuice"></iframe><div class="cal-mask"></div></div>
         <script>
         /* FinancialJuice needs an exact pixel width — measure the card and size the TABLE to exactly
@@ -74,6 +96,118 @@
              Remove the +22 to bring the icons back if they ever fix it. */
           var w = Math.round(f.parentElement.clientWidth / 0.85) + 22;
           f.src = 'https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&mode=Table&container=financialjuice-eco-widget-container&width=' + w + 'px&height=2800px&backC=0c1119&fontC=e6edf3';
+        })();
+
+        /* ── Event announcer ─────────────────────────────────────────────────
+           Speaks upcoming calendar events out loud using the browser's built-in
+           voice. Data comes from our Supabase calendar-feed function (a relay
+           for the free ForexFactory weekly calendar). Settings are remembered
+           per visitor. Browsers only allow speech after the visitor clicks
+           something, so after a page reload the button shows CLICK TO ARM. */
+        (function(){
+          var FEED = 'https://wgbavpqlesskdhzgfmgr.supabase.co/functions/v1/calendar-feed';
+          var NAMES = {USD:'U S',EUR:'Euro zone',GBP:'U K',JPY:'Japan',AUD:'Australia',
+                       NZD:'New Zealand',CAD:'Canada',CHF:'Swiss',CNY:'China'};
+          var btn = document.getElementById('annBtn');
+          var selImpact = document.getElementById('annImpact');
+          var selLead = document.getElementById('annLead');
+          if (!btn || !('speechSynthesis' in window)) { if (btn) btn.style.display = 'none'; return; }
+
+          var prefs = {on:false, impact:'highmed', lead:5};
+          try { var p = JSON.parse(localStorage.getItem('tah_announce') || '{}');
+                if (p.impact) prefs.impact = p.impact; if (p.lead) prefs.lead = p.lead;
+                if (typeof p.on === 'boolean') prefs.on = p.on; } catch(e){}
+          var events = [], announced = {}, armed = false, fetchedAt = 0;
+
+          function save(){ try { localStorage.setItem('tah_announce', JSON.stringify(prefs)); } catch(e){} }
+          function country(c){ return NAMES[c] || c; }
+          function impactOk(im){
+            if (prefs.impact === 'all') return true;
+            if (prefs.impact === 'high') return im === 'High';
+            return im === 'High' || im === 'Medium';
+          }
+          function loadFeed(cb){
+            fetch(FEED).then(function(r){ return r.json(); }).then(function(d){
+              if (Array.isArray(d)) {
+                events = d.map(function(e){ return {t:Date.parse(e.date), title:e.title, c:e.country, im:e.impact, f:e.forecast}; })
+                          .filter(function(e){ return !isNaN(e.t); });
+                fetchedAt = Date.now();
+              }
+              if (cb) cb();
+            }).catch(function(){ if (cb) cb(); });
+          }
+          function speak(text){
+            try {
+              var u = new SpeechSynthesisUtterance(text);
+              var vs = speechSynthesis.getVoices();
+              var v = null;
+              for (var i = 0; i < vs.length; i++) {
+                if (/Google US English/i.test(vs[i].name)) { v = vs[i]; break; }
+                if (!v && /^en/i.test(vs[i].lang)) v = vs[i];
+              }
+              if (v) u.voice = v;
+              u.rate = 1;
+              /* only disarm when the browser truly blocks speech (needs a click);
+                 'interrupted'/'canceled' just mean another message took over */
+              u.onerror = function(ev){ if (ev && ev.error === 'not-allowed') { armed = false; render(); } };
+              speechSynthesis.speak(u);
+            } catch(e){}
+          }
+          function nextEvent(){
+            var now = Date.now();
+            var list = events.filter(function(e){ return impactOk(e.im) && e.t > now; })
+                             .sort(function(a,b){ return a.t - b.t; });
+            return list[0];
+          }
+          function render(){
+            btn.innerHTML = prefs.on ? (armed ? '&#128266; ANNOUNCE: ON' : '&#128266; CLICK TO ARM')
+                                     : '&#128263; ANNOUNCE: OFF';
+            btn.classList.toggle('on', prefs.on && armed);
+            selImpact.value = prefs.impact;
+            selLead.value = String(prefs.lead);
+          }
+          function tick(){
+            if (!prefs.on || !armed) return;
+            if (Date.now() - fetchedAt > 30 * 60 * 1000) loadFeed();
+            var now = Date.now(), lead = prefs.lead * 60000;
+            var due = events.filter(function(e){
+              var k = e.t + '|' + e.title;
+              return impactOk(e.im) && !announced[k] && e.t > now && e.t - now <= lead;
+            }).sort(function(a,b){ return a.t - b.t; });
+            if (!due.length) return;
+            var mins = Math.max(1, Math.round((due[0].t - now) / 60000));
+            var parts = due.map(function(e){
+              return country(e.c) + ' ' + e.title + (e.f ? ', forecast ' + e.f : '');
+            });
+            speak('In ' + mins + (mins === 1 ? ' minute: ' : ' minutes: ') + parts.join('. Also: '));
+            due.forEach(function(e){ announced[e.t + '|' + e.title] = 1; });
+          }
+          btn.onclick = function(){
+            if (!prefs.on || !armed) {
+              prefs.on = true; armed = true; save();
+              var go = function(){
+                var n = nextEvent(), msg = 'Announcements on.';
+                if (n) {
+                  var m = Math.round((n.t - Date.now()) / 60000);
+                  msg += ' Next: ' + country(n.c) + ' ' + n.title +
+                         (m >= 120 ? ', in about ' + Math.round(m / 60) + ' hours'
+                                   : (m > 0 ? ', in ' + m + ' minutes' : ', now'));
+                }
+                speak(msg); render();
+              };
+              if (!events.length) loadFeed(go); else go();
+            } else {
+              prefs.on = false; save();
+              try { speechSynthesis.cancel(); } catch(e){}
+              render();
+            }
+          };
+          selImpact.onchange = function(){ prefs.impact = selImpact.value; save(); };
+          selLead.onchange = function(){ prefs.lead = parseInt(selLead.value, 10) || 5; save(); };
+
+          render();
+          loadFeed();
+          setInterval(tick, 20000);
         })();
         </script>
         <div class="widget-note">calendar: FinancialJuice</div>

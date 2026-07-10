@@ -12,11 +12,13 @@
 .widget-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px 10px;overflow:hidden}
 .widget-card .eyebrow{margin-bottom:12px}
 .widget-card .widget-note{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;padding:8px 2px 6px}
-.cal-scroll{height:480px;overflow-y:auto;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
+.cal-scroll{height:480px;overflow-y:auto;overflow-x:hidden;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
 .cal-scroll::-webkit-scrollbar{width:8px}
 .cal-scroll::-webkit-scrollbar-track{background:var(--panel)}
 .cal-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
-.cal-scroll iframe{width:900px;max-width:100%;height:2800px;border:0;display:block;margin:0 auto;background:var(--panel)}
+/* zoom shrinks the whole widget so rows sit tighter; width formula = (fill the card, plus 18px
+   pushed off the right edge to hide the widget's own white scrollbar) / zoom */
+.cal-scroll iframe{--cal-zoom:.85;zoom:var(--cal-zoom);width:calc((100% + 18px)/var(--cal-zoom));height:2800px;border:0;display:block;background:var(--panel)}
 .news-frame{width:100%;height:620px;border:0;display:block;background:var(--panel)}
 </style>
 </head>
@@ -52,7 +54,7 @@
     <div class="news-stack">
       <div class="widget-card">
         <div class="eyebrow">// Economic calendar</div>
-        <div class="cal-scroll"><iframe scrolling="no" title="Economic calendar by FinancialJuice" src="https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&amp;mode=Table&amp;container=financialjuice-eco-widget-container&amp;width=900px&amp;height=2800px&amp;backC=0c1119&amp;fontC=e6edf3"></iframe></div>
+        <div class="cal-scroll"><iframe scrolling="no" title="Economic calendar by FinancialJuice" src="https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&amp;mode=Table&amp;container=financialjuice-eco-widget-container&amp;width=100%25&amp;height=2800px&amp;backC=0c1119&amp;fontC=e6edf3"></iframe></div>
         <div class="widget-note">calendar: FinancialJuice</div>
       </div>
       <div class="widget-card">

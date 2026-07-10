@@ -12,13 +12,17 @@
 .widget-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px 10px;overflow:hidden}
 .widget-card .eyebrow{margin-bottom:12px}
 .widget-card .widget-note{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;padding:8px 2px 6px}
-.cal-scroll{height:480px;overflow-y:auto;overflow-x:hidden;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
+.cal-scroll{position:relative;height:480px;overflow-y:auto;overflow-x:hidden;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
 .cal-scroll::-webkit-scrollbar{width:8px}
 .cal-scroll::-webkit-scrollbar-track{background:var(--panel)}
 .cal-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
-/* zoom shrinks the whole widget so rows sit tighter; width formula = (fill the card, plus 18px
-   pushed off the right edge to hide the widget's own white scrollbar) / zoom */
-.cal-scroll iframe{--cal-zoom:.85;zoom:var(--cal-zoom);width:calc((100% + 18px)/var(--cal-zoom));height:2800px;border:0;display:block;background:var(--panel)}
+/* zoom shrinks the whole widget so rows sit tighter. The iframe is 44px wider than the card and
+   the extra is clipped off the right edge — that hides the widget's floating white scroll pill
+   WITHOUT cutting the chart-icon column, because the table itself (sized by the script below)
+   only spans the visible area. */
+.cal-scroll iframe{--cal-zoom:.85;zoom:var(--cal-zoom);position:relative;z-index:0;width:calc((100% + 44px)/var(--cal-zoom));height:2800px;border:0;display:block;background:var(--panel)}
+/* covers the widget's white bar pinned to its bottom edge (2800px x 0.85 zoom = 2380 visual) */
+.cal-mask{position:absolute;left:0;right:0;top:2324px;height:56px;background:var(--panel);z-index:5}
 .news-frame{width:100%;height:620px;border:0;display:block;background:var(--panel)}
 </style>
 </head>
@@ -54,14 +58,15 @@
     <div class="news-stack">
       <div class="widget-card">
         <div class="eyebrow">// Economic calendar</div>
-        <div class="cal-scroll"><iframe id="ecocal" scrolling="no" title="Economic calendar by FinancialJuice"></iframe></div>
+        <div class="cal-scroll"><iframe id="ecocal" scrolling="no" title="Economic calendar by FinancialJuice"></iframe><div class="cal-mask"></div></div>
         <script>
-        /* FinancialJuice needs an exact pixel width — measure the card and build the widget URL to match
-           (the +18 is the strip clipped off the right edge to hide the widget's white scrollbar;
-            the /0.85 compensates for the zoom that tightens the rows) */
+        /* FinancialJuice needs an exact pixel width — measure the card and size the TABLE to exactly
+           fill the visible area (divided by 0.85 to compensate for the zoom that tightens the rows).
+           The iframe itself is wider (see CSS) so the widget's white scroll pill lands in the
+           clipped-off strip, not on top of the chart-icon column. */
         (function(){
           var f = document.getElementById('ecocal');
-          var w = Math.round((f.parentElement.clientWidth + 18) / 0.85);
+          var w = Math.round(f.parentElement.clientWidth / 0.85);
           f.src = 'https://feed.financialjuice.com/widgets/ecocal.aspx?wtype=ECOCAL&mode=Table&container=financialjuice-eco-widget-container&width=' + w + 'px&height=2800px&backC=0c1119&fontC=e6edf3';
         })();
         </script>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beta Program — Tradeaholiks</title>
+<meta name="description" content="Beta test the TaH Journal — a trading journal built for NinjaTrader and prop-firm traders. Free lifetime licence for active testers.">
+<link rel="stylesheet" href="assets/styles.css?v=4">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+.field select{width:100%;background:var(--panel);color:#e6edf3;border:1px solid var(--line);border-radius:8px;padding:11px 12px;font-size:14px}
+.field select:focus{outline:none;border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+  <div class="ticker" data-message="TAH JOURNAL &mdash; BETA TESTERS WANTED"><span id="ticker-track">
+    <em>TAH JOURNAL &mdash; BETA TESTERS WANTED</em> &nbsp;&middot;&nbsp; <em>TAH JOURNAL &mdash; BETA TESTERS WANTED</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="news.html">News</a>
+      <a href="docs.html">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <header class="hero" style="padding-bottom:24px"><div class="container">
+    <div class="badge">// BETA PROGRAM</div>
+    <h1>Break it <span class="glow">before we ship it.</span></h1>
+    <p class="lead">The TaH Journal is a trading journal built for NinjaTrader &mdash; live sync from your platform, prop-firm stage &amp; drawdown tracking, honest stats. Before it goes on sale, we want a small crew of real traders to hammer on it.</p>
+  </div></header>
+
+  <section class="section" style="padding-top:20px"><div class="container">
+    <div class="split" style="align-items:start">
+      <div>
+        <div class="eyebrow">// Apply to test</div>
+        <div class="form-card">
+          <form id="beta-form">
+            <input type="hidden" name="access_key" value="ed790802-2033-447e-a1b6-78f9c313c11f">
+            <input type="hidden" name="subject" value="New BETA application — tradeaholiks.com">
+            <input type="hidden" name="from_name" value="Tradeaholiks beta form">
+            <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+            <div class="field"><label for="n">Name</label><input id="n" name="name" type="text" placeholder="Your name" required></div>
+            <div class="field"><label for="e">Email</label><input id="e" name="email" type="email" placeholder="you@email.com" required></div>
+            <div class="field"><label for="nt">Do you trade with NinjaTrader 8?</label>
+              <select id="nt" name="ninjatrader" required>
+                <option value="" disabled selected>Choose one&hellip;</option>
+                <option>Yes — it's my main platform</option>
+                <option>Yes — alongside other platforms</option>
+                <option>Not yet — planning to</option>
+                <option>No</option>
+              </select>
+            </div>
+            <div class="field"><label for="acct">What are you trading?</label>
+              <select id="acct" name="account_type" required>
+                <option value="" disabled selected>Choose one&hellip;</option>
+                <option>Prop / funded account(s)</option>
+                <option>Live personal account</option>
+                <option>Both prop and personal</option>
+                <option>Sim only for now</option>
+              </select>
+            </div>
+            <div class="field"><label for="days">How many days a week do you trade?</label>
+              <select id="days" name="days_per_week" required>
+                <option value="" disabled selected>Choose one&hellip;</option>
+                <option>5+ — most days</option>
+                <option>3–4</option>
+                <option>1–2</option>
+              </select>
+            </div>
+            <div class="field"><label for="firms">Which prop firm(s), if any?</label><input id="firms" name="prop_firms" type="text" placeholder="e.g. Apex, Topstep — or none"></div>
+            <div class="field"><label for="m">Anything you want us to know? (optional)</label><textarea id="m" name="message" rows="3" placeholder="How you trade, what you journal with now&hellip;"></textarea></div>
+            <button class="btn btn-block" type="submit">Apply for the beta</button>
+            <p class="form-msg note" style="display:none;margin-top:14px;color:var(--accent)"></p>
+          </form>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow">// The deal</div>
+        <h2 style="font-size:26px;font-weight:800;margin-bottom:14px">What you get, what we ask</h2>
+        <ul class="ticklist" style="gap:14px">
+          <li><b>Free lifetime licence</b> of the TaH Journal for every active tester &mdash; the same one-time licence we'll sell at launch, yours for helping.</li>
+          <li><b>2&ndash;3 weeks, your normal trading.</b> Install it, let it sync your fills, use it like you own it.</li>
+          <li><b>One short check-in a week.</b> A few questions by email or Discord: what confused you, what broke, what's missing.</li>
+          <li><b>A direct line to the builder.</b> Your feedback lands with the person who writes the code, same day.</li>
+        </ul>
+        <p class="note" style="margin-top:24px">Spots are limited &mdash; we're keeping the first crew small so every tester actually gets heard. If you're picked, you'll get an email with your licence key and setup guide.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The TaH Journal</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+  <script>
+  /* beta form: posts to Web3Forms (same pipeline as the contact page) */
+  (function () {
+    var f = document.getElementById('beta-form');
+    if (!f) return;
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var msg = f.querySelector('.form-msg');
+      var send = f.querySelector('button[type=submit]');
+      if (send) { send.disabled = true; send.textContent = 'Sending…'; }
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(f)
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        if (msg) {
+          msg.textContent = data.success
+            ? "Application received — thanks! If you're picked for this round, your licence key lands in your inbox."
+            : 'Sorry, something went wrong. Please email us directly at tradeaholiks@gmail.com.';
+          msg.style.color = data.success ? 'var(--accent)' : '#ff5d5d';
+          msg.style.display = 'block';
+        }
+        if (data.success) f.reset();
+        if (send) { send.disabled = false; send.textContent = 'Apply for the beta'; }
+      }).catch(function () {
+        if (msg) {
+          msg.textContent = 'Network error — please email us directly at tradeaholiks@gmail.com.';
+          msg.style.color = '#ff5d5d';
+          msg.style.display = 'block';
+        }
+        if (send) { send.disabled = false; send.textContent = 'Apply for the beta'; }
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

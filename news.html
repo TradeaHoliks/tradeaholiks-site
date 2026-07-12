@@ -46,6 +46,12 @@
 #annLeadMenu[hidden]{display:none}
 #annLeadMenu label{font-family:var(--mono);font-size:11px;color:var(--faint);display:flex;gap:8px;align-items:center;cursor:pointer;white-space:nowrap}
 #annLeadMenu input{accent-color:var(--accent);margin:0}
+#annVoiceBtn{font-family:var(--mono);font-size:11px;letter-spacing:.5px;cursor:pointer;background:var(--panel);color:var(--faint);border:1px solid var(--line);border-radius:6px;padding:5px 10px;white-space:nowrap}
+#annVoiceMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;min-width:230px;max-height:300px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.55);scrollbar-color:var(--line) var(--panel)}
+#annVoiceMenu[hidden]{display:none}
+#annVoiceMenu label{font-family:var(--mono);font-size:11px;color:var(--faint);display:flex;gap:8px;align-items:center;cursor:pointer;white-space:nowrap}
+#annVoiceMenu input{accent-color:var(--accent);margin:0}
+#annVoiceMenu .vm-head{font-family:var(--mono);font-size:10px;letter-spacing:.5px;color:var(--accent);margin:4px 0 2px}
 .earn-scroll{max-height:920px;overflow-y:auto;border-radius:8px;scrollbar-color:var(--line) var(--panel)}
 .earn-scroll::-webkit-scrollbar{width:8px}
 .earn-scroll::-webkit-scrollbar-track{background:var(--panel)}
@@ -117,6 +123,10 @@
             <button id="annBtn" class="ann-btn" type="button">&#128263; ANNOUNCE: OFF</button>
             <button id="annNews" class="ann-btn" type="button">&#128483; READ NEWS: OFF</button>
             <button id="annWatch" class="ann-btn" type="button">&#128226; WATCH: OFF</button>
+            <div class="lead-wrap">
+              <button id="annVoiceBtn" type="button" title="Pick the announcer voice and speed">&#127908; VOICE &#9662;</button>
+              <div id="annVoiceMenu" hidden></div>
+            </div>
           </div>
         </div>
         <div id="paneCal" class="tab-pane">
@@ -177,7 +187,11 @@
                 else if (p.lead) prefs.leads = [p.lead * 60]; /* migrate old single choice */
                 if (typeof p.on === 'boolean') prefs.on = p.on;
                 if (typeof p.news === 'boolean') prefs.news = p.news;
-                if (typeof p.watch === 'boolean') prefs.watch = p.watch; } catch(e){}
+                if (typeof p.watch === 'boolean') prefs.watch = p.watch;
+                if (typeof p.voice === 'string') prefs.voice = p.voice;
+                if (typeof p.rate === 'number') prefs.rate = p.rate; } catch(e){}
+          if (!('voice' in prefs)) prefs.voice = '';
+          if (!('rate' in prefs) || !prefs.rate) prefs.rate = 1;
           var events = [], announced = {}, armed = false, fetchedAt = 0;
 
           function save(){ try { localStorage.setItem('tah_announce', JSON.stringify(prefs)); } catch(e){} }
@@ -197,21 +211,51 @@
               if (cb) cb();
             }).catch(function(){ if (cb) cb(); });
           }
-          function speak(text){
+          /* Voices that live on the visitor's PC always work; cloud voices
+             (e.g. "Google US English") stream from a server and can hang,
+             jamming the whole speech queue. So: local voices are the default,
+             and a watchdog rescues any utterance that never starts. */
+          var synthActivity = 0; /* last time ANY utterance started/finished */
+          function pickLocalVoice(){
+            var vs = speechSynthesis.getVoices();
+            var best = null;
+            for (var i = 0; i < vs.length; i++) {
+              if (!vs[i].localService || !/^en/i.test(vs[i].lang)) continue;
+              if (!best) best = vs[i];
+              if (/en[-_]AU/i.test(vs[i].lang)) { best = vs[i]; break; } /* home accent preferred */
+            }
+            return best;
+          }
+          function speak(text, _isRetry){
             try {
               var u = new SpeechSynthesisUtterance(text);
               var vs = speechSynthesis.getVoices();
               var v = null;
-              for (var i = 0; i < vs.length; i++) {
-                if (/Google US English/i.test(vs[i].name)) { v = vs[i]; break; }
-                if (!v && /^en/i.test(vs[i].lang)) v = vs[i];
+              if (prefs.voice && !_isRetry) {
+                for (var j = 0; j < vs.length; j++) {
+                  if (vs[j].name === prefs.voice) { v = vs[j]; break; }
+                }
               }
+              if (!v || _isRetry) v = pickLocalVoice() || v;
+              if (!v) for (var i = 0; i < vs.length; i++) { if (/^en/i.test(vs[i].lang)) { v = vs[i]; break; } }
               if (v) u.voice = v;
-              u.rate = 1;
+              u.rate = prefs.rate || 1;
+              var started = false;
+              u.onstart = function(){ started = true; synthActivity = Date.now(); };
+              u.onend = function(){ synthActivity = Date.now(); };
               /* only disarm when the browser truly blocks speech (needs a click);
                  'interrupted'/'canceled' just mean another message took over */
               u.onerror = function(ev){ if (ev && ev.error === 'not-allowed') { armed = false; render(); } };
               speechSynthesis.speak(u);
+              /* watchdog: if nothing has started AND the engine shows no life,
+                 it's wedged (usually a cloud voice failing to load) — flush and
+                 retry this sentence once with a guaranteed local voice */
+              if (!_isRetry) setTimeout(function(){
+                if (!started && Date.now() - synthActivity > 2400) {
+                  try { speechSynthesis.cancel(); } catch(e){}
+                  setTimeout(function(){ speak(text, true); }, 200);
+                }
+              }, 2500);
             } catch(e){}
           }
           function nextEvent(){
@@ -381,6 +425,73 @@
             }
           };
           if (prefs.watch) startWatchTimer();
+
+          /* ── Voice picker (VOICE menu) ───────────────────────────────────
+             Lists the browser's English voices + a speed choice; picking one
+             speaks a short preview. Selection is remembered per visitor. */
+          var voiceBtn = document.getElementById('annVoiceBtn');
+          var voiceMenu = document.getElementById('annVoiceMenu');
+          /* previews interrupt each other (unlike announcements, which queue).
+             Chrome quirk: cancel() immediately followed by speak() silently
+             swallows the new sentence — give it 150ms to clear first. */
+          var previewTimer = null;
+          function previewVoice(){
+            try { speechSynthesis.cancel(); speechSynthesis.resume(); } catch(e){}
+            clearTimeout(previewTimer);
+            previewTimer = setTimeout(function(){
+              speak('This is how your market announcements will sound.');
+            }, 150);
+          }
+          function buildVoiceMenu(){
+            /* Only voices installed ON the visitor's PC — cloud voices (Google's,
+               and Edge's "Online (Natural)" set) either hang or can't play in
+               Chrome at all, so they don't belong on the menu. */
+            var vs = speechSynthesis.getVoices()
+              .filter(function(v){ return v.localService && /^en/i.test(v.lang); })
+              .map(function(v){
+                var s = 0;
+                if (/en[-_]AU/i.test(v.lang)) s += 3;            /* home-town accent up top */
+                if (/en[-_](US|GB)/i.test(v.lang)) s += 1;
+                if (/desktop/i.test(v.name)) s -= 1;
+                return { v: v, s: s };
+              })
+              .sort(function(a,b){ return b.s - a.s || a.v.name.localeCompare(b.v.name); })
+              .slice(0, 12)
+              .map(function(x){ return x.v; });
+            var html = '<div class="vm-head">// SPEED</div>';
+            [['0.85','Slow'],['1','Normal'],['1.15','Fast']].forEach(function(s){
+              html += '<label><input type="radio" name="vmRate" value="' + s[0] + '"' +
+                      (Math.abs(prefs.rate - parseFloat(s[0])) < 0.01 ? ' checked' : '') + '> ' + s[1] + '</label>';
+            });
+            html += '<div class="vm-head">// VOICE</div>';
+            html += '<label><input type="radio" name="vmVoice" value=""' + (prefs.voice ? '' : ' checked') + '> Auto (default)</label>';
+            vs.forEach(function(v){
+              var nm = v.name.replace(/</g, '&lt;');
+              html += '<label><input type="radio" name="vmVoice" value="' + nm.replace(/"/g, '&quot;') + '"' +
+                      (prefs.voice === v.name ? ' checked' : '') + '> ' + nm + ' <span style="opacity:.55">' + v.lang + '</span></label>';
+            });
+            voiceMenu.innerHTML = html;
+            [].slice.call(voiceMenu.querySelectorAll('input[name=vmVoice]')).forEach(function(inp){
+              inp.onchange = function(){
+                prefs.voice = inp.value; save();
+                armed = true; /* this click counts as arming */
+                previewVoice();
+              };
+            });
+            [].slice.call(voiceMenu.querySelectorAll('input[name=vmRate]')).forEach(function(inp){
+              inp.onchange = function(){
+                prefs.rate = parseFloat(inp.value) || 1; save();
+                armed = true;
+                previewVoice();
+              };
+            });
+          }
+          voiceBtn.onclick = function(ev){ ev.stopPropagation(); buildVoiceMenu(); voiceMenu.hidden = !voiceMenu.hidden; };
+          voiceMenu.onclick = function(ev){ ev.stopPropagation(); };
+          document.addEventListener('click', function(){ voiceMenu.hidden = true; });
+          if ('onvoiceschanged' in speechSynthesis) {
+            speechSynthesis.onvoiceschanged = function(){ if (!voiceMenu.hidden) buildVoiceMenu(); };
+          }
 
           render();
           loadFeed();

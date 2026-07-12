@@ -116,6 +116,7 @@
             </div>
             <button id="annBtn" class="ann-btn" type="button">&#128263; ANNOUNCE: OFF</button>
             <button id="annNews" class="ann-btn" type="button">&#128483; READ NEWS: OFF</button>
+            <button id="annWatch" class="ann-btn" type="button">&#128226; WATCH: OFF</button>
           </div>
         </div>
         <div id="paneCal" class="tab-pane">
@@ -164,16 +165,19 @@
           if (!btn || !('speechSynthesis' in window)) { if (btn) btn.style.display = 'none'; return; }
           var leadBoxes = [].slice.call(leadMenu.querySelectorAll('input'));
           var newsBtn = document.getElementById('annNews');
+          var watchBtn = document.getElementById('annWatch');
 
           /* prefs.leads = seconds before each event to announce (can be several);
-             prefs.news = read fresh headlines aloud */
-          var prefs = {on:false, impact:'highmed', leads:[300], news:false};
+             prefs.news = read fresh headlines aloud;
+             prefs.watch = speak watchlist alerts (Trump posts, Fed releases) */
+          var prefs = {on:false, impact:'highmed', leads:[300], news:false, watch:false};
           try { var p = JSON.parse(localStorage.getItem('tah_announce') || '{}');
                 if (p.impact) prefs.impact = p.impact;
                 if (Array.isArray(p.leads) && p.leads.length) prefs.leads = p.leads;
                 else if (p.lead) prefs.leads = [p.lead * 60]; /* migrate old single choice */
                 if (typeof p.on === 'boolean') prefs.on = p.on;
-                if (typeof p.news === 'boolean') prefs.news = p.news; } catch(e){}
+                if (typeof p.news === 'boolean') prefs.news = p.news;
+                if (typeof p.watch === 'boolean') prefs.watch = p.watch; } catch(e){}
           var events = [], announced = {}, armed = false, fetchedAt = 0;
 
           function save(){ try { localStorage.setItem('tah_announce', JSON.stringify(prefs)); } catch(e){} }
@@ -233,6 +237,9 @@
             newsBtn.innerHTML = prefs.news ? (armed ? '&#128483; READ NEWS: ON' : '&#128483; CLICK TO ARM')
                                            : '&#128483; READ NEWS: OFF';
             newsBtn.classList.toggle('on', prefs.news && armed);
+            watchBtn.innerHTML = prefs.watch ? (armed ? '&#128226; WATCH: ON' : '&#128226; CLICK TO ARM')
+                                             : '&#128226; WATCH: OFF';
+            watchBtn.classList.toggle('on', prefs.watch && armed);
             selImpact.value = prefs.impact;
             var sorted = prefs.leads.slice().sort(function(a,b){ return a - b; });
             leadBtn.innerHTML = sorted.map(fmtLead).join(' &middot; ') + ' &#9662;';
@@ -335,6 +342,45 @@
             }
           };
           if (prefs.news) startNewsTimer();
+
+          /* ── Watchlist squawk (WATCH) ────────────────────────────────────
+             The VPS poller drops new Trump posts and Fed releases into the
+             Supabase `alerts` table; this polls that table every 30s and
+             speaks anything new. Baseline on first fetch = no old alerts. */
+          var ALERTS_URL = 'https://wgbavpqlesskdhzgfmgr.supabase.co/rest/v1/alerts?select=id,source,who,title&order=id.desc&limit=20';
+          var SB_KEY = 'sb_publishable_mxXA9uEjTXcNEt06eRqnOQ_3fAHgdZd'; /* public site key, read-only */
+          var lastAlertId = -1, watchTimer = null;
+          function speakAlert(a){
+            var text = (a.title || '').slice(0, 220);
+            if (a.source === 'truth-social') speak('Trump posted on Truth Social: ' + text);
+            else if (a.source === 'fed') speak('Federal Reserve: ' + text);
+            else speak((a.who ? a.who + ': ' : 'Alert: ') + text);
+          }
+          function pollAlerts(){
+            if (!prefs.watch || !armed) return;
+            fetch(ALERTS_URL, { headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY } })
+              .then(function(r){ return r.json(); })
+              .then(function(rows){
+                if (!Array.isArray(rows)) return;
+                if (lastAlertId < 0) { lastAlertId = rows.length ? rows[0].id : 0; return; } /* baseline */
+                var fresh = rows.filter(function(a){ return a.id > lastAlertId; });
+                if (!fresh.length) return;
+                lastAlertId = rows[0].id;
+                fresh.slice(0, 3).reverse().forEach(speakAlert);
+              })
+              .catch(function(){});
+          }
+          function startWatchTimer(){ if (!watchTimer) watchTimer = setInterval(pollAlerts, 30000); }
+          watchBtn.onclick = function(){
+            if (!prefs.watch || !armed) {
+              prefs.watch = true; armed = true; save();
+              speak('Watchlist on. Tracking Trump on Truth Social and Federal Reserve releases.');
+              startWatchTimer(); pollAlerts(); render();
+            } else {
+              prefs.watch = false; save(); render();
+            }
+          };
+          if (prefs.watch) startWatchTimer();
 
           render();
           loadFeed();

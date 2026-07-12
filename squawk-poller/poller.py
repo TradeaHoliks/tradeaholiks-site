@@ -44,6 +44,10 @@ HEADERS = {
     "User-Agent": "TradeaholiksSquawk/1.0 (https://tradeaholiks.com; konadams@gmail.com)",
     "Accept": "*/*",
 }
+# Some sites (the Fed's included) refuse anything that doesn't look like a
+# real browser — we retry with this if the polite identity gets rejected.
+BROWSER_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
 STATE_PATH = "/data/seen.json"
 POLL_SECONDS = 60
@@ -90,6 +94,29 @@ def save_state(state):
         json.dump(state, f)
 
 
+def looks_like_feed(text):
+    head = (text or "")[:500]
+    return ("<?xml" in head) or ("<rss" in head) or ("<feed" in head)
+
+
+def get_feed(url):
+    """Fetch a feed; if the polite identity gets an error page, retry as a browser."""
+    last = ""
+    for ua in (HEADERS["User-Agent"], BROWSER_UA):
+        try:
+            r = requests.get(url, headers={**HEADERS, "User-Agent": ua}, timeout=25)
+            if r.status_code == 200 and looks_like_feed(r.text):
+                text = r.text
+                i = text.find("<")
+                return text[i:] if i > 0 else text
+            last = f"status {r.status_code}, starts: {r.text[:100]!r}"
+            log(f"{url} rejected UA '{ua[:24]}...' -> {last}")
+        except Exception as e:
+            last = str(e)
+            log(f"{url} error with UA '{ua[:24]}...': {e}")
+    raise RuntimeError(f"all fetch attempts failed for {url} ({last})")
+
+
 def parse_rss(xml_text):
     """Returns list of dicts: title, description, link, pubDate (datetime or None)."""
     items = []
@@ -122,10 +149,8 @@ def too_old(pub):
 
 
 def fetch_trump_rss():
-    r = requests.get(TRUMP_RSS, headers=HEADERS, timeout=25)
-    r.raise_for_status()
     out = []
-    for it in parse_rss(r.text):
+    for it in parse_rss(get_feed(TRUMP_RSS)):
         text = it["description"] or it["title"]
         if not text:
             continue
@@ -175,10 +200,8 @@ def fetch_trump_cnn():
 
 
 def fetch_fed():
-    r = requests.get(FED_RSS, headers=HEADERS, timeout=25)
-    r.raise_for_status()
     out = []
-    for it in parse_rss(r.text):
+    for it in parse_rss(get_feed(FED_RSS)):
         if not it["title"]:
             continue
         out.append({

@@ -1,0 +1,8 @@
+services:
+  squawk-poller:
+    build: .
+    container_name: squawk-poller
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data

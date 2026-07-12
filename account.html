@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create account / Log in — Tradeaholiks</title>
-<meta name="description" content="Create a free Tradeaholiks account to download free NinjaTrader tools and manage your TaH Journal licence.">
+<meta name="description" content="Create a free Tradeaholiks account to download free NinjaTrader tools and manage your Easy Journal licence.">
 <link rel="stylesheet" href="assets/styles.css?v=4">
 <link rel="icon" type="image/png" href="assets/icon-tah.png">
 </head>
@@ -34,7 +34,7 @@
   <header class="hero" style="padding-bottom:24px"><div class="container">
     <div class="badge">// YOUR ACCOUNT</div>
     <h1>One free account, <span class="glow">all the tools.</span></h1>
-    <p class="lead">Create a free account to download the indicators and add-ons &mdash; and to hold your TaH Journal licence when you're ready.</p>
+    <p class="lead">Create a free account to download the indicators and add-ons &mdash; and to hold your Easy Journal licence when you're ready.</p>
   </div></header>
 
   <section class="section" style="padding-top:18px"><div class="container">
@@ -42,7 +42,7 @@
       <div class="auth-card primary">
         <h2>You're logged in</h2>
         <div class="sub">Signed in as <b id="live-email"></b></div>
-        <div class="eyebrow" style="margin-top:20px">// Your TaH Journal licence</div>
+        <div class="eyebrow" style="margin-top:20px">// Your Easy Journal licence</div>
         <div id="licence-box" style="margin:8px 0 20px"></div>
         <ul class="ticklist" style="margin:0 0 22px">
           <li>Download all free indicators &amp; add-ons</li>
@@ -103,7 +103,7 @@
       <div class="foot-col"><h4>Tools</h4>
         <a href="tools.html">Free indicators</a>
         <a href="tools.html">Free add-ons</a>
-        <a href="product.html">The TaH Journal</a>
+        <a href="product.html">The Easy Journal</a>
         <a href="docs.html">Docs</a>
       </div>
       <div class="foot-col"><h4>Company</h4>
@@ -166,7 +166,7 @@
         if(res.error || !res.data){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now \u2014 please try again shortly.</div>'; return; }
         var lic = res.data.licences || [];
         if(!lic.length){
-          box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your TaH Journal key will appear here after you buy it.</div>';
+          box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your Easy Journal key will appear here after you buy it.</div>';
           return;
         }
         var html = lic.map(function(L){

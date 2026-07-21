@@ -30,6 +30,13 @@
   code{font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--accent)}
   .doc-meta{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:12px}
   @media(max-width:880px){.docs-shell{grid-template-columns:1fr}.docs-side{position:static;max-height:none;margin-bottom:8px}}
+  .guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  @media (max-width:800px){.guide-grid{grid-template-columns:1fr}}
+  .guide-card{display:block;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:16px 18px;text-decoration:none;transition:border-color .15s}
+  .guide-card:hover{border-color:var(--accent)}
+  .guide-card .gc-cat{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--accent)}
+  .guide-card h4{color:#e6edf3;font-size:16px;font-weight:800;margin:6px 0 6px}
+  .guide-card p{color:var(--faint);font-size:13px;line-height:1.55;margin:0}
 </style>
 </head>
 <body>
@@ -80,6 +87,8 @@
       <h5>Configure</h5>
       <a href="#settings">Settings</a>
       <a href="#the-bridge">The Bridge</a>
+      <h5>Guides &amp; how-tos</h5>
+      <a href="#guides">All step-by-step guides</a>
       <h5>Free tools</h5>
       <a href="#free-tools">Overview</a>
       <a href="#chart-grid">TAH Chart Grid</a>
@@ -263,6 +272,23 @@
         <p>Check the drawdown <b>type</b> (Static/EOD/Trailing produce very different floors), confirm the <b>starting balance</b> isn't 0, and for Trailing accounts hover the Min balance tile to check how the peak was determined.</p>
         <h3>News events aren't showing</h3>
         <p>Check the news feed is enabled and review your currency and impact filters in Settings &rarr; Calendar (the default is USD with High and Holiday impacts only). If the refresh policy is set to Manual, click refresh; otherwise the calendar shows the last cached fetch.</p>
+      </section>
+
+      <section class="doc-sec" id="guides">
+        <h2>Guides &amp; how-tos (step by step, with pictures)</h2>
+        <p>Every walkthrough below uses real screenshots from the Journal &mdash; the same guides included with the app.</p>
+        <div class="guide-grid">
+          <a class="guide-card" href="docs-add-account.html"><span class="gc-cat">// HOW-TO</span><h4>Add a New Account</h4><p>New accounts find you: sync, spot the (new) tag, claim it.</p></a>
+          <a class="guide-card" href="docs-edit-account.html"><span class="gc-cat">// HOW-TO</span><h4>Edit an Account</h4><p>Account details change — a firm tweaks a rule, a payout target moves, a cost is corrected.</p></a>
+          <a class="guide-card" href="docs-change-stage.html"><span class="gc-cat">// HOW-TO</span><h4>Change an Account&#x27;s Stage</h4><p>Move accounts through their life story: Eval, EvalPass, Funded, Live - or Breached / Retired.</p></a>
+          <a class="guide-card" href="docs-add-cost.html"><span class="gc-cat">// HOW-TO</span><h4>Add a Cost</h4><p>Record resets, monthly fees, activation fees and extra purchases so ROI stays real.</p></a>
+          <a class="guide-card" href="docs-add-withdrawal.html"><span class="gc-cat">// HOW-TO</span><h4>Add a Withdrawal</h4><p>Record a payout so Withdrawn totals, Net ROI and balances stay honest.</p></a>
+          <a class="guide-card" href="docs-commission-rates.html"><span class="gc-cat">// HOW-TO</span><h4>Add Commission Rates Manually</h4><p>Lock in exact commission rates so net P&amp;L is exact - manual rates always win.</p></a>
+          <a class="guide-card" href="docs-fix-skipped-fill.html"><span class="gc-cat">// HOW-TO</span><h4>Fix a Skipped Fill</h4><p>Every so often NinjaTrader hands the Bridge a fill it can’t make sense of — usually a brief connection wobble that leaves the fill with no Action (buy or sell).</p></a>
+          <a class="guide-card" href="docs-settings.html"><span class="gc-cat">// GUIDE</span><h4>Settings</h4><p>Every option on the Settings page, section by section.</p></a>
+          <a class="guide-card" href="docs-firm-history.html"><span class="gc-cat">// GUIDE</span><h4>Firm History</h4><p>Bring your pre-Journal results into the lifetime totals.</p></a>
+          <a class="guide-card" href="docs-rule-updates.html"><span class="gc-cat">// GUIDE</span><h4>Rule Updates</h4><p>When prop-firm rules change, your templates can keep up - without ever touching your accounts.</p></a>
+        </div>
       </section>
 
       <section class="doc-sec" id="free-tools">

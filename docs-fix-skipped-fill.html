@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fix a Skipped Fill — Easy Journal Docs — Tradeaholiks</title>
+<meta name="description" content="Every so often NinjaTrader hands the Bridge a fill it can’t make sense of — usually a brief connection wobble that leaves the fill with no Action (buy">
+<link rel="stylesheet" href="assets/styles.css?v=4">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+.doc-article{max-width:840px;margin:0 auto}
+.doc-article p{color:var(--muted);line-height:1.75;margin-bottom:14px}
+.doc-article h2{font-size:20px;font-weight:800;color:#e6edf3;margin:30px 0 12px}
+.doc-article figure{margin:20px 0 26px}
+.doc-article figure img{width:100%;border:1px solid var(--line);border-radius:10px;display:block}
+.doc-article figcaption{font-family:var(--mono);font-size:11px;color:var(--faint);padding:8px 2px 0;text-align:center}
+.doc-article .step{color:var(--muted)}
+.doc-article .stepnum{color:var(--accent);font-weight:800;font-family:var(--mono);margin-right:8px}
+.doc-article .notice{margin:18px 0}
+.doc-nav{display:flex;justify-content:space-between;gap:12px;max-width:840px;margin:34px auto 0;font-family:var(--mono);font-size:12px}
+.doc-nav a{color:var(--accent);text-decoration:none}
+.doc-crumb{font-family:var(--mono);font-size:12px;margin-bottom:10px}
+.doc-crumb a{color:var(--faint);text-decoration:none}
+.doc-crumb a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+  <div class="ticker" data-message="EASY JOURNAL — GUIDES &amp; HOW-TOS"><span id="ticker-track">
+    <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp; <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="news.html">News</a>
+      <a href="docs.html" class="active">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <header class="hero" style="padding:52px 0 10px"><div class="container doc-article">
+    <div class="doc-crumb"><a href="docs.html#guides">&larr; All Easy Journal guides</a></div>
+    <div class="badge">// HOW-TO</div>
+    <h1 style="font-size:clamp(30px,5vw,42px)">Fix a Skipped Fill</h1>
+    <p class="lead" style="margin-bottom:0">Every so often NinjaTrader hands the Bridge a fill it can’t make sense of — usually a brief connection wobble that leaves the fill with no Action (buy or sell). The Journal never throws it away; it sets it aside as a skipped fill and asks you to say what it should have been. This walkthrough fixes one on our funded account, APEX16385400000199.</p>
+  </div></header>
+
+  <section class="section tight"><div class="container">
+    <div class="doc-article">
+      <p>What a skipped fill is A skipped fill is a real execution the Journal’s trade-pairing couldn’t use — typically because the Action field came through blank, so it can’t tell whether the fill opened or closed a position. The fill stays safely in the database; it just needs one small decision from you before it can join its trade.</p>
+      <p>Spotting it The Journal flags skipped fills in two places: an amber banner on the Trading view, and the Diagnostics card under Health &amp; Support. Here one fill on APEX16385400000199 arrived with a blank action:</p>
+      <p>The Diagnostics card flags the fill — reason "blank_action", raw action blank — with a Fix button.</p>
+      <p>Fixing it 1. Click Fix on the flagged row (or the Fix a problem… button above the list). The Fix Skipped Fill window opens. It is reason-aware: because the action was blank, it asks what the fill should have been and even suggests the answer from NinjaTrader’s own position at the time — here, Buy 1.</p>
+      <figure><img loading="lazy" src="assets/docs/fix-skipped-fill-01.webp" alt="Fix a Skipped Fill screenshot"><figcaption></figcaption></figure>
+      <p>The reason-aware Fix window — it explains the problem and pre-selects the suggested action.</p>
+      <p class="step"><span class="stepnum">2.</span> Pick the correct Action (or accept the suggestion), add a note if it helps, and click Save fix. Three choices sit at the bottom: Save fix repairs the fill and immediately recalculates its commission from your cached rates; Delete fill removes it entirely; Ignore dismisses the flag without changing anything.</p>
+      <p>Done The fill is repaired, its trade now appears normally in the Trading journal, and the Diagnostics card goes quiet — 0 skipped fills:</p>
+      <figure><img loading="lazy" src="assets/docs/fix-skipped-fill-02.webp" alt="All clear — the skipped fill is resolved and nothing is flagged."><figcaption>All clear — the skipped fill is resolved and nothing is flagged.</figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/fix-skipped-fill-03.webp" alt="Fix a Skipped Fill screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/fix-skipped-fill-04.webp" alt="Fix a Skipped Fill screenshot"><figcaption></figcaption></figure>
+      <div class="notice"><b>Tip:</b> A blank fill can also leave your position out of step — the Journal works out a different position than NinjaTrader reports, and you may see a "position mismatch" note. Fixing the fill reconciles the two; if the note lingers, one Sync clears it.</div>
+    </div>
+    <div class="doc-nav">
+      <div><a href="docs-commission-rates.html">&larr; Add Commission Rates Manually</a></div>
+      <div><a href="docs-settings.html">Settings &rarr;</a></div>
+    </div>
+  </div></section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The Easy Journal</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+</body>
+</html>

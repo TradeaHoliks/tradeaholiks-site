@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add a Withdrawal — Easy Journal Docs — Tradeaholiks</title>
+<meta name="description" content="Record a payout so Withdrawn totals, Net ROI and balances stay honest. In this walkthrough our funded account clears its target and we record a real $">
+<link rel="stylesheet" href="assets/styles.css?v=4">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+.doc-article{max-width:840px;margin:0 auto}
+.doc-article p{color:var(--muted);line-height:1.75;margin-bottom:14px}
+.doc-article h2{font-size:20px;font-weight:800;color:#e6edf3;margin:30px 0 12px}
+.doc-article figure{margin:20px 0 26px}
+.doc-article figure img{width:100%;border:1px solid var(--line);border-radius:10px;display:block}
+.doc-article figcaption{font-family:var(--mono);font-size:11px;color:var(--faint);padding:8px 2px 0;text-align:center}
+.doc-article .step{color:var(--muted)}
+.doc-article .stepnum{color:var(--accent);font-weight:800;font-family:var(--mono);margin-right:8px}
+.doc-article .notice{margin:18px 0}
+.doc-nav{display:flex;justify-content:space-between;gap:12px;max-width:840px;margin:34px auto 0;font-family:var(--mono);font-size:12px}
+.doc-nav a{color:var(--accent);text-decoration:none}
+.doc-crumb{font-family:var(--mono);font-size:12px;margin-bottom:10px}
+.doc-crumb a{color:var(--faint);text-decoration:none}
+.doc-crumb a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+  <div class="ticker" data-message="EASY JOURNAL — GUIDES &amp; HOW-TOS"><span id="ticker-track">
+    <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp; <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="news.html">News</a>
+      <a href="docs.html" class="active">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <header class="hero" style="padding:52px 0 10px"><div class="container doc-article">
+    <div class="doc-crumb"><a href="docs.html#guides">&larr; All Easy Journal guides</a></div>
+    <div class="badge">// HOW-TO</div>
+    <h1 style="font-size:clamp(30px,5vw,42px)">Add a Withdrawal</h1>
+    <p class="lead" style="margin-bottom:0">Record a payout so Withdrawn totals, Net ROI and balances stay honest. In this walkthrough our funded account clears its target and we record a real $2,000 payout on its 90% split.</p>
+  </div></header>
+
+  <section class="section tight"><div class="container">
+    <div class="doc-article">
+      <p>The Journal tells you when a payout is ready When a funded account's balance clears its buffer zone and withdrawal target, the + Add Withdrawal button turns green with a count of the accounts ready. Our account APEX16385400000199 sits at $55,100 against a $52,600 buffer - $2,500 withdrawable - and the button lit up:</p>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-01.webp" alt="Target reached - the button goes green and counts the accounts ready for a payout."><figcaption>Target reached - the button goes green and counts the accounts ready for a payout.</figcaption></figure>
+      <p class="step"><span class="stepnum">1.</span> Click + Add Withdrawal. 2. Enter the gross amount - the figure the firm shows for the payout, before your split. We entered $2,000. Accounts that have reached their target are grouped at the top under Ready to withdraw - target reached, each showing its split:</p>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-02.webp" alt="Step 2 - $2,000 gross entered; the ready account is grouped at the top with its 90% split."><figcaption>Step 2 - $2,000 gross entered; the ready account is grouped at the top with its 90% split.</figcaption></figure>
+      <p class="step"><span class="stepnum">3.</span> Set the date, add a note if you want one, and tick the account(s) the money came from.</p>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-03.webp" alt="Step 3 - account ticked, ready to record."><figcaption>Step 3 - account ticked, ready to record.</figcaption></figure>
+      <p class="step"><span class="stepnum">4.</span> Click Add Withdrawal. The result, live in the Accounts list - $1,800.00 withdrawn (your 90% share of the $2,000) lands on the account, Net ROI jumps to +$1,598, and the button returns to normal:</p>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-04.webp" alt="Add a Withdrawal screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-05.webp" alt="Add a Withdrawal screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-06.webp" alt="The result - Withdrawn and Net ROI update immediately."><figcaption>The result - Withdrawn and Net ROI update immediately.</figcaption></figure>
+      <p>Why hasn't the balance dropped? Withdrawn and Net ROI update the moment you save. The Account Balance column deliberately does not - it always mirrors NinjaTrader's latest reported balance. The firm deducts the payout on its side, so the next snapshot after they process it already carries the lower balance; the Journal never subtracts it a second time. Expect the balance to update on the next sync - that short lag is normal, and it keeps the Accounts view and the Trading view in perfect agreement. Tip: Same payout spread across several accounts? Tick Total for the batch and the gross splits evenly across the ticked accounts instead of applying to each.</p>
+      <p>Made a mistake? Recorded the wrong payout, or logged it against the wrong account? Open the account from the Accounts list (••• → View details), switch to the Journal tab, and find the payout in the Withdrawals ledger. Right-click the row:</p>
+      <p>Right-click a withdrawal row for Edit withdrawal… and Delete withdrawal…</p>
+      <p>Edit withdrawal… reopens the entry — gross amount, split, date and note — so you can correct it. Delete withdrawal… asks you to confirm first; the payout stays until you click Yes:</p>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-07.webp" alt="Delete asks first — click No to keep the $1,800 payout."><figcaption>Delete asks first — click No to keep the $1,800 payout.</figcaption></figure>
+      <div class="notice"><b>Tip:</b> Deleting a withdrawal restores Withdrawn and Net ROI to what they were before. The Account Balance column is unaffected either way — it always mirrors NinjaTrader’s reported balance.</div>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-08.webp" alt="Add a Withdrawal screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/add-withdrawal-09.webp" alt="Add a Withdrawal screenshot"><figcaption></figcaption></figure>
+    </div>
+    <div class="doc-nav">
+      <div><a href="docs-add-cost.html">&larr; Add a Cost</a></div>
+      <div><a href="docs-commission-rates.html">Add Commission Rates Manually &rarr;</a></div>
+    </div>
+  </div></section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The Easy Journal</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+</body>
+</html>

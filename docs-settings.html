@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Easy Journal Docs — Tradeaholiks</title>
+<meta name="description" content="Every option on the Settings page, section by section.">
+<link rel="stylesheet" href="assets/styles.css?v=4">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+.doc-article{max-width:840px;margin:0 auto}
+.doc-article p{color:var(--muted);line-height:1.75;margin-bottom:14px}
+.doc-article h2{font-size:20px;font-weight:800;color:#e6edf3;margin:30px 0 12px}
+.doc-article figure{margin:20px 0 26px}
+.doc-article figure img{width:100%;border:1px solid var(--line);border-radius:10px;display:block}
+.doc-article figcaption{font-family:var(--mono);font-size:11px;color:var(--faint);padding:8px 2px 0;text-align:center}
+.doc-article .step{color:var(--muted)}
+.doc-article .stepnum{color:var(--accent);font-weight:800;font-family:var(--mono);margin-right:8px}
+.doc-article .notice{margin:18px 0}
+.doc-nav{display:flex;justify-content:space-between;gap:12px;max-width:840px;margin:34px auto 0;font-family:var(--mono);font-size:12px}
+.doc-nav a{color:var(--accent);text-decoration:none}
+.doc-crumb{font-family:var(--mono);font-size:12px;margin-bottom:10px}
+.doc-crumb a{color:var(--faint);text-decoration:none}
+.doc-crumb a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+  <div class="ticker" data-message="EASY JOURNAL — GUIDES &amp; HOW-TOS"><span id="ticker-track">
+    <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp; <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="news.html">News</a>
+      <a href="docs.html" class="active">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <header class="hero" style="padding:52px 0 10px"><div class="container doc-article">
+    <div class="doc-crumb"><a href="docs.html#guides">&larr; All Easy Journal guides</a></div>
+    <div class="badge">// GUIDE</div>
+    <h1 style="font-size:clamp(30px,5vw,42px)">Settings</h1>
+    <p class="lead" style="margin-bottom:0">Every option on the Settings page, section by section.</p>
+  </div></header>
+
+  <section class="section tight"><div class="container">
+    <div class="doc-article">
+      <p>Look &amp; Feel Appearance - Dark or Light theme. Click Apply after switching; the app reloads its views briefly.</p>
+      <h2>Data pipeline - Bridge source</h2>
+      <figure><img loading="lazy" src="assets/docs/settings-01.webp" alt="Appearance, Bridge source and the start of Auto Sync."><figcaption>Appearance, Bridge source and the start of Auto Sync.</figcaption></figure>
+      <p>Bridge folder is where the NinjaTrader Bridge writes its snapshot files - set it with Browse... and confirm with Test connection. Below it you can see the local cache folder, how many snapshots are cached, and the time of the last sync. Feed snapshots from the relay is for remote setups: if NinjaTrader runs on a VPS, tick this, keep the relay URL, and paste the relay key from your welcome email. Test relay confirms the link. Local shared-folder setups leave this off.</p>
+      <h2>Auto Sync</h2>
+      <figure><img loading="lazy" src="assets/docs/settings-02.webp" alt="Settings screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/settings-03.webp" alt="Auto Sync options and the Display timezone section."><figcaption>Auto Sync options and the Display timezone section.</figcaption></figure>
+      <p>Sync from Bridge when the Journal launches does one check at startup. Auto Sync keeps watching the Bridge folder and pulls new snapshots as they appear. The poll interval (default 60 seconds) sets how often it looks; cache retention prunes cached snapshots older than the set days (0 = keep forever). Prefer fixed times? Tick Use scheduled times instead of watching and set up to three daily sync times. Sync now runs one immediately.</p>
+      <p>Display preferences Three timezone controls: Local timezone drives trade timestamps in tables. Global calendar and Per-account calendar decide which day each trade's P&amp;L lands on - the default, CME session (17:00 Chicago rollover), matches how futures firms count trading days.</p>
+      <h2>News &amp; Calendars</h2>
+      <figure><img loading="lazy" src="assets/docs/settings-04.webp" alt="Settings screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/settings-05.webp" alt="Home calendar news filters and event notifications."><figcaption>Home calendar news filters and event notifications.</figcaption></figure>
+      <p>Home calendar - tick Show news events to overlay economic news on the Home calendar; filter by currency and impact level; pick the display timezone; Refresh controls feed updates. Notifications - desktop pop-ups before events, with lead times in minutes, an impact filter, a sound, and an optional restriction list.</p>
+      <figure><img loading="lazy" src="assets/docs/settings-06.webp" alt="Settings screenshot"><figcaption></figcaption></figure>
+      <p>Event notifications and the Earnings calendar with its own API key and watched tickers.</p>
+      <p>Earnings calendar - show stock earnings releases on the calendar. It needs a free Finnhub API key (link next to the field); list the tickers you care about, and set separate notification lead times if you want warnings before earnings drop.</p>
+      <h2>Risk &amp; Alerts</h2>
+      <figure><img loading="lazy" src="assets/docs/settings-07.webp" alt="Settings screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/settings-08.webp" alt="Backup settings and your database location."><figcaption>Backup settings and your database location.</figcaption></figure>
+      <p>Warn when balance is within X% of the drawdown limit - how early the "getting close" warning appears on Home and the Accounts badge. Actual breaches always flag regardless.</p>
+      <p>Backups &amp; Safety Pick a backup folder, tick Auto-daily backup and choose how many to keep (default 30). Each backup zips your database, settings and local cache. Back up now takes one immediately. Put the folder somewhere off this PC - USB, external drive or a synced cloud folder.</p>
+      <h2>Storage &amp; State</h2>
+      <figure><img loading="lazy" src="assets/docs/settings-09.webp" alt="Settings screenshot"><figcaption></figcaption></figure>
+      <figure><img loading="lazy" src="assets/docs/settings-10.webp" alt="Data location, Demo Mode, CSV export and the About section."><figcaption>Data location, Demo Mode, CSV export and the About section.</figcaption></figure>
+      <p>Data shows exactly where your database lives, its size and account count - Open data folder jumps straight to it in Explorer. Demo Mode loads a separate demo database with sample data so you can explore without touching your real journal; switching modes restarts the app, and Reset Demo Data reseeds the sample.</p>
+      <p>System &amp; Info Export Data saves each core table as a CSV for Excel: accounts (with totals), costs, withdrawals, stage history and firm history. About shows your app version - support will ask for it. Remember to click Apply (bottom right) after changing settings, or Discard changes to back out.</p>
+      <figure><img loading="lazy" src="assets/docs/settings-11.webp" alt="Settings screenshot"><figcaption></figcaption></figure>
+    </div>
+    <div class="doc-nav">
+      <div><a href="docs-fix-skipped-fill.html">&larr; Fix a Skipped Fill</a></div>
+      <div><a href="docs-firm-history.html">Firm History &rarr;</a></div>
+    </div>
+  </div></section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The Easy Journal</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+</body>
+</html>

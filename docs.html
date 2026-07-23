@@ -126,35 +126,40 @@
           <li>A <b>Windows</b> machine (NinjaTrader is Windows-only).</li>
           <li><b>NinjaTrader 8</b> with at least one prop-firm broker connection working.</li>
         </ul>
-        <div class="doc-note"><b>Licence (paid release):</b> the public Easy Journal will require a licence key you enter once on first run, then it checks in quietly each launch (with an offline grace period so a dropped connection never locks you out). That activation step arrives with the paid release.</div>
+        <ul>
+          <li>Your <b>Easy Journal installer</b> (an <code>.exe</code>) and the <b>Bridge add-on</b> (a <code>.zip</code>) &mdash; both arrive with your licence email.</li>
+          <li>Your <b>licence key</b> from the same email.</li>
+        </ul>
+        <div class="doc-note"><b>Licence:</b> you enter your key once on first run; the Journal then checks in quietly each launch, with a 14-day offline grace period so a dropped connection never locks you out. Your key activates on one computer &mdash; moving to a new PC? Contact support and we'll release it.</div>
       </section>
 
       <section class="doc-sec" id="install-bridge">
         <h2>Install the Bridge in NinjaTrader</h2>
-        <p>The Bridge ships as a single C# file, <code>TAHBridge.cs</code>. To install it:</p>
+        <p>The Bridge ships as a NinjaScript add-on <code>.zip</code> file. You import it &mdash; <b>don't unzip it</b>:</p>
         <ol>
-          <li>Close NinjaTrader if it's running.</li>
-          <li>Copy <code>TAHBridge.cs</code> into <code>Documents\NinjaTrader 8\bin\Custom\AddOns\</code>.</li>
-          <li>Start NinjaTrader.</li>
-          <li>Open the NinjaScript Editor: <kbd>Tools</kbd> &rarr; <kbd>Edit NinjaScript</kbd> &rarr; <kbd>AddOns</kbd>.</li>
-          <li>Open <code>TAHBridge.cs</code> from the file list.</li>
-          <li>Press <kbd>F5</kbd> to compile.</li>
-          <li>On success, a <b>TAH Bridge</b> item appears under the <kbd>Tools</kbd> menu.</li>
+          <li>Save the Bridge <code>.zip</code> from your licence email somewhere easy to find (Downloads is fine). Leave it zipped.</li>
+          <li>Open NinjaTrader 8's <b>Control Center</b>.</li>
+          <li>Go to <kbd>Tools</kbd> &rarr; <kbd>Import</kbd> &rarr; <kbd>NinjaScript Add-On...</kbd></li>
+          <li>Browse to the Bridge <code>.zip</code>, select it, and click <kbd>Open</kbd>.</li>
+          <li>NinjaTrader imports it and confirms &mdash; if it asks to restart, restart NinjaTrader.</li>
+          <li>A <b>TAH Bridge</b> item now appears under the <kbd>Tools</kbd> menu.</li>
         </ol>
-        <p>If the compile fails, NinjaScript shows the error at the bottom &mdash; usually a missing reference or namespace; check the error against your NinjaTrader version. Open the Bridge with <kbd>Tools</kbd> &rarr; <kbd>TAH Bridge</kbd>. It starts inactive; you enable it by setting an output folder and turning the schedule on (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</p>
+        <p>Open it with <kbd>Tools</kbd> &rarr; <kbd>TAH Bridge</kbd>. It starts inactive; you enable it by setting an output folder and turning the schedule on (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</p>
+        <div class="doc-note"><b>Import fails with "file is not a valid NinjaScript archive"?</b> The zip was probably unzipped and re-zipped, or your browser extracted it on download. Re-download and import the original <code>.zip</code> untouched.</div>
       </section>
 
       <section class="doc-sec" id="install-journal">
         <h2>Install the Journal</h2>
-        <p>The Journal lives in a single folder. The recommended location is <code>C:\TAHJournal\</code> (this guide assumes that path).</p>
+        <p>The Journal installs like any Windows app, from the installer <code>.exe</code> in your licence email:</p>
         <ol>
-          <li>Close the Journal if it's running.</li>
-          <li>Extract the Journal archive into <code>C:\TAHJournal\</code>.</li>
-          <li>Confirm you can see <code>tah_journal.py</code>, the <code>ui\</code> folder, and <code>TAH_Journal.bat</code>.</li>
-          <li>Double-click <code>TAH_Journal.bat</code> to launch.</li>
+          <li>Double-click the Easy Journal installer (<code>.exe</code>).</li>
+          <li>If Windows shows a blue <b>"Windows protected your PC"</b> screen, click <kbd>More info</kbd> &rarr; <kbd>Run anyway</kbd> &mdash; that's Windows being cautious about new software, not a problem with the app.</li>
+          <li>Follow the installer's prompts (the default install location is fine).</li>
+          <li>When it finishes, launch <b>Easy Journal</b> from the Start menu or desktop shortcut.</li>
+          <li>On first run the <b>activation window</b> appears: paste your licence key (copy the whole thing, dashes and all) and click <kbd>Activate</kbd>.</li>
         </ol>
-        <p>First launch creates two files in the same folder: <code>journal.db</code> (the SQLite database where all your data lives) and <code>journal_config.json</code> (your settings). If those already exist from a previous install, they open as-is and the database schema migrates forward automatically &mdash; nothing extra to run.</p>
-        <div class="doc-note"><b>Moving the folder later?</b> The Journal resolves its data files relative to itself, so renaming or moving <code>C:\TAHJournal\</code> is safe &mdash; just update any shortcuts, and clear the <code>cache_folder</code> setting so it regenerates at the new location.</div>
+        <p>First launch creates your local database &mdash; every trade, account and setting lives on your machine, not in a cloud. Reinstalling or updating later keeps your data; the database carries forward automatically.</p>
+        <div class="doc-note"><b>Activation failed?</b> Check you copied the whole key including the dashes and that you're online. Your key activates on one computer at a time &mdash; if you're moving to a new PC, contact support and we'll release it. Once activated, the Journal works up to 14 days offline.</div>
       </section>
 
       <section class="doc-sec" id="first-setup">

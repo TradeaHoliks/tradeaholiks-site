@@ -199,3 +199,8 @@ footer.site{border-top:1px solid var(--line);background:var(--panel);margin-top:
 .auth-card h2{font-size:22px;margin-bottom:6px}
 .auth-card .sub{color:var(--muted);font-size:14px;margin-bottom:18px}
 @media (max-width:720px){.auth-grid{grid-template-columns:1fr}}
+
+/* ── beta recruitment band (site-wide, links to beta.html) ── */
+.beta-band{display:block;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.5px;padding:9px 14px;background:linear-gradient(90deg,rgba(245,166,35,.16),rgba(245,166,35,.07));color:var(--accent);border-bottom:1px solid rgba(245,166,35,.35);text-decoration:none}
+.beta-band:hover{background:rgba(245,166,35,.22);color:var(--accent)}
+.beta-band b{font-weight:700}

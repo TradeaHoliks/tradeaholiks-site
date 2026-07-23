@@ -142,9 +142,9 @@
           <li>Go to <kbd>Tools</kbd> &rarr; <kbd>Import</kbd> &rarr; <kbd>NinjaScript Add-On...</kbd></li>
           <li>Browse to the Bridge <code>.zip</code>, select it, and click <kbd>Open</kbd>.</li>
           <li>NinjaTrader imports it and confirms &mdash; if it asks to restart, restart NinjaTrader.</li>
-          <li>A <b>TAH Bridge</b> item now appears under the <kbd>Tools</kbd> menu.</li>
+          <li>A <b>TAH Bridge</b> item now appears under the <kbd>New</kbd> menu.</li>
         </ol>
-        <p>Open it with <kbd>Tools</kbd> &rarr; <kbd>TAH Bridge</kbd>. It starts inactive; you enable it by setting an output folder and turning the schedule on (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</p>
+        <p>Open it with <kbd>New</kbd> &rarr; <kbd>TAH Bridge</kbd>. It starts inactive; you enable it by setting an output folder and turning the schedule on (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</p>
         <div class="doc-note"><b>Import fails with "file is not a valid NinjaScript archive"?</b> The zip was probably unzipped and re-zipped, or your browser extracted it on download. Re-download and import the original <code>.zip</code> untouched.</div>
       </section>
 
@@ -159,7 +159,7 @@
           <li>On first run the <b>activation window</b> appears: paste your licence key (copy the whole thing, dashes and all) and click <kbd>Activate</kbd>.</li>
         </ol>
         <p>First launch creates your local database &mdash; every trade, account and setting lives on your machine, not in a cloud. Reinstalling or updating later keeps your data; the database carries forward automatically.</p>
-        <div class="doc-note"><b>Activation failed?</b> Check you copied the whole key including the dashes and that you're online. Your key activates on one computer at a time &mdash; if you're moving to a new PC, contact support and we'll release it. Once activated, the Journal works up to 14 days offline.</div>
+        <div class="doc-note"><b>Activation failed?</b> Check you copied the whole key including the dashes and that you're online. Your key activates on one computer at a time &mdash; if you're moving to a new PC, contact support and we'll release it.</div>
       </section>
 
       <section class="doc-sec" id="first-setup">
@@ -173,7 +173,7 @@
         </ol>
         <h3>Option B — add accounts manually</h3>
         <p>On the Accounts view click <kbd>+ Add Account</kbd> and enter the account name (must match NinjaTrader <b>exactly</b>), the firm, the starting balance and the drawdown rules. The next sync ties your manual entry to the live Bridge data. Most people use Option A first, and Option B only for slave or simulator accounts that don't match automatically.</p>
-        <div class="doc-note"><b>Folders the Journal expects:</b> <code>C:\TAHJournal\</code> (the app + database), <code>C:\TAHJournal\BridgeCache\</code> (its working copy of snapshots), and the NinjaTrader <code>Bridge\</code> folder. If your Bridge writes to a network/VPS drive (e.g. <code>T:\</code>), set that under Settings &rarr; Bridge folder.</div>
+        <div class="doc-note"><b>Folders the Journal expects:</b> <code>C:\EasyJournal\</code> (the app + database), <code>C:\EasyJournal\BridgeCache\</code> (its working copy of snapshots), and the NinjaTrader <code>Bridge\</code> folder.</div>
       </section>
 
       <section class="doc-sec" id="home">
@@ -235,7 +235,7 @@
         <h2>Settings</h2>
         <p>Open Settings from the sidebar. Changes save automatically when you click out of a field &mdash; there's no Save button. Cards:</p>
         <ul>
-          <li><b>Bridge</b> &mdash; the <b>Bridge folder</b> (must exactly match the Bridge's output folder in NinjaTrader; <code>T:\</code> for a VPS network drive, or the local NinjaTrader Bridge folder) and the <b>Cache folder</b> (the Journal's working copy, normally <code>C:\TAHJournal\BridgeCache\</code>). Also shows last sync time.</li>
+          <li><b>Bridge</b> &mdash; the <b>Bridge folder</b> (must exactly match the Bridge's output folder in NinjaTrader) and the <b>Cache folder</b> (the Journal's working copy, normally <code>C:\EasyJournal\BridgeCache\</code>). Also shows last sync time.</li>
           <li><b>Calendar</b> &mdash; toggle the economic-news layer, pick currencies (default USD), impacts (default High + Holiday), display timezone (default Chicago), refresh policy (Auto/Manual), and tray notifications with lead times.</li>
           <li><b>Earnings</b> &mdash; toggle the earnings layer and enter a free <b>Finnhub API key</b> (sign up at finnhub.io). Default watched symbols: SPY, QQQ, AAPL, MSFT, NVDA, AMZN, GOOG, META, TSLA.</li>
           <li><b>Database</b> &mdash; <b>Live</b> (your real data) vs <b>Demo</b> (sample data for showing the app to someone without exposing your numbers). Switching modes needs a restart.</li>
@@ -248,7 +248,7 @@
         <h3>What the Bridge does</h3>
         <p>It watches every account NinjaTrader knows about, captures every fill, and writes a snapshot JSON (accounts + fills since last sync + meta) to the output folder on a schedule.</p>
         <h3>Configure it</h3>
-        <p>Open <kbd>Tools</kbd> &rarr; <kbd>TAH Bridge</kbd>. Three sections:</p>
+        <p>Open <kbd>New</kbd> &rarr; <kbd>TAH Bridge</kbd>. Three sections:</p>
         <ul>
           <li><b>Status</b> &mdash; active/inactive, last sync, accounts and fills seen.</li>
           <li><b>Schedule</b> &mdash; <b>Sync on startup</b> and/or <b>Periodic sync</b> every N minutes (default 60). You can also click <kbd>Sync now</kbd>.</li>
@@ -262,7 +262,7 @@
         <h3>SYNC does nothing</h3>
         <ul>
           <li>Check <b>Settings &rarr; Bridge &rarr; Bridge folder</b> matches what the Bridge writes to.</li>
-          <li>Check the Bridge is <b>Active</b> (NinjaTrader &rarr; Tools &rarr; TAH Bridge) with a recent last-sync; if not, toggle the schedule on or click <kbd>Sync now</kbd>.</li>
+          <li>Check the Bridge is <b>Active</b> (NinjaTrader &rarr; New &rarr; TAH Bridge) with a recent last-sync; if not, toggle the schedule on or click <kbd>Sync now</kbd>.</li>
           <li>Open the Bridge folder &mdash; you should see recent <code>Bridge_Snapshot_&lt;timestamp&gt;.json</code> files.</li>
         </ul>
         <h3>The Home view shows enormous losses</h3>

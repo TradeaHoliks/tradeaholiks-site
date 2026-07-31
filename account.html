@@ -53,6 +53,20 @@
         <a class="btn btn-block" href="tools.html">Browse the free tools</a>
         <button id="logout-btn" class="btn btn-ghost btn-block" style="margin-top:12px">Log out</button>
       </div>
+
+      <!-- Admin-only: PropFirm data publishing (hidden unless the logged-in
+           account is on the app's approved-publisher list) -->
+      <div class="auth-card" id="admin-pub" style="display:none;margin-top:22px">
+        <div class="eyebrow">// Admin &mdash; PropFirm Browser data</div>
+        <h2 style="font-size:20px">Publish new firm data</h2>
+        <div class="sub">Select ALL 7 data files from the Propfirm_Browser folder in one go
+        (Ctrl-click or select-all): propfirm_schema.xlsx, discounts.json, funded_cards.json,
+        curated_tabs.json, curated_tabs_tier2.json, tab_columns.json, tab_headings.json.
+        The live app updates the moment the checks pass; the previous data is kept for rollback.</div>
+        <div class="field"><input id="pub-files" type="file" multiple></div>
+        <button id="pub-btn" class="btn btn-block" type="button">Check &amp; publish to app.tradeaholiks.com</button>
+        <p id="pub-msg" class="note" style="display:none;margin-top:14px;white-space:pre-wrap"></p>
+      </div>
     </div>
 
     <div id="account-reset" style="display:none;max-width:460px;margin:0 auto">
@@ -159,6 +173,47 @@
       if(live) live.style.display='block';
       if(liveEmail) liveEmail.textContent = (user && user.email) || '';
       loadLicences();
+      checkPublisher();
+    }
+    // ---- Admin-only PropFirm data publishing (panel stays hidden for everyone else) ----
+    var PUB_APP = 'https://app.tradeaholiks.com';
+    function pubToken(cb){
+      sb.auth.getSession().then(function(res){
+        cb(res.data && res.data.session ? res.data.session.access_token : null);
+      });
+    }
+    function checkPublisher(){
+      var panel = document.getElementById('admin-pub');
+      if(!panel) return;
+      pubToken(function(tok){
+        if(!tok) return;
+        fetch(PUB_APP + '/publish/allowed', { headers: { 'Authorization': 'Bearer ' + tok } })
+          .then(function(r){ return r.json(); })
+          .then(function(j){ if(j && j.allowed){ panel.style.display='block'; hookPublish(); } })
+          .catch(function(){ /* app unreachable - panel stays hidden */ });
+      });
+    }
+    var pubHooked = false;
+    function hookPublish(){
+      if(pubHooked) return; pubHooked = true;
+      var btn = document.getElementById('pub-btn');
+      var out = document.getElementById('pub-msg');
+      function pmsg(t, ok){ out.textContent = t; out.style.display='block';
+        out.style.color = ok ? 'var(--up)' : '#ff5d5d'; }
+      btn.addEventListener('click', function(){
+        var files = document.getElementById('pub-files').files;
+        if(!files.length){ pmsg('Pick the 7 data files first.', false); return; }
+        var fd = new FormData();
+        for(var i=0;i<files.length;i++){ fd.append('files', files[i], files[i].name); }
+        btn.disabled = true; pmsg('Uploading and checking\u2026', true);
+        pubToken(function(tok){
+          fetch(PUB_APP + '/publish/api', { method:'POST',
+              headers: { 'Authorization': 'Bearer ' + tok }, body: fd })
+            .then(function(r){ return r.json(); })
+            .then(function(j){ pmsg(j.message, j.ok); btn.disabled = false; })
+            .catch(function(e){ pmsg('Upload failed: ' + e, false); btn.disabled = false; });
+        });
+      });
     }
     var JOURNAL_URL = "https://downloads.tradeaholiks.com/EasyJournal_Setup.zip"; // Journal installer on Cloudflare R2 (update if the file name changes)
     function loadLicences(){

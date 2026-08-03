@@ -3,6 +3,16 @@
   "indicators": [],
   "addons": [
     {
+      "id": "drawdown-meter",
+      "name": "TAH Drawdown Meter",
+      "blurb": "Shows how much drawdown you have LEFT on every account, live, read straight from NinjaTrader's own Net Liquidation — you never type a balance or a floor. Covers static, intraday-trailing and end-of-day prop firm rules, locks the floor at your buffer, and tracks daily loss limits alongside it. Colour-coded green, amber and red, and it shrinks to a small always-on-top panel you can park beside your chart.",
+      "platform": "NinjaTrader 8",
+      "version": "0.23",
+      "icon": "📉",
+      "file": "TAH_DrawdownMeter.zip",
+      "image": "assets/tah_drawdownmeter.png"
+    },
+    {
       "id": "mass-replay-downloader",
       "name": "TAH Mass Replay Downloader",
       "blurb": "Queue NinjaTrader Market Replay data downloads across many instruments and date ranges at once. Skips weekends, detects sessions you already have, and shows per-row progress with a live log.",

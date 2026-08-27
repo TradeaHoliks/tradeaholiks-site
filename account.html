@@ -58,6 +58,7 @@
         <div class="tabrow" id="acct-tabs" style="margin-top:18px">
           <button class="atab on" type="button" data-pane="pane-journal"><span class="tdot d" id="dot-journal"></span>Easy Journal</button>
           <button class="atab" type="button" data-pane="pane-sync"><span class="tdot d" id="dot-sync"></span>Easy Sync</button>
+          <button class="atab" type="button" data-pane="pane-alertfill"><span class="tdot d"></span>AlertFill</button>
           <button class="atab" type="button" data-pane="pane-downloads">Downloads</button>
           <button class="atab" type="button" data-pane="pane-admin" id="tab-btn-admin" style="display:none"><span class="tdot d" id="dot-admin"></span>Admin</button>
         </div>
@@ -75,6 +76,21 @@
           <div id="sync-body" style="margin-top:10px"></div>
           <p class="note" style="margin-top:12px"><a href="docs-easy-sync.html" style="color:var(--accent)">Setup guide &rarr; connect NinjaTrader and your Journal in 5 minutes</a></p>
           <p id="sync-msg" class="note" style="display:none;margin-top:12px;white-space:pre-wrap"></p>
+        </div>
+
+        <div class="tabpane" id="pane-alertfill">
+          <div class="eyebrow" style="margin-top:18px">// ALERTFILL &mdash; TRADINGVIEW AUTOMATION
+            <span style="float:right;font-family:var(--mono,monospace);font-size:11px;letter-spacing:1px;color:var(--muted,#8fa0bb);border:1px solid var(--line,#2a2e37);border-radius:999px;padding:3px 10px">COMING SOON</span></div>
+          <div class="sub" style="margin-top:6px">Your TradingView strategy, trading by itself. An alert fires
+          &mdash; and about a second later the order is in your platform, stop and target attached.</div>
+          <ul class="ticklist" style="margin:14px 0 16px">
+            <li>Instant delivery &mdash; alerts pushed live, no polling delay</li>
+            <li>NinjaTrader first, MetaTrader 5 next for forex traders</li>
+            <li>Stops &amp; targets in ticks, points or price &mdash; or hand the trade to your NinjaTrader ATM template</li>
+            <li>Prop-firm-friendly guardrails: quantity caps, SIM-first safety, stale alerts never fire into a moved market</li>
+          </ul>
+          <p class="note">Launching soon for Tradeaholiks account holders. You'll need a paid TradingView plan
+          (webhooks unlock at their Essential tier). It will appear right here in your account when it's live.</p>
         </div>
 
         <div class="tabpane" id="pane-downloads">

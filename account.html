@@ -423,6 +423,20 @@
     function syncCopy(text, btn){
       function done(){ var t = btn.textContent; btn.textContent = '\u2713 Copied';
         setTimeout(function(){ btn.textContent = t; }, 1200); }
+      // Primary: hidden-textarea copy \u2014 byte-for-byte identical to a manual
+      // Ctrl+C, which some picky paste targets (TradingView's webhook field)
+      // accept more reliably than the async clipboard API.
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.left = '-9999px'; ta.style.top = '0';
+        document.body.appendChild(ta);
+        ta.select(); ta.setSelectionRange(0, text.length);
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if(ok){ done(); return; }
+      } catch(_){ }
       if(navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(text).then(done).catch(function(){ window.prompt('Copy this:', text); });
       } else { window.prompt('Copy this:', text); }
@@ -438,10 +452,13 @@
       if(h < 48) return h + ' h ago';
       return Math.floor(h/24) + ' days ago';
     }
-    function syncRowHtml(label, valueId, shownValue, buttons){
+    function syncRowHtml(label, valueId, shownValue, buttons, noselect){
+      // noselect: the masked boxes can't be text-selected — copying the
+      // on-screen ●●●● version by hand makes a broken URL; the Copy button
+      // (full value) is the only copy path until Show reveals it.
       return '<div style="margin-bottom:4px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">' + label + '</div>'
         + '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">'
-        + '<div id="' + valueId + '" style="flex:1;min-width:220px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:10px;padding:10px 12px;font-family:var(--mono,monospace);font-size:13px;overflow-x:auto;white-space:nowrap">' + shownValue + '</div>'
+        + '<div id="' + valueId + '" style="flex:1;min-width:220px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:10px;padding:10px 12px;font-family:var(--mono,monospace);font-size:13px;overflow-x:auto;white-space:nowrap' + (noselect ? ';user-select:none;-webkit-user-select:none' : '') + '">' + shownValue + '</div>'
         + buttons + '</div>';
     }
     function syncBtn(id, label){
@@ -452,9 +469,9 @@
       var hookUrl = syncRelay + '/snap/' + syncKeyFull;
       var html = '';
       html += syncRowHtml('Your sync key', 'sync-key-box', syncMask(syncKeyFull),
-                syncBtn('sync-show','Show') + syncBtn('sync-copy-key','Copy') + syncBtn('sync-regen','Regenerate'));
+                syncBtn('sync-show','Show') + syncBtn('sync-copy-key','Copy') + syncBtn('sync-regen','Regenerate'), true);
       html += syncRowHtml('Bridge webhook URL (NinjaTrader side)', 'sync-hook-box', syncMask(syncKeyFull) ? (syncRelay + '/snap/' + syncMask(syncKeyFull)) : '',
-                syncBtn('sync-copy-hook','Copy'));
+                syncBtn('sync-copy-hook','Copy'), true);
       html += '<div class="note" style="margin:-6px 0 12px">Paste into NinjaTrader &rarr; TAH Bridge &rarr; \u201cSnapshot webhook\u201d. Copy uses the full key.</div>';
       html += syncRowHtml('Journal relay URL', 'sync-relay-box', syncRelay,
                 syncBtn('sync-copy-relay','Copy'));
@@ -463,8 +480,11 @@
       body.innerHTML = html;
       document.getElementById('sync-show').addEventListener('click', function(){
         syncKeyShown = !syncKeyShown;
-        document.getElementById('sync-key-box').textContent = syncKeyShown ? syncKeyFull : syncMask(syncKeyFull);
-        document.getElementById('sync-hook-box').textContent = syncRelay + '/snap/' + (syncKeyShown ? syncKeyFull : syncMask(syncKeyFull));
+        var kb = document.getElementById('sync-key-box'), hb = document.getElementById('sync-hook-box');
+        kb.textContent = syncKeyShown ? syncKeyFull : syncMask(syncKeyFull);
+        hb.textContent = syncRelay + '/snap/' + (syncKeyShown ? syncKeyFull : syncMask(syncKeyFull));
+        kb.style.userSelect = hb.style.userSelect = syncKeyShown ? 'text' : 'none';
+        kb.style.webkitUserSelect = hb.style.webkitUserSelect = syncKeyShown ? 'text' : 'none';
         this.textContent = syncKeyShown ? 'Hide' : 'Show';
       });
       document.getElementById('sync-copy-key').addEventListener('click', function(){ syncCopy(syncKeyFull, this); });
@@ -608,9 +628,9 @@
       var html = '';
       html += syncRowHtml('Your AlertFill key', 'af-key-box', syncMask(afKey),
                 syncBtn('af-show','Show') + syncBtn('af-copy-key','Copy')
-                + (afLicensed ? syncBtn('af-regen','Regenerate') : ''));
+                + (afLicensed ? syncBtn('af-regen','Regenerate') : ''), true);
       html += syncRowHtml('TradingView webhook URL', 'af-hook-box', afBase + '/hook/' + syncMask(afKey),
-                syncBtn('af-copy-hook','Copy'));
+                syncBtn('af-copy-hook','Copy'), true);
       html += '<div class="note" style="margin:-6px 0 12px">Paste into your TradingView alert &rarr; Notifications &rarr; “Webhook URL”. Copy uses the full key. Then write the order in the alert message, e.g. <span style="font-family:var(--mono,monospace)">buy NQ q=1 sl=40t tp=80t</span>.</div>';
       html += '<button id="af-test" class="btn btn-block" type="button" style="margin-top:4px">Test my link</button>';
       html += '<button id="af-download" class="btn btn-ghost btn-block" type="button" style="margin-top:10px">Download the NinjaTrader receiver (TAH_AlertFill.zip)</button>';
@@ -626,8 +646,11 @@
       });
       document.getElementById('af-show').addEventListener('click', function(){
         afShown = !afShown;
-        document.getElementById('af-key-box').textContent = afShown ? afKey : syncMask(afKey);
-        document.getElementById('af-hook-box').textContent = afBase + '/hook/' + (afShown ? afKey : syncMask(afKey));
+        var kb = document.getElementById('af-key-box'), hb = document.getElementById('af-hook-box');
+        kb.textContent = afShown ? afKey : syncMask(afKey);
+        hb.textContent = afBase + '/hook/' + (afShown ? afKey : syncMask(afKey));
+        kb.style.userSelect = hb.style.userSelect = afShown ? 'text' : 'none';
+        kb.style.webkitUserSelect = hb.style.webkitUserSelect = afShown ? 'text' : 'none';
         this.textContent = afShown ? 'Hide' : 'Show';
       });
       document.getElementById('af-copy-key').addEventListener('click', function(){ syncCopy(afKey, this); });

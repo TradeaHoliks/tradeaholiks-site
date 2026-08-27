@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlertFill Setup — TradingView to NinjaTrader — Tradeaholiks</title>
+<meta name="description" content="Connect TradingView alerts to NinjaTrader with AlertFill in about 10 minutes — instant order delivery, stops and targets in ticks, ATM support.">
+<link rel="stylesheet" href="assets/styles.css?v=5">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+.doc-article{max-width:840px;margin:0 auto}
+.doc-article p{color:var(--muted);line-height:1.75;margin-bottom:14px}
+.doc-article h2{font-size:20px;font-weight:800;color:#e6edf3;margin:30px 0 12px}
+.doc-article h3{font-size:16px;font-weight:700;color:#e6edf3;margin:22px 0 8px}
+.doc-article .step{color:var(--muted);line-height:1.75;margin-bottom:10px}
+.doc-article .stepnum{color:var(--accent);font-weight:800;font-family:var(--mono);margin-right:8px}
+.doc-article code{font-family:var(--mono);font-size:13px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:6px;padding:2px 7px}
+.doc-article .notice{display:block;margin:18px 0;background:none;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;color:var(--muted);line-height:1.7;font-size:15px}
+.doc-article table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:14px}
+.doc-article th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--line);padding:8px 10px}
+.doc-article td{border-bottom:1px solid var(--line);padding:9px 10px;color:var(--muted);vertical-align:top;line-height:1.6}
+.doc-article td:first-child{font-family:var(--mono);font-size:13px;white-space:nowrap;color:#e6edf3}
+.doc-nav{display:flex;justify-content:space-between;gap:12px;max-width:840px;margin:34px auto 0;font-family:var(--mono);font-size:12px}
+.doc-nav a{color:var(--accent);text-decoration:none}
+.doc-crumb{font-family:var(--mono);font-size:12px;margin-bottom:10px}
+.doc-crumb a{color:var(--faint);text-decoration:none}
+.doc-crumb a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+  <div class="ticker" data-message="ALERTFILL — GUIDES &amp; HOW-TOS"><span id="ticker-track">
+    <em>ALERTFILL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp; <em>ALERTFILL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="https://app.tradeaholiks.com/">PropFirm Browser</a>
+      <a href="news.html">News</a>
+      <a href="docs.html" class="active">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <a class="beta-band" href="beta.html"><b>BETA TESTERS WANTED</b> &mdash; free lifetime Easy Journal licence for the first crew &rarr;</a>
+
+  <header class="hero" style="padding:52px 0 10px"><div class="container doc-article">
+    <div class="doc-crumb"><a href="docs.html#guides">&larr; All guides</a></div>
+    <div class="badge">// HOW-TO</div>
+    <h1>AlertFill setup</h1>
+    <p class="lead" style="margin-bottom:0">TradingView alert &rarr; order in NinjaTrader, in about a second. Setup takes ten minutes; run it on SIM first.</p>
+  </div></header>
+
+  <section class="section tight"><div class="container">
+    <div class="doc-article">
+
+      <h2>What AlertFill is</h2>
+      <p>You already have alerts on TradingView &mdash; a strategy, an indicator, a price level. AlertFill turns those alerts into real orders in NinjaTrader. The alert fires, TradingView posts it to your personal AlertFill webhook, and the Tradeaholiks relay pushes it straight down a live connection to a small receiver running inside NinjaTrader &mdash; which places the order, stop and target attached. No polling, no browser extension, no PC-to-PC networking.</p>
+      <p>Two safety rules are built in. If your NinjaTrader is offline when an alert fires, the order queues and is delivered the moment the receiver reconnects &mdash; <b>unless it is older than 30 seconds</b>, in which case it is discarded and logged. A stale entry signal never fires into a market that has moved on. Second: everything is visible &mdash; every alert shows up in the receiver's activity log and on your account page.</p>
+
+      <h2>What you'll need</h2>
+      <p>NinjaTrader 8 on Windows; a <b>paid TradingView plan</b> (webhook alerts unlock at their Essential tier and up); and an AlertFill key &mdash; free 7-day trial or full licence, both on your <a href="account.html" style="color:var(--accent)">account page</a>.</p>
+
+      <div class="notice"><b>Before you start:</b> log in at <a href="account.html" style="color:var(--accent)">tradeaholiks.com/account</a> and open the <b>AlertFill</b> tab. No licence yet? Press <b>Start my free 7-day trial</b> &mdash; full product, no card. Everything you'll paste below has a Copy button on that tab.</div>
+
+      <h2>Step 1 &mdash; install the receiver in NinjaTrader</h2>
+      <p class="step"><span class="stepnum">1.</span>Download <b>TAH_AlertFill.zip</b> from your account page's <b>Downloads</b> tab. Don't unzip it.</p>
+      <p class="step"><span class="stepnum">2.</span>In NinjaTrader: <b>Tools</b> &rarr; <b>Import</b> &rarr; <b>NinjaScript Add-On...</b> and pick the zip. Restart NinjaTrader.</p>
+      <p class="step"><span class="stepnum">3.</span>Open <b>Control Center</b> &rarr; <b>New</b> &rarr; <b>TAH AlertFill</b>. The AlertFill window opens.</p>
+      <p class="step"><span class="stepnum">4.</span>On your account page's AlertFill tab, click <b>Copy</b> next to <b>Your AlertFill key</b>, and paste it into the window's key field.</p>
+      <p class="step"><span class="stepnum">5.</span>Pick your <b>account</b> from the dropdown &mdash; it lists the accounts currently connected in NinjaTrader. <b>Start with a SIM account.</b></p>
+      <p class="step"><span class="stepnum">6.</span>Click <b>Start</b>. The status light goes green and your account page flips to <b>RECEIVER CONNECTED</b>. Tick <b>Start automatically when NinjaTrader opens</b> once you're happy with it.</p>
+
+      <h2>Step 2 &mdash; point a TradingView alert at it</h2>
+      <p class="step"><span class="stepnum">1.</span>On your account page's AlertFill tab, click <b>Copy</b> next to <b>TradingView webhook URL</b>.</p>
+      <p class="step"><span class="stepnum">2.</span>In TradingView, create an alert as usual (or edit an existing one).</p>
+      <p class="step"><span class="stepnum">3.</span>In the alert dialog, open the <b>Notifications</b> tab, tick <b>Webhook URL</b>, and paste the copied URL.</p>
+      <p class="step"><span class="stepnum">4.</span>In the <b>Message</b> box, write the order &mdash; for example: <code>buy NQ q=1 sl=40t tp=80t</code></p>
+      <p class="step"><span class="stepnum">5.</span>Save the alert. When it fires, the order appears in NinjaTrader about a second later. Watch the first few on SIM.</p>
+
+      <h2>Writing the alert message</h2>
+      <p>The message is one line: an action, a symbol, then any options in <code>key=value</code> form, separated by spaces.</p>
+      <table>
+        <tr><th>Part</th><th>What it does</th></tr>
+        <tr><td>buy &nbsp;/&nbsp; long</td><td>Market buy.</td></tr>
+        <tr><td>sell &nbsp;/&nbsp; short</td><td>Market sell.</td></tr>
+        <tr><td>close &nbsp;/&nbsp; flat &nbsp;/&nbsp; flatten &nbsp;/&nbsp; exit</td><td>Close the open position (and cancel its bracket orders).</td></tr>
+        <tr><td>NQ &nbsp;or&nbsp; NQ 09-26</td><td>The instrument. On its own the front contract is used; add the contract month to pin one.</td></tr>
+        <tr><td>q=2 &nbsp;/&nbsp; qty=2</td><td>Quantity. Default 1 (or the window's default).</td></tr>
+        <tr><td>sl=29500 &nbsp;/&nbsp; sl=40t &nbsp;/&nbsp; sl=10p</td><td>Stop loss: a price, ticks (<code>40t</code>, <code>40ticks</code>) or points (<code>10p</code>, <code>10pts</code>). Also <code>stop=</code>.</td></tr>
+        <tr><td>tp=29650 &nbsp;/&nbsp; tp=80t &nbsp;/&nbsp; tp=20p</td><td>Take profit, same formats. Also <code>target=</code>. Tick/point distances are measured from your actual fill price.</td></tr>
+        <tr><td>account=Sim101</td><td>Send this alert to a different account than the window's selection. Also <code>acct=</code>.</td></tr>
+        <tr><td>atm=Scalp &nbsp;/&nbsp; atm="My ATM Name"</td><td>Hand the trade to a NinjaTrader ATM strategy template. Names with spaces need the quotes.</td></tr>
+      </table>
+      <p>Examples: <code>buy NQ q=1 sl=40t tp=80t</code> &nbsp;&middot;&nbsp; <code>sell ES 09-26 q=2 sl=6410.25 tp=6395</code> &nbsp;&middot;&nbsp; <code>long NQ atm="Morning Scalp"</code> &nbsp;&middot;&nbsp; <code>flat NQ</code></p>
+      <p>TradingView placeholders work anywhere in the message &mdash; e.g. <code>{{ticker}}</code> or <code>q={{strategy.order.contracts}}</code> &mdash; TradingView fills them in before sending. JSON-style messages are also accepted (<code>{"action":"buy","symbol":"NQ","qty":1}</code>) if your strategy already produces them.</p>
+
+      <h3>How ATM templates are chosen</h3>
+      <p>Three levels, first one wins: <b>1)</b> <code>atm=</code> named in the alert &middot; <b>2)</b> the ATM template currently selected in Chart Trader on that instrument's open chart &middot; <b>3)</b> the default ATM set in the AlertFill window. When an ATM runs the trade, the ATM owns the stop and target &mdash; any <code>sl=</code>/<code>tp=</code> in the alert is ignored. No ATM anywhere? AlertFill places its own bracket from <code>sl=</code>/<code>tp=</code>.</p>
+
+      <h2>Prop-firm accounts</h2>
+      <p>Most futures prop firms allow automation in some form, but <b>each firm sets its own rules</b> &mdash; some require you at the screen, some restrict fully unattended trading, some care only about results. Check your firm's rulebook (our <a href="https://app.tradeaholiks.com/" style="color:var(--accent)">PropFirm Browser</a> is a good place to start) before running AlertFill on a funded account, and prove any strategy on SIM or an eval first. The 30-second stale rule protects you from the classic automation blow-up &mdash; a pile of delayed alerts firing into a moved market after a disconnect.</p>
+
+      <h2>If something's off</h2>
+      <p><b>No order arrived:</b> check the receiver window is started (green status) and your account page says RECEIVER CONNECTED; then check the alert actually fired in TradingView (its alert log) and that the webhook URL is the full copied one &mdash; copy it again, don't retype. <b>"ignored (couldn't parse)" in the log:</b> the message must start with buy/sell/long/short/close &mdash; check for typos in the first word. <b>ATM error in the log:</b> the template name in <code>atm=</code> must match a saved ATM template exactly; names with spaces need quotes. <b>Order marked discarded on the account page:</b> it arrived more than 30 seconds old (receiver was offline) &mdash; that's the safety net doing its job. Still stuck? The <a href="contact.html" style="color:var(--accent)">contact page</a>.</p>
+
+    </div>
+    <div class="doc-nav">
+      <div><a href="alertfill.html">&larr; About AlertFill</a></div>
+      <div><a href="docs.html#guides">All guides &rarr;</a></div>
+    </div>
+  </div></section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The Easy Journal</a>
+        <a href="alertfill.html">AlertFill</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+</body>
+</html>

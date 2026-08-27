@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlertFill — TradingView to NinjaTrader Automation — Tradeaholiks</title>
+<meta name="description" content="AlertFill turns TradingView alerts into live NinjaTrader orders in about a second. Stops and targets in ticks, ATM support, prop-firm-friendly. $149 one-time — no subscription, ever.">
+<link rel="stylesheet" href="assets/styles.css?v=5">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+</head>
+<body>
+
+  <div class="ticker" data-message="ALERTFILL &mdash; FREE 7-DAY TRIAL, NO CARD"><span id="ticker-track">
+    <em>ALERTFILL &mdash; FREE 7-DAY TRIAL, NO CARD</em> &nbsp;&middot;&nbsp; <em>ALERTFILL &mdash; FREE 7-DAY TRIAL, NO CARD</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html" class="active">Tools</a>
+      <a href="https://app.tradeaholiks.com/">PropFirm Browser</a>
+      <a href="news.html">News</a>
+      <a href="docs.html">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <a class="beta-band" href="beta.html"><b>BETA TESTERS WANTED</b> &mdash; free lifetime Easy Journal licence for the first crew &rarr;</a>
+
+  <header class="hero" style="padding-bottom:40px"><div class="container">
+    <div class="badge">// ALERTFILL</div>
+    <h1>Your TradingView alerts, <span class="glow">filled.</span></h1>
+    <p class="lead">An alert fires on TradingView &mdash; and about a second later the order is live in NinjaTrader, stop and target attached. No browser extension, no PC glued on, no subscription.</p>
+    <div class="hero-actions">
+      <a href="account.html" class="btn">Start the free 7-day trial</a>
+      <a href="docs-alertfill.html" class="btn btn-ghost">Read the setup guide</a>
+    </div>
+  </div></header>
+
+  <section class="section tight"><div class="container">
+    <div class="split">
+      <div class="split-media"><div class="shot">[ Alert &rarr; fill, timed ]<br>screenshot coming soon</div></div>
+      <div>
+        <div class="eyebrow">// Instant, not "usually fast"</div>
+        <h2>Pushed live, never polled</h2>
+        <p>Your NinjaTrader receiver holds one open connection to the relay. The instant TradingView posts your alert, the order is pushed down that wire &mdash; measured at around 80&nbsp;ms across the public internet, before your platform even blinks.</p>
+        <ul class="ticklist">
+          <li>Live push delivery &mdash; no polling gap at all</li>
+          <li>Offline? Orders queue and deliver on reconnect</li>
+          <li>Stale alerts (over 30s old) are discarded, never fired into a moved market</li>
+        </ul>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section tight"><div class="container">
+    <div class="split rev">
+      <div class="split-media"><div class="shot">[ Alert message examples ]<br>screenshot coming soon</div></div>
+      <div>
+        <div class="eyebrow">// You write the order in the alert</div>
+        <h2>One line does the lot</h2>
+        <p><code style="font-family:var(--mono);font-size:14px">buy NQ q=2 sl=40t tp=80t</code> &mdash; that's a complete order: side, symbol, size, stop and target in ticks, points or price. Or skip the bracket and hand the trade to your NinjaTrader ATM template &mdash; even the one already selected on your chart.</p>
+        <ul class="ticklist">
+          <li>Stops &amp; targets in ticks, points or price &mdash; from your real fill price</li>
+          <li>ATM templates: named in the alert, picked from the chart, or a default</li>
+          <li>Route alerts to any connected account with <span style="font-family:var(--mono)">account=</span></li>
+        </ul>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section tight"><div class="container">
+    <div class="split">
+      <div class="split-media"><div class="shot">[ Account page status ]<br>screenshot coming soon</div></div>
+      <div>
+        <div class="eyebrow">// Built for prop-firm traders</div>
+        <h2>Guardrails, not guesswork</h2>
+        <p>Built by the people behind the PropFirm Browser. Prove your strategy on SIM, watch every alert land in the activity log, and keep your firm's automation rules in view before you flip anything live.</p>
+        <ul class="ticklist">
+          <li>SIM-first: pick exactly which connected account trades</li>
+          <li>Every alert logged &mdash; delivered, queued or discarded, with timestamps</li>
+          <li>Live receiver status on your account page, from any device</li>
+        </ul>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="center" style="margin-bottom:40px">
+      <div class="eyebrow">// Why one-time</div>
+      <h2 class="section-title">Everyone else charges rent</h2>
+      <p class="section-sub">The going rate for TradingView-to-platform automation is $29&ndash;$99 every month &mdash; $348 to $1,188 a year, forever. AlertFill is $149 once. It pays for itself against the cheapest competitor in five months.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="ico">&#9889;</div><h3>~80 ms delivery</h3><p>Alert to platform across the public internet, measured &mdash; not marketing maths.</p></div>
+      <div class="card"><div class="ico">&#128274;</div><h3>Your own key</h3><p>A private key and isolated queue per customer. Regenerate it any time from your account.</p></div>
+      <div class="card"><div class="ico">&#128640;</div><h3>MT5 next</h3><p>NinjaTrader today; MetaTrader 5 support lands as a free update for forex traders.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section" id="buy"><div class="container">
+    <div class="center" style="max-width:580px;margin:0 auto">
+      <div class="eyebrow">// One price, yours for life</div>
+      <h2 class="section-title" style="font-size:46px;margin-bottom:6px">$149 <span style="font-size:18px;color:var(--muted);font-weight:400">one-time</span></h2>
+      <p class="section-sub">No subscription, ever. Unlimited alerts, all your own accounts, free updates &mdash; including MT5 when it lands.</p>
+      <ul class="ticklist" style="display:inline-block;text-align:left;margin:14px auto 26px">
+        <li>Free 7-day trial first &mdash; full product, no card</li>
+        <li>Unlimited alerts &amp; strategies, no per-trade fees</li>
+        <li>NinjaTrader now, MetaTrader 5 free when released</li>
+        <li>Needs a paid TradingView plan (webhooks unlock at Essential)</li>
+      </ul>
+      <div class="hero-actions" style="justify-content:center">
+        <a href="account.html" class="btn">Start the free 7-day trial</a>
+      </div>
+      <p class="note" style="margin-top:16px;color:var(--faint);font-size:13px">Buying opens shortly &mdash; secure checkout by Paddle. Start the trial now; you lose nothing.</p>
+    </div>
+  </div></section>
+
+  <section class="cta-band">
+    <h2>Ten minutes from alert to fill.</h2>
+    <p>Create a free account, press "Start my free 7-day trial" on the AlertFill tab, and follow the setup guide. Your first automated order lands today.</p>
+    <div class="hero-actions">
+      <a href="account.html" class="btn">Start the free trial</a>
+      <a href="docs-alertfill.html" class="btn btn-ghost">Setup guide</a>
+    </div>
+  </section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The Easy Journal</a>
+        <a href="alertfill.html">AlertFill</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+
+</body>
+</html>

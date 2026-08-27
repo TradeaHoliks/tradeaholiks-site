@@ -527,7 +527,17 @@
                 syncBtn('af-copy-hook','Copy'));
       html += '<div class="note" style="margin:-6px 0 12px">Paste into your TradingView alert &rarr; Notifications &rarr; “Webhook URL”. Copy uses the full key. Then write the order in the alert message, e.g. <span style="font-family:var(--mono,monospace)">buy NQ q=1 sl=40t tp=80t</span>.</div>';
       html += '<button id="af-test" class="btn btn-block" type="button" style="margin-top:4px">Test my link</button>';
+      html += '<button id="af-download" class="btn btn-ghost btn-block" type="button" style="margin-top:10px">Download the NinjaTrader receiver (TAH_AlertFill.zip)</button>';
+      html += '<p class="note" style="margin-top:12px"><a href="docs-alertfill.html" style="color:var(--accent)">Setup guide &rarr; TradingView to NinjaTrader in 10 minutes</a></p>';
       body.innerHTML = html;
+      document.getElementById('af-download').addEventListener('click', function(){
+        var b = this; b.disabled = true;
+        sb.storage.from('tools').createSignedUrl('TAH_AlertFill.zip', 120, { download: true }).then(function(res){
+          b.disabled = false;
+          if(res.error || !res.data || !res.data.signedUrl){ afMsg('Could not start the download — please try again shortly.', false); return; }
+          window.location.href = res.data.signedUrl;
+        }).catch(function(){ b.disabled = false; afMsg('Could not start the download — please try again shortly.', false); });
+      });
       document.getElementById('af-show').addEventListener('click', function(){
         afShown = !afShown;
         document.getElementById('af-key-box').textContent = afShown ? afKey : syncMask(afKey);

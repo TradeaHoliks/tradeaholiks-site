@@ -58,7 +58,7 @@
         <div class="tabrow" id="acct-tabs" style="margin-top:18px">
           <button class="atab on" type="button" data-pane="pane-journal"><span class="tdot d" id="dot-journal"></span>Easy Journal</button>
           <button class="atab" type="button" data-pane="pane-sync"><span class="tdot d" id="dot-sync"></span>Easy Sync</button>
-          <button class="atab" type="button" data-pane="pane-alertfill"><span class="tdot d"></span>AlertFill</button>
+          <button class="atab" type="button" data-pane="pane-alertfill"><span class="tdot d" id="dot-alertfill"></span>AlertFill</button>
           <button class="atab" type="button" data-pane="pane-downloads">Downloads</button>
           <button class="atab" type="button" data-pane="pane-admin" id="tab-btn-admin" style="display:none"><span class="tdot d" id="dot-admin"></span>Admin</button>
         </div>
@@ -79,18 +79,34 @@
         </div>
 
         <div class="tabpane" id="pane-alertfill">
-          <div class="eyebrow" style="margin-top:18px">// ALERTFILL &mdash; TRADINGVIEW AUTOMATION
-            <span style="float:right;font-family:var(--mono,monospace);font-size:11px;letter-spacing:1px;color:var(--muted,#8fa0bb);border:1px solid var(--line,#2a2e37);border-radius:999px;padding:3px 10px">COMING SOON</span></div>
-          <div class="sub" style="margin-top:6px">Your TradingView strategy, trading by itself. An alert fires
-          &mdash; and about a second later the order is in your platform, stop and target attached.</div>
-          <ul class="ticklist" style="margin:14px 0 16px">
-            <li>Instant delivery &mdash; alerts pushed live, no polling delay</li>
-            <li>NinjaTrader first, MetaTrader 5 next for forex traders</li>
-            <li>Stops &amp; targets in ticks, points or price &mdash; or hand the trade to your NinjaTrader ATM template</li>
-            <li>Prop-firm-friendly guardrails: quantity caps, SIM-first safety, stale alerts never fire into a moved market</li>
-          </ul>
-          <p class="note">Launching soon for Tradeaholiks account holders. You'll need a paid TradingView plan
-          (webhooks unlock at their Essential tier). It will appear right here in your account when it's live.</p>
+          <div id="af-teaser">
+            <div class="eyebrow" style="margin-top:18px">// ALERTFILL &mdash; TRADINGVIEW AUTOMATION
+              <span style="float:right;font-family:var(--mono,monospace);font-size:11px;letter-spacing:1px;color:var(--muted,#8fa0bb);border:1px solid var(--line,#2a2e37);border-radius:999px;padding:3px 10px">EARLY ACCESS</span></div>
+            <div class="sub" style="margin-top:6px">Your TradingView strategy, trading by itself. An alert fires
+            &mdash; and about a second later the order is in your platform, stop and target attached.</div>
+            <ul class="ticklist" style="margin:14px 0 16px">
+              <li>Instant delivery &mdash; alerts pushed live, no polling delay</li>
+              <li>NinjaTrader first, MetaTrader 5 next for forex traders</li>
+              <li>Stops &amp; targets in ticks, points or price &mdash; or hand the trade to your NinjaTrader ATM template</li>
+              <li>Prop-firm-friendly guardrails: quantity caps, SIM-first safety, stale alerts never fire into a moved market</li>
+            </ul>
+            <p style="margin:4px 0 6px;font-size:26px;font-weight:800;color:var(--accent)">$149 <span style="font-size:14px;font-weight:600;color:var(--muted,#8fa0bb)">one-time &mdash; no subscription, ever</span></p>
+            <p class="note">Every other alert-automation service charges $348&ndash;$1,188 a year. AlertFill you buy once.
+            You'll need a paid TradingView plan (webhooks unlock at their Essential tier).</p>
+            <button id="af-trial-btn" class="btn btn-block" type="button" style="margin-top:10px;display:none">Start my free 7-day trial</button>
+            <p class="note" id="af-trial-note" style="display:none;margin-top:10px">Full product, no card &mdash; one trial per account. Buying opens shortly; trial first, you lose nothing.</p>
+          </div>
+          <div id="af-owned" style="display:none">
+            <div class="eyebrow" style="margin-top:18px">// ALERTFILL &mdash; TRADINGVIEW AUTOMATION
+              <span id="af-badge" style="float:right;font-family:var(--mono,monospace);font-size:11px;letter-spacing:1px;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:3px 10px;display:none"></span></div>
+            <div class="sub" style="margin-top:6px">TradingView fires the alert &mdash; the relay pushes it straight into
+            your NinjaTrader receiver.
+            <span id="af-status" style="display:block;margin-top:8px;font-family:var(--mono,monospace);font-size:12px;letter-spacing:1px"></span></div>
+            <div id="af-body" style="margin-top:10px"></div>
+            <div id="af-activity" style="margin-top:6px"></div>
+            <p id="af-buy-line" class="note" style="display:none;margin-top:12px">Keep it after the trial: <b style="color:var(--accent)">$149 one-time, no subscription</b> &mdash; buying opens right here shortly.</p>
+            <p id="af-msg" class="note" style="display:none;margin-top:12px;white-space:pre-wrap"></p>
+          </div>
         </div>
 
         <div class="tabpane" id="pane-downloads">
@@ -236,6 +252,7 @@
       if(live) live.style.display='block';
       if(liveEmail) liveEmail.textContent = (user && user.email) || '';
       loadLicences();
+      loadAlertFill();
       checkPublisher();
     }
     // ---- Admin-only PropFirm data publishing (panel stays hidden for everyone else) ----
@@ -423,6 +440,172 @@
       }).catch(function(){
         if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your sync key right now.</div>';
       });
+    }
+    // ---- AlertFill (TradingView -> NinjaTrader order relay) --------------
+    var AF_HOOKS_FALLBACK = 'https://hooks.tradeaholiks.com';
+    var afKey = '', afBase = AF_HOOKS_FALLBACK, afShown = false;
+    var afLicensed = false, afTrial = false, afTrialEnd = null;
+    function afMsg(t, ok){
+      var m = document.getElementById('af-msg'); if(!m) return;
+      m.textContent = t; m.style.display = 'block';
+      m.style.color = ok ? 'var(--accent)' : '#ff5d5d';
+    }
+    function afErrCode(err, cb){
+      try{
+        if(err && err.context && typeof err.context.json === 'function'){
+          err.context.json().then(function(j){ cb(j && j.error); })
+                            .catch(function(){ cb(null); });
+          return;
+        }
+      }catch(_){ }
+      cb(null);
+    }
+    function afShowTeaser(){
+      setDot('alertfill', 'd');
+      var t = document.getElementById('af-teaser');
+      var o = document.getElementById('af-owned');
+      if(t) t.style.display = ''; if(o) o.style.display = 'none';
+      var b = document.getElementById('af-trial-btn');
+      var n = document.getElementById('af-trial-note');
+      if(b){ b.style.display = ''; if(!b._hooked){ b._hooked = true; b.addEventListener('click', afStartTrial); } }
+      if(n) n.style.display = '';
+    }
+    function afStartTrial(){
+      var b = document.getElementById('af-trial-btn');
+      if(b){ b.disabled = true; b.textContent = 'Setting up your trial…'; }
+      sb.functions.invoke('my-signal-key', { body: { action: 'trial' } }).then(function(res){
+        if(res.error || !res.data || !res.data.key){
+          afErrCode(res.error, function(code){
+            if(b){ b.disabled = false; b.textContent = 'Start my free 7-day trial'; }
+            if(code === 'trial_used'){
+              if(b) b.style.display = 'none';
+              var n = document.getElementById('af-trial-note');
+              if(n){ n.textContent = 'Your free trial has already been used on this account — buying opens right here shortly.'; n.style.display = ''; }
+            } else {
+              var n2 = document.getElementById('af-trial-note');
+              if(n2){ n2.textContent = 'Could not start the trial right now — please try again shortly.'; n2.style.display = ''; }
+            }
+          });
+          return;
+        }
+        afApply(res.data);
+      }).catch(function(){
+        if(b){ b.disabled = false; b.textContent = 'Start my free 7-day trial'; }
+      });
+    }
+    function afApply(d){
+      afKey = d.key; afBase = d.hooksBase || AF_HOOKS_FALLBACK;
+      afLicensed = !!d.licensed; afTrial = !!d.trial; afShown = false;
+      afTrialEnd = null;
+      if(afTrial){
+        if(d.expiresUtc){ afTrialEnd = new Date(d.expiresUtc); }
+        else if(d.trialStartedAt){ afTrialEnd = new Date(new Date(d.trialStartedAt).getTime() + 7*86400000); }
+      }
+      afRender(); afPing(false); afOrders();
+    }
+    function afRender(){
+      var t = document.getElementById('af-teaser');
+      var o = document.getElementById('af-owned');
+      if(t) t.style.display = 'none'; if(o) o.style.display = '';
+      var badge = document.getElementById('af-badge');
+      if(badge){
+        if(afTrial && afTrialEnd){
+          badge.textContent = 'FREE TRIAL — ends ' + afTrialEnd.toLocaleDateString();
+          badge.style.display = '';
+        } else if(afLicensed){
+          badge.textContent = 'LICENSED'; badge.style.display = '';
+        } else { badge.style.display = 'none'; }
+      }
+      var buy = document.getElementById('af-buy-line');
+      if(buy) buy.style.display = afTrial ? '' : 'none';
+      var body = document.getElementById('af-body'); if(!body) return;
+      var html = '';
+      html += syncRowHtml('Your AlertFill key', 'af-key-box', syncMask(afKey),
+                syncBtn('af-show','Show') + syncBtn('af-copy-key','Copy')
+                + (afLicensed ? syncBtn('af-regen','Regenerate') : ''));
+      html += syncRowHtml('TradingView webhook URL', 'af-hook-box', afBase + '/hook/' + syncMask(afKey),
+                syncBtn('af-copy-hook','Copy'));
+      html += '<div class="note" style="margin:-6px 0 12px">Paste into your TradingView alert &rarr; Notifications &rarr; “Webhook URL”. Copy uses the full key. Then write the order in the alert message, e.g. <span style="font-family:var(--mono,monospace)">buy NQ q=1 sl=40t tp=80t</span>.</div>';
+      html += '<button id="af-test" class="btn btn-block" type="button" style="margin-top:4px">Test my link</button>';
+      body.innerHTML = html;
+      document.getElementById('af-show').addEventListener('click', function(){
+        afShown = !afShown;
+        document.getElementById('af-key-box').textContent = afShown ? afKey : syncMask(afKey);
+        document.getElementById('af-hook-box').textContent = afBase + '/hook/' + (afShown ? afKey : syncMask(afKey));
+        this.textContent = afShown ? 'Hide' : 'Show';
+      });
+      document.getElementById('af-copy-key').addEventListener('click', function(){ syncCopy(afKey, this); });
+      document.getElementById('af-copy-hook').addEventListener('click', function(){ syncCopy(afBase + '/hook/' + afKey, this); });
+      document.getElementById('af-test').addEventListener('click', function(){ afPing(true); afOrders(); });
+      var rg = document.getElementById('af-regen');
+      if(rg){
+        rg.addEventListener('click', function(){
+          if(!window.confirm('Regenerate your AlertFill key?\n\nEvery TradingView alert AND your NinjaTrader receiver will need the new key before orders flow again.')) return;
+          var b = this; b.disabled = true;
+          sb.functions.invoke('my-signal-key', { body: { action: 'regenerate' } }).then(function(res){
+            b.disabled = false;
+            if(res.error || !res.data || !res.data.key){ afMsg('Could not regenerate right now — please try again shortly.', false); return; }
+            afApply(res.data);
+            afMsg('New key issued. Update your TradingView alerts and the receiver now.', true);
+          }).catch(function(){ b.disabled = false; afMsg('Could not regenerate right now.', false); });
+        });
+      }
+    }
+    function afPing(fromButton){
+      var st = document.getElementById('af-status'); if(!st || !afKey) return;
+      fetch(afBase + '/ping/' + afKey).then(function(r){
+        if(r.status === 401){
+          var why = afTrial ? 'TRIAL ENDED — hope you liked it! Buying opens right here shortly.'
+                            : 'KEY SUSPENDED — contact support';
+          st.textContent = '○ ' + why; st.style.color = '#ff5d5d'; setDot('alertfill','r');
+          if(fromButton) afMsg('This key is no longer active.', false);
+          return null;
+        }
+        return r.json();
+      }).then(function(j){
+        if(!j) return;
+        var txt, col, dot;
+        if(j.receiverConnected){ txt = '● RECEIVER CONNECTED — NinjaTrader is listening'; col = 'var(--accent)'; dot = 'g'; }
+        else {
+          var ago = syncAgo(j.lastSeenUtc);
+          txt = ago ? '○ RECEIVER OFFLINE — last connected ' + ago
+                    : '○ WAITING FOR FIRST CONNECTION — install the receiver and enter your key';
+          col = 'var(--muted)'; dot = 'd';
+        }
+        if(j.ordersQueued > 0){ txt += ' · ' + j.ordersQueued + ' order(s) queued'; }
+        st.textContent = txt; st.style.color = col; setDot('alertfill', dot);
+        if(fromButton) afMsg('Link OK — key valid.' + (j.receiverConnected ? ' Receiver connected.' : ' Receiver not connected yet.'), true);
+      }).catch(function(){
+        st.textContent = '○ STATUS UNAVAILABLE (relay unreachable from your browser)';
+        st.style.color = 'var(--muted)';
+        if(fromButton) afMsg('Could not reach the relay from your browser — the link itself may still be fine.', false);
+      });
+    }
+    function afOrders(){
+      var box = document.getElementById('af-activity'); if(!box || !afKey) return;
+      fetch(afBase + '/orders/' + afKey).then(function(r){
+        if(!r.ok) return null;
+        return r.json();
+      }).then(function(j){
+        if(!j || !j.orders || !j.orders.length){ box.innerHTML = ''; return; }
+        var rows = j.orders.slice(0, 5).map(function(o){
+          var raw = (o.order && (o.order.raw || JSON.stringify(o.order))) || '';
+          var when = o.receivedMs ? syncAgo(new Date(o.receivedMs).toISOString()) : '';
+          var col = (o.status === 'delivered') ? 'var(--accent)' : (o.status === 'queued' ? 'var(--muted)' : '#ff5d5d');
+          return '<div style="display:flex;gap:10px;align-items:baseline;padding:7px 12px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:8px;margin-bottom:6px;font-size:13px">'
+               + '<span style="font-family:var(--mono,monospace);flex:1;overflow-x:auto;white-space:nowrap">' + raw.replace(/</g,'&lt;') + '</span>'
+               + '<span style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:' + col + '">' + (o.status||'') + '</span>'
+               + '<span style="font-size:11px;color:var(--muted)">' + (when||'') + '</span>'
+               + '</div>';
+        }).join('');
+        box.innerHTML = '<div style="margin:14px 0 6px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Recent alerts</div>' + rows;
+      }).catch(function(){ box.innerHTML = ''; });
+    }
+    function loadAlertFill(){
+      sb.functions.invoke('my-signal-key', { body: { action: 'get' } }).then(function(res){
+        if(res.error || !res.data || !res.data.key){ afShowTeaser(); return; }
+        afApply(res.data);
+      }).catch(function(){ afShowTeaser(); });
     }
     function showLoggedOut(){
       if(authGrid) authGrid.style.display='';

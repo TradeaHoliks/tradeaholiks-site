@@ -4,45 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Docs &amp; How-Tos — Tradeaholiks</title>
-<meta name="description" content="Documentation, guides and how-tos for the Easy Journal and the Tradeaholiks toolkit.">
+<meta name="description" content="Documentation, guides and how-tos for the Easy Journal, AlertFill, Easy Sync and the free Tradeaholiks tools.">
 <link rel="stylesheet" href="assets/styles.css?v=5">
 <link rel="icon" type="image/png" href="assets/icon-tah.png">
 <style>
-  .docs-shell{display:grid;grid-template-columns:250px 1fr;gap:40px;align-items:start;padding:30px 0 70px}
-  .docs-side{position:sticky;top:84px;border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:18px 16px;font-size:14px;max-height:calc(100vh - 104px);overflow:auto}
-  .docs-side h5{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);margin:16px 0 8px}
-  .docs-side h5:first-child{margin-top:0}
-  .docs-side a{display:block;color:var(--muted);padding:6px 8px;border-radius:7px;text-decoration:none}
-  .docs-side a:hover{color:var(--ink);background:var(--panel-2)}
-  .docs-side a.on{color:var(--accent);background:var(--accent-soft)}
-  .docs-main{min-width:0}
-  .doc-sec{border-bottom:1px solid var(--line);padding:10px 0 34px;margin-bottom:8px}
-  .doc-sec:last-child{border-bottom:none}
-  .doc-sec h2{font-size:25px;font-weight:800;margin-bottom:8px;scroll-margin-top:84px}
-  .doc-sec h3{font-size:17px;font-weight:700;margin:22px 0 8px}
-  .doc-sec p{color:var(--muted);font-size:15px;margin-bottom:12px}
-  .doc-sec ol,.doc-sec ul{color:var(--ink);font-size:15px;margin:0 0 14px 20px;display:flex;flex-direction:column;gap:7px}
-  .doc-sec li{padding-left:4px}
-  .doc-sec li b{color:var(--ink)}
-  .doc-note{background:var(--accent-soft);border:1px solid rgba(245,166,35,.4);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink);margin:14px 0}
-  .doc-note b{color:var(--accent)}
-  kbd{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;white-space:nowrap}
-  code{font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--accent)}
-  .doc-meta{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:12px}
-  @media(max-width:880px){.docs-shell{grid-template-columns:1fr}.docs-side{position:static;max-height:none;margin-bottom:8px}}
-  .guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-  @media (max-width:800px){.guide-grid{grid-template-columns:1fr}}
-  .guide-card{display:block;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:16px 18px;text-decoration:none;transition:border-color .15s}
-  .guide-card:hover{border-color:var(--accent)}
-  .guide-card .gc-cat{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--accent)}
-  .guide-card h4{color:#e6edf3;font-size:16px;font-weight:800;margin:6px 0 6px}
-  .guide-card p{color:var(--faint);font-size:13px;line-height:1.55;margin:0}
+  .hub-search{position:relative;max-width:560px;margin:26px auto 0}
+  .hub-search input{width:100%;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:12px;color:var(--ink,#e6edf3);font-size:16px;font-family:inherit;padding:14px 18px 14px 46px;outline:none}
+  .hub-search input:focus{border-color:var(--accent)}
+  .hub-search .mag{position:absolute;left:16px;top:14px;color:var(--faint);font-size:16px}
+  .hub-results{position:absolute;left:0;right:0;top:54px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:12px;text-align:left;display:none;z-index:50;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+  .hub-results a{display:block;padding:11px 16px;font-size:14px;color:var(--ink,#e6edf3);text-decoration:none;border-bottom:1px solid var(--line,#2a2e37)}
+  .hub-results a:last-child{border-bottom:none}
+  .hub-results a:hover{background:var(--accent-soft,rgba(245,166,35,.12))}
+  .hub-results a span{display:block;font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:1px;margin-bottom:2px}
+  .hub-pop{font-size:13px;color:var(--faint);margin-top:14px;text-align:center}
+  .hub-pop a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--faint);margin:0 7px;white-space:nowrap}
+  .hub-pop a:hover{color:var(--accent)}
+  .hub-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:860px;margin:0 auto}
+  @media(max-width:700px){.hub-grid{grid-template-columns:1fr}}
+  .hub-card{display:block;border:1px solid var(--line,#2a2e37);border-radius:14px;background:var(--panel,#121826);padding:22px 24px;text-decoration:none;transition:border-color .15s,transform .15s}
+  .hub-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .hub-card .hc-cat{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:var(--accent)}
+  .hub-card h3{color:#e6edf3;font-size:19px;font-weight:800;margin:8px 0 7px}
+  .hub-card p{color:var(--muted);font-size:14px;line-height:1.65;margin:0}
+  .hub-card .hc-cnt{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:12px}
 </style>
 </head>
 <body>
+<script>
+// Old deep links (docs.html#section) now live on per-product pages — forward them.
+(function(){
+  var h = window.location.hash.replace('#','');
+  if(!h) return;
+  var journal = ['what-it-is','how-it-works','requirements','install-bridge','install-journal',
+                 'first-setup','home','accounts','account-detail','reports','settings',
+                 'the-bridge','troubleshooting','guides','faq'];
+  if(journal.indexOf(h) >= 0){ window.location.replace('docs-easy-journal.html#' + h); return; }
+  if(h === 'chart-grid' || h === 'free-tools'){ window.location.replace('docs-free-tools.html#chart-grid'); }
+})();
+</script>
 
-  <div class="ticker" data-message="EASY JOURNAL &mdash; DOCS &amp; HOW-TOS"><span id="ticker-track">
-    <em>EASY JOURNAL &mdash; DOCS &amp; HOW-TOS</em> &nbsp;&middot;&nbsp; <em>EASY JOURNAL &mdash; DOCS &amp; HOW-TOS</em> &nbsp;&middot;&nbsp;
+  <div class="ticker" data-message="DOCS &amp; HOW-TOS &mdash; THE WHOLE TOOLKIT"><span id="ticker-track">
+    <em>DOCS &amp; HOW-TOS &mdash; THE WHOLE TOOLKIT</em> &nbsp;&middot;&nbsp; <em>DOCS &amp; HOW-TOS &mdash; THE WHOLE TOOLKIT</em> &nbsp;&middot;&nbsp;
   </span></div>
 
   <nav class="nav"><div class="container nav-inner">
@@ -65,284 +68,60 @@
 
   <a class="beta-band" href="beta.html"><b>BETA TESTERS WANTED</b> &mdash; free lifetime Easy Journal licence for the first crew &rarr;</a>
 
-  <header class="hero" style="padding:60px 0 18px"><div class="container">
+  <header class="hero" style="padding:60px 0 24px"><div class="container" style="text-align:center">
     <div class="badge">// DOCS &amp; HOW-TOS</div>
-    <h1>Guides for the <span class="glow">whole toolkit.</span></h1>
-    <p class="lead" style="margin-bottom:0">Install, set up and get the most out of the Easy Journal &mdash; with the free tools to follow.</p>
+    <h1>How can we help?</h1>
+    <p class="lead" style="margin:10px auto 0;max-width:560px">Search everything, or pick a product below.</p>
+    <div class="hub-search">
+      <span class="mag">&#128269;</span>
+      <input id="hub-q" type="text" placeholder="Search the docs&hellip;" autocomplete="off">
+      <div class="hub-results" id="hub-r"></div>
+    </div>
+    <div class="hub-pop">Popular:
+      <a href="docs-alertfill.html">AlertFill setup</a>
+      <a href="docs-easy-sync.html">Easy Sync in 5 minutes</a>
+      <a href="docs-fix-skipped-fill.html">Fix a skipped fill</a>
+      <a href="docs-easy-journal.html#first-setup">Journal first-run setup</a>
+    </div>
   </div></header>
 
-  <div class="container"><div class="docs-shell">
+  <section class="section" style="padding-top:26px"><div class="container">
+    <div class="hub-grid">
+      <a class="hub-card" href="docs-easy-journal.html">
+        <div class="hc-cat">// PAID &middot; DESKTOP TRADING JOURNAL</div>
+        <h3>&#128202; Easy Journal</h3>
+        <p>Install the Journal and the Bridge, first-run setup, every view and setting explained &mdash; plus all the step-by-step guides with screenshots.</p>
+        <div class="hc-cnt">24 ARTICLES &amp; GUIDES</div>
+      </a>
+      <a class="hub-card" href="docs-alertfill.html">
+        <div class="hc-cat">// PAID &middot; TRADINGVIEW AUTOMATION</div>
+        <h3>&#9889; AlertFill</h3>
+        <p>TradingView alert &rarr; order in NinjaTrader in about a second. Setup in ten minutes, the full alert-syntax reference, ATM templates and prop-firm notes.</p>
+        <div class="hc-cnt">SETUP &middot; SYNTAX &middot; TROUBLESHOOTING</div>
+      </a>
+      <a class="hub-card" href="docs-easy-sync.html">
+        <div class="hc-cat">// INCLUDED WITH THE JOURNAL</div>
+        <h3>&#9729;&#65039; Easy Sync</h3>
+        <p>NinjaTrader anywhere &rarr; your Journal anywhere, through the cloud. Five minutes, two paste jobs, no shared drive, no VPN.</p>
+        <div class="hc-cnt">5-MINUTE SETUP GUIDE</div>
+      </a>
+      <a class="hub-card" href="docs-free-tools.html">
+        <div class="hc-cat">// FREE</div>
+        <h3>&#129513; Free Tools</h3>
+        <p>How-tos for the free NinjaTrader indicators and add-ons &mdash; starting with TAH Chart Grid, with more added as each tool is released.</p>
+        <div class="hc-cnt">1 TOOL &middot; GROWING</div>
+      </a>
+    </div>
+  </div></section>
 
-    <aside class="docs-side">
-      <h5>Getting started</h5>
-      <a href="#what-it-is">What the Journal is</a>
-      <a href="#how-it-works">How the pieces fit</a>
-      <a href="#requirements">What you'll need</a>
-      <h5>Install &amp; set up</h5>
-      <a href="#install-bridge">Install the Bridge</a>
-      <a href="#install-journal">Install the Journal</a>
-      <a href="#first-setup">First-run setup</a>
-      <h5>Using the Journal</h5>
-      <a href="#home">The Home view</a>
-      <a href="#accounts">Managing accounts</a>
-      <a href="#account-detail">Account detail &amp; drawdown</a>
-      <a href="#reports">Reports</a>
-      <h5>Configure</h5>
-      <a href="#settings">Settings</a>
-      <a href="#the-bridge">The Bridge</a>
-      <h5>Guides &amp; how-tos</h5>
-      <a href="#guides">All step-by-step guides</a>
-      <h5>Free tools</h5>
-      <a href="#free-tools">Overview</a>
-      <a href="#chart-grid">TAH Chart Grid</a>
-      <h5>Help</h5>
-      <a href="#troubleshooting">Troubleshooting</a>
-      <a href="#faq">FAQ</a>
-    </aside>
-
-    <main class="docs-main">
-
-      <section class="doc-sec" id="what-it-is">
-        <h2>What the Easy Journal is</h2>
-        <p>The Easy Journal is a Windows desktop app that tracks your futures trading across every prop firm and account you use. It does three things well:</p>
-        <ul>
-          <li><b>It records the truth.</b> Every fill, balance and position from NinjaTrader is captured automatically into a local database on your machine &mdash; no cloud, nothing that can lock you out of your own history.</li>
-          <li><b>It shows where you stand.</b> The Home view tells you at a glance whether you're up or down across all accounts, what you've spent on evaluations, and how close any account is to a drawdown breach.</li>
-          <li><b>It keeps you on the right side of the rules.</b> You enter each firm's rules (drawdown, daily loss, targets, min days) and it computes your current floor and target, so you always know how much room you have left.</li>
-        </ul>
-        <p>It's built for one trader running multiple prop-firm accounts &mdash; not a multi-user system, broker tool, or backtester. It's the record of what your live trading actually did.</p>
-      </section>
-
-      <section class="doc-sec" id="how-it-works">
-        <h2>How the pieces fit</h2>
-        <p>Three pieces work together, in a one-way pipeline &mdash; nothing flows back to NinjaTrader or your broker:</p>
-        <ul>
-          <li><b>NinjaTrader 8</b> connects to your brokers, routes orders, and tracks each account's balance and fills. It's the source of truth for what's happening right now.</li>
-          <li><b>The Bridge add-on</b> runs inside NinjaTrader. On a schedule (or when you click <kbd>SYNC</kbd>), it captures every account's state and recent fills and writes them as JSON files to disk. It only reads and writes files &mdash; it never sends orders.</li>
-          <li><b>The Easy Journal</b> sits outside NinjaTrader. On <kbd>SYNC</kbd> it copies the Bridge's files, parses them, and updates its database &mdash; then shows you the new picture.</li>
-        </ul>
-      </section>
-
-      <section class="doc-sec" id="requirements">
-        <h2>What you'll need</h2>
-        <ul>
-          <li>A <b>Windows</b> machine (NinjaTrader is Windows-only).</li>
-          <li><b>NinjaTrader 8</b> with at least one prop-firm broker connection working.</li>
-        </ul>
-        <ul>
-          <li>Your <b>Easy Journal installer</b> (an <code>.exe</code>) and the <b>Bridge add-on</b> (a <code>.zip</code>) &mdash; both arrive with your licence email.</li>
-          <li>Your <b>licence key</b> from the same email.</li>
-        </ul>
-        <div class="doc-note"><b>Licence:</b> you enter your key once on first run; the Journal then checks in quietly each launch, with a 14-day offline grace period so a dropped connection never locks you out. Your key activates on one computer &mdash; moving to a new PC? Contact support and we'll release it.</div>
-      </section>
-
-      <section class="doc-sec" id="install-bridge">
-        <h2>Install the Bridge in NinjaTrader</h2>
-        <p>The Bridge ships as a NinjaScript add-on <code>.zip</code> file. You import it &mdash; <b>don't unzip it</b>:</p>
-        <ol>
-          <li>Save the Bridge <code>.zip</code> from your licence email somewhere easy to find (Downloads is fine). Leave it zipped.</li>
-          <li>Open NinjaTrader 8's <b>Control Center</b>.</li>
-          <li>Go to <kbd>Tools</kbd> &rarr; <kbd>Import</kbd> &rarr; <kbd>NinjaScript Add-On...</kbd></li>
-          <li>Browse to the Bridge <code>.zip</code>, select it, and click <kbd>Open</kbd>.</li>
-          <li>NinjaTrader imports it and confirms &mdash; if it asks to restart, restart NinjaTrader.</li>
-          <li>A <b>TAH Bridge</b> item now appears under the <kbd>New</kbd> menu.</li>
-        </ol>
-        <p>Open it with <kbd>New</kbd> &rarr; <kbd>TAH Bridge</kbd>. It starts inactive; you enable it by setting an output folder and turning the schedule on (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</p>
-        <div class="doc-note"><b>Import fails with "file is not a valid NinjaScript archive"?</b> The zip was probably unzipped and re-zipped, or your browser extracted it on download. Re-download and import the original <code>.zip</code> untouched.</div>
-      </section>
-
-      <section class="doc-sec" id="install-journal">
-        <h2>Install the Journal</h2>
-        <p>The Journal installs like any Windows app, from the installer <code>.exe</code> in your licence email:</p>
-        <ol>
-          <li>Double-click the Easy Journal installer (<code>.exe</code>).</li>
-          <li>If Windows shows a blue <b>"Windows protected your PC"</b> screen, click <kbd>More info</kbd> &rarr; <kbd>Run anyway</kbd> &mdash; that's Windows being cautious about new software, not a problem with the app.</li>
-          <li>Follow the installer's prompts (the default install location is fine).</li>
-          <li>When it finishes, launch <b>Easy Journal</b> from the Start menu or desktop shortcut.</li>
-          <li>On first run the <b>activation window</b> appears: paste your licence key (copy the whole thing, dashes and all) and click <kbd>Activate</kbd>.</li>
-        </ol>
-        <p>First launch creates your local database &mdash; every trade, account and setting lives on your machine, not in a cloud. Reinstalling or updating later keeps your data; the database carries forward automatically.</p>
-        <div class="doc-note"><b>Activation failed?</b> Check you copied the whole key including the dashes and that you're online. Your key activates on one computer at a time &mdash; if you're moving to a new PC, contact support and we'll release it.</div>
-      </section>
-
-      <section class="doc-sec" id="first-setup">
-        <h2>First-run setup</h2>
-        <p>On first launch the Home view is mostly empty &mdash; the Journal doesn't know your accounts yet. Two ways to populate it:</p>
-        <h3>Option A — let SYNC discover your accounts (recommended)</h3>
-        <ol>
-          <li>Configure the Bridge and run a sync inside NinjaTrader (see <a href="#the-bridge" style="color:var(--accent)">the Bridge</a>).</li>
-          <li>Click <kbd>SYNC</kbd> in the Journal. Every account NinjaTrader knows about appears, marked stage <b>Unknown</b>.</li>
-          <li>Classify each one (Eval, Funded, etc.) and fill in any rule fields the snapshot couldn't determine.</li>
-        </ol>
-        <h3>Option B — add accounts manually</h3>
-        <p>On the Accounts view click <kbd>+ Add Account</kbd> and enter the account name (must match NinjaTrader <b>exactly</b>), the firm, the starting balance and the drawdown rules. The next sync ties your manual entry to the live Bridge data. Most people use Option A first, and Option B only for slave or simulator accounts that don't match automatically.</p>
-        <div class="doc-note"><b>Folders the Journal expects:</b> <code>C:\EasyJournal\</code> (the app + database), <code>C:\EasyJournal\BridgeCache\</code> (its working copy of snapshots), and the NinjaTrader <code>Bridge\</code> folder.</div>
-      </section>
-
-      <section class="doc-sec" id="home">
-        <h2>The Home view</h2>
-        <p>What you see first &mdash; a quick read on whether you're up or down and what needs attention. Five regions, top to bottom:</p>
-        <ul>
-          <li><b>Net P&amp;L</b> &mdash; earned minus spent across every real (non-sim) account, lifetime. Green when positive, red when negative.</li>
-          <li><b>Spent / Earned / ROI</b> &mdash; total costs (eval fees, resets, seats) in red; actual cash withdrawn in green; and ROI = (Earned &minus; Spent) / Spent. Negative ROI is normal for the first few months.</li>
-          <li><b>Account stages</b> &mdash; a donut of your accounts by stage: <b>Funded</b>, <b>Eval</b>, <b>EvalPass</b>, <b>Breached</b>, <b>Retired</b>, <b>Unknown</b>. The centre shows the active count (everything except Retired).</li>
-          <li><b>Spend by firm</b> &mdash; a bar chart of where your costs go, biggest first.</li>
-          <li><b>Calendar</b> &mdash; daily P&amp;L tinted on each cell (green profit / red loss), with dots for high-impact news and a marker for earnings. Click any day for the day-detail modal (P&amp;L breakdown, earnings, news).</li>
-          <li><b>Alerts</b> &mdash; things needing attention (new accounts detected, breached accounts), or "All clear."</li>
-        </ul>
-      </section>
-
-      <section class="doc-sec" id="accounts">
-        <h2>Managing accounts</h2>
-        <p>The <b>Accounts</b> view is the master table of every account &mdash; firm, name, stage, lifetime cost, P&amp;L, withdrawn, ROI, active days and trade count. Row colours follow the stage. Filter with the pills (All / Eval / Funded / Breached / Retired) and sort by clicking any column header.</p>
-        <h3>Add an account</h3>
-        <p>Click <kbd>+ Add Account</kbd>. The modal has three sections:</p>
-        <ul>
-          <li><b>Identity</b> &mdash; the account name (must match NinjaTrader exactly), an optional friendly <b>Display name</b>, and the <b>Firm</b> (used for spend grouping).</li>
-          <li><b>Prop firm rules</b> &mdash; starting balance, profit target, drawdown amount, drawdown type (Static / EOD / Trailing), daily loss limit, min trading days, consistency %. Leave blank what doesn't apply. <b>Manual wins:</b> anything you type stays; the Bridge only fills blanks.</li>
-          <li><b>Lifecycle</b> &mdash; the starting stage, and an optional "Linked eval account" so a funded account inherits its eval cost.</li>
-        </ul>
-        <h3>Costs &amp; withdrawals</h3>
-        <p>Use <kbd>+ Add Cost</kbd> for anything you paid (eval fees, resets, monthly seats) and <kbd>+ Add Withdrawal</kbd> for payouts you actually received. Costs feed "Spent," withdrawals feed "Earned." You can't enter a future-dated cost or withdrawal.</p>
-        <h3>Edit &amp; change stage</h3>
-        <p>Double-click (or right-click &rarr; Edit) a row to edit it &mdash; the edit modal adds a <kbd>Refresh from Bridge</kbd> button to re-pull rules. Stage changes are manual: right-click &rarr; <b>Change stage</b> (the Journal never auto-marks an account Breached). Each transition is recorded in the account's history.</p>
-      </section>
-
-      <section class="doc-sec" id="account-detail">
-        <h2>Account detail &amp; the drawdown floor</h2>
-        <p>Click any account to open its detail view (Trading and Journal tabs).</p>
-        <h3>Trading tab</h3>
-        <p>Four tiles (Net P&amp;L, Trades, Win rate, Min balance), a per-account daily P&amp;L calendar, a statistics card (profit factor, avg win/loss, R:R, expectancy, max losing streak, max drawdown, best/worst day), optional strategy stats, and the full trades table (entry/exit, instrument, side, qty, prices, P&amp;L, commission, strategy).</p>
-        <h3>What "Min balance" means</h3>
-        <p>The floor below which the account breaches &mdash; it depends on the drawdown type:</p>
-        <ul>
-          <li><b>Static</b> &mdash; <code>starting balance &minus; drawdown</code>, fixed forever.</li>
-          <li><b>EOD</b> &mdash; re-anchors each day to the prior day's closing balance minus the drawdown (day 1 falls back to starting balance).</li>
-          <li><b>Trailing</b> &mdash; anchors to the all-time peak balance minus the drawdown; goes up, never down. The peak comes from the highest balance the Journal has recorded for the account.</li>
-        </ul>
-        <p>Hover the Min balance tile to see how the floor was calculated.</p>
-      </section>
-
-      <section class="doc-sec" id="reports">
-        <h2>Reports</h2>
-        <p>The cross-account analytics view. A row of time-range pills (30D / 3M / 6M / 1Y / All) filters everything on the page. Below that:</p>
-        <ul>
-          <li><b>Monthly trend</b> &mdash; net P&amp;L per month, green above / red below the zero line.</li>
-          <li><b>Strategy performance</b> &mdash; a sortable table (trades, net P&amp;L, win rate, profit factor, avg R:R, expectancy) plus a comparison bar chart with a metric picker. Sim accounts are excluded; unattributed fills show as <code>(unsigned)</code>.</li>
-          <li><b>Per-firm breakdowns</b> &mdash; one card per firm (accounts, spent, earned, funded/eval/breached counts, ROI).</li>
-          <li><b>All-firms summary</b> &mdash; a lifetime rollup of everything.</li>
-        </ul>
-      </section>
-
-      <section class="doc-sec" id="settings">
-        <h2>Settings</h2>
-        <p>Open Settings from the sidebar. Changes save automatically when you click out of a field &mdash; there's no Save button. Cards:</p>
-        <ul>
-          <li><b>Bridge</b> &mdash; the <b>Bridge folder</b> (must exactly match the Bridge's output folder in NinjaTrader) and the <b>Cache folder</b> (the Journal's working copy, normally <code>C:\EasyJournal\BridgeCache\</code>). Also shows last sync time.</li>
-          <li><b>Calendar</b> &mdash; toggle the economic-news layer, pick currencies (default USD), impacts (default High + Holiday), display timezone (default Chicago), refresh policy (Auto/Manual), and tray notifications with lead times.</li>
-          <li><b>Earnings</b> &mdash; toggle the earnings layer and enter a free <b>Finnhub API key</b> (sign up at finnhub.io). Default watched symbols: SPY, QQQ, AAPL, MSFT, NVDA, AMZN, GOOG, META, TSLA.</li>
-          <li><b>Database</b> &mdash; <b>Live</b> (your real data) vs <b>Demo</b> (sample data for showing the app to someone without exposing your numbers). Switching modes needs a restart.</li>
-          <li><b>About</b> &mdash; Journal / schema / expected Bridge version, a changelog link, and a button to open the data folder (for backing up <code>journal.db</code>).</li>
-        </ul>
-      </section>
-
-      <section class="doc-sec" id="the-bridge">
-        <h2>The Bridge</h2>
-        <h3>What the Bridge does</h3>
-        <p>It watches every account NinjaTrader knows about, captures every fill, and writes a snapshot JSON (accounts + fills since last sync + meta) to the output folder on a schedule.</p>
-        <h3>Configure it</h3>
-        <p>Open <kbd>New</kbd> &rarr; <kbd>TAH Bridge</kbd>. Three sections:</p>
-        <ul>
-          <li><b>Status</b> &mdash; active/inactive, last sync, accounts and fills seen.</li>
-          <li><b>Schedule</b> &mdash; <b>Sync on startup</b> and/or <b>Periodic sync</b> every N minutes (default 60). You can also click <kbd>Sync now</kbd>.</li>
-          <li><b>Output</b> &mdash; where snapshots are written (default the NinjaTrader Bridge folder; set it to a network drive like <code>T:\</code> if the Journal runs on another machine/VPS).</li>
-        </ul>
-        <div class="doc-note"><b>Why a fresh restart is safe:</b> the Bridge skips any account whose broker connection isn't fully "Connected" yet, so it never records $0 balances during the connect window. Use Bridge <b>v0.10.2 or newer</b> for this protection.</div>
-      </section>
-
-      <section class="doc-sec" id="troubleshooting">
-        <h2>Troubleshooting</h2>
-        <h3>SYNC does nothing</h3>
-        <ul>
-          <li>Check <b>Settings &rarr; Bridge &rarr; Bridge folder</b> matches what the Bridge writes to.</li>
-          <li>Check the Bridge is <b>Active</b> (NinjaTrader &rarr; New &rarr; TAH Bridge) with a recent last-sync; if not, toggle the schedule on or click <kbd>Sync now</kbd>.</li>
-          <li>Open the Bridge folder &mdash; you should see recent <code>Bridge_Snapshot_&lt;timestamp&gt;.json</code> files.</li>
-        </ul>
-        <h3>The Home view shows enormous losses</h3>
-        <p>Usually NinjaTrader was restarted mid-day and an old Bridge wrote $0 balances before brokers reconnected. Fix: use Bridge v0.10.2+ going forward; for existing bad data, back up <code>journal.db</code> first, then remove the zero-state rows. <span style="color:var(--faint)">(Advanced &mdash; we can do this with you; reach out via the contact form.)</span></p>
-        <h3>An account in NinjaTrader isn't in the Journal</h3>
-        <ul>
-          <li>The Bridge hasn't synced since you added it &mdash; force a sync, then click <kbd>SYNC</kbd>.</li>
-          <li>The name doesn't match exactly (different case/dashes) &mdash; delete the manual one and let SYNC pick up the real one.</li>
-          <li>It's auto-flagged as a simulator (name starts with Sim/Practice/Demo/Backtest/Playback) &mdash; edit the row and uncheck "is simulator" to track it.</li>
-        </ul>
-        <h3>The drawdown floor looks wrong</h3>
-        <p>Check the drawdown <b>type</b> (Static/EOD/Trailing produce very different floors), confirm the <b>starting balance</b> isn't 0, and for Trailing accounts hover the Min balance tile to check how the peak was determined.</p>
-        <h3>News events aren't showing</h3>
-        <p>Check the news feed is enabled and review your currency and impact filters in Settings &rarr; Calendar (the default is USD with High and Holiday impacts only). If the refresh policy is set to Manual, click refresh; otherwise the calendar shows the last cached fetch.</p>
-      </section>
-
-      <section class="doc-sec" id="guides">
-        <h2>Guides &amp; how-tos (step by step, with pictures)</h2>
-        <p>Every walkthrough below uses real screenshots from the Journal &mdash; the same guides included with the app.</p>
-        <div class="guide-grid">
-          <a class="guide-card" href="docs-add-account.html"><span class="gc-cat">// HOW-TO</span><h4>Add a New Account</h4><p>New accounts find you: sync, spot the (new) tag, claim it.</p></a>
-          <a class="guide-card" href="docs-edit-account.html"><span class="gc-cat">// HOW-TO</span><h4>Edit an Account</h4><p>Account details change — a firm tweaks a rule, a payout target moves, a cost is corrected.</p></a>
-          <a class="guide-card" href="docs-change-stage.html"><span class="gc-cat">// HOW-TO</span><h4>Change an Account&#x27;s Stage</h4><p>Move accounts through their life story: Eval, EvalPass, Funded, Live - or Breached / Retired.</p></a>
-          <a class="guide-card" href="docs-add-cost.html"><span class="gc-cat">// HOW-TO</span><h4>Add a Cost</h4><p>Record resets, monthly fees, activation fees and extra purchases so ROI stays real.</p></a>
-          <a class="guide-card" href="docs-add-withdrawal.html"><span class="gc-cat">// HOW-TO</span><h4>Add a Withdrawal</h4><p>Record a payout so Withdrawn totals, Net ROI and balances stay honest.</p></a>
-          <a class="guide-card" href="docs-commission-rates.html"><span class="gc-cat">// HOW-TO</span><h4>Add Commission Rates Manually</h4><p>Lock in exact commission rates so net P&amp;L is exact - manual rates always win.</p></a>
-          <a class="guide-card" href="docs-fix-skipped-fill.html"><span class="gc-cat">// HOW-TO</span><h4>Fix a Skipped Fill</h4><p>Every so often NinjaTrader hands the Bridge a fill it can’t make sense of — usually a brief connection wobble that leaves the fill with no Action (buy or sell).</p></a>
-          <a class="guide-card" href="docs-easy-sync.html"><span class="gc-cat">// HOW-TO</span><h4>Easy Sync Setup</h4><p>NinjaTrader anywhere &rarr; your Journal anywhere, through the cloud. 5 minutes, no shared drive.</p></a>
-          <a class="guide-card" href="docs-alertfill.html"><span class="gc-cat">// HOW-TO</span><h4>AlertFill Setup</h4><p>TradingView alert &rarr; order in NinjaTrader in about a second. Ten minutes, SIM first.</p></a>
-          <a class="guide-card" href="docs-settings.html"><span class="gc-cat">// GUIDE</span><h4>Settings</h4><p>Every option on the Settings page, section by section.</p></a>
-          <a class="guide-card" href="docs-firm-history.html"><span class="gc-cat">// GUIDE</span><h4>Firm History</h4><p>Bring your pre-Journal results into the lifetime totals.</p></a>
-          <a class="guide-card" href="docs-rule-updates.html"><span class="gc-cat">// GUIDE</span><h4>Rule Updates</h4><p>When prop-firm rules change, your templates can keep up - without ever touching your accounts.</p></a>
-        </div>
-      </section>
-
-      <section class="doc-sec" id="free-tools">
-        <h2>Free tools (indicators &amp; add-ons)</h2>
-        <p>How-tos for the free NinjaTrader indicators and add-ons live here as they're released. Browse and download everything on the <a href="tools.html" style="color:var(--accent)">Tools page</a> (free account required).</p>
-      </section>
-
-      <section class="doc-sec" id="chart-grid">
-        <h2>TAH Chart Grid (add-on)</h2>
-        <p>Tiles your NinjaTrader windows into a clean grid &mdash; like TradingView's multi-chart layouts, but for any NT window: charts, SuperDOM, Market Analyzer, even the Control Center. Up to 8 windows per grid, on any monitor, or on just a half or quarter of a screen.</p>
-        <h3>Install</h3>
-        <ol>
-          <li>Download <b>TAH_ChartGrid.zip</b> from the <a href="tools.html" style="color:var(--accent)">Tools page</a>. Don't unzip it.</li>
-          <li>In NinjaTrader: <kbd>Tools</kbd> &rarr; <kbd>Import</kbd> &rarr; <kbd>NinjaScript Add-On...</kbd> and pick the zip.</li>
-          <li>Restart NinjaTrader. A <b>TAH Chart Grid</b> item appears under <kbd>Control Center</kbd> &rarr; <kbd>New</kbd>.</li>
-        </ol>
-        <h3>Use it</h3>
-        <ol>
-          <li>Open and set up your charts and windows first, then open <kbd>Control Center</kbd> &rarr; <kbd>New</kbd> &rarr; <kbd>TAH Chart Grid</kbd>.</li>
-          <li><b>Pick a layout</b> by clicking a thumbnail &mdash; equal grids (2 / 4 / 6 / 8) or mixed layouts with big and small panes. The preview below the thumbnails shows the layout's numbered slots.</li>
-          <li><b>Place windows:</b> click a slot in the preview to arm it, then click a window in the list to drop it there. The real window flashes its slot number on screen, so you always know exactly which window you just placed. Click an assigned window to remove it &mdash; and clicking any window with no slot armed simply flashes its name, handy when several charts look alike.</li>
-          <li><b>Pick where:</b> choose the monitor (the <kbd>Identify</kbd> button flashes a number on each screen) and a region &mdash; full monitor, a half, or a corner quarter.</li>
-          <li>Click <kbd>Tile</kbd>. Only the windows you assigned move; everything else stays exactly where it was.</li>
-        </ol>
-        <h3>Tips</h3>
-        <ul>
-          <li><b>Stack grids:</b> the picker stays open after tiling &mdash; assign a new set of windows and tile them onto a different region (e.g. a 6-grid on the right half of one monitor, then a 2-grid on the left half).</li>
-          <li><b>Save the result:</b> save a NinjaTrader workspace after tiling and NT restores the whole arrangement next time it starts.</li>
-          <li>NinjaTrader doesn't allow add-ons to open charts or change instruments &mdash; that's an NT platform limit. Set your charts up once, tile, then save the workspace.</li>
-        </ul>
-        <div class="doc-meta">Add-on version 1.9 &middot; NinjaTrader 8 &middot; Windows</div>
-      </section>
-
-      <section class="doc-sec" id="faq">
-        <h2>FAQ</h2>
-        <h3>Where is my data stored?</h3>
-        <p>Locally, in <code>journal.db</code> on your machine &mdash; there's no cloud and nothing that can lock you out of your history. Back it up via Settings &rarr; About &rarr; open data folder.</p>
-        <h3>How do I get help?</h3>
-        <p>Use the <a href="contact.html" style="color:var(--accent)">contact form</a> or the channels on the contact page.</p>
-        <div class="doc-meta">Based on Easy Journal User Manual v1.0 (May 2026) &middot; Journal schema v10 &middot; Bridge v0.10.2</div>
-      </section>
-
-    </main>
-  </div></div>
+  <section class="cta-band">
+    <h2>Can't find it?</h2>
+    <p>Tell us what you were looking for &mdash; it usually becomes the next guide we write.</p>
+    <div class="hero-actions">
+      <a href="contact.html" class="btn">Contact us</a>
+      <a href="tools.html" class="btn btn-ghost">Browse the tools</a>
+    </div>
+  </section>
 
   <footer class="site"><div class="container">
     <div class="foot-grid">
@@ -354,6 +133,7 @@
         <a href="tools.html">Free indicators</a>
         <a href="tools.html">Free add-ons</a>
         <a href="product.html">The Easy Journal</a>
+        <a href="alertfill.html">AlertFill</a>
         <a href="docs.html">Docs</a>
       </div>
       <div class="foot-col"><h4>Company</h4>
@@ -379,14 +159,68 @@
   <script src="assets/ticker.js"></script>
   <script>
   (function(){
-    var links=[].slice.call(document.querySelectorAll('.docs-side a'));
-    var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
-    function onScroll(){
-      var y=window.scrollY+120, idx=0;
-      secs.forEach(function(s,i){ if(s&&s.offsetTop<=y) idx=i; });
-      links.forEach(function(a,i){ a.classList.toggle('on', i===idx); });
-    }
-    window.addEventListener('scroll', onScroll); onScroll();
+    // The search index. When a doc page is added or renamed, add/adjust a row here.
+    // [product label, title, url, extra search words]
+    var IDX = [
+      ['EASY JOURNAL','What the Easy Journal is','docs-easy-journal.html#what-it-is','about overview'],
+      ['EASY JOURNAL','How the pieces fit','docs-easy-journal.html#how-it-works','bridge pipeline architecture'],
+      ['EASY JOURNAL','What you’ll need','docs-easy-journal.html#requirements','requirements licence key windows'],
+      ['EASY JOURNAL','Install the Bridge in NinjaTrader','docs-easy-journal.html#install-bridge','import zip add-on'],
+      ['EASY JOURNAL','Install the Journal','docs-easy-journal.html#install-journal','installer exe activate activation'],
+      ['EASY JOURNAL','First-run setup','docs-easy-journal.html#first-setup','sync discover accounts'],
+      ['EASY JOURNAL','The Home view','docs-easy-journal.html#home','net pnl calendar donut alerts'],
+      ['EASY JOURNAL','Managing accounts','docs-easy-journal.html#accounts','add account costs withdrawals stage'],
+      ['EASY JOURNAL','Account detail &amp; the drawdown floor','docs-easy-journal.html#account-detail','min balance trailing static eod drawdown'],
+      ['EASY JOURNAL','Reports','docs-easy-journal.html#reports','strategy performance monthly firm'],
+      ['EASY JOURNAL','Settings','docs-easy-journal.html#settings','bridge folder calendar earnings finnhub database demo'],
+      ['EASY JOURNAL','The Bridge','docs-easy-journal.html#the-bridge','schedule output folder sync'],
+      ['EASY JOURNAL','Troubleshooting','docs-easy-journal.html#troubleshooting','sync does nothing losses missing account news'],
+      ['EASY JOURNAL','FAQ','docs-easy-journal.html#faq','data stored help'],
+      ['EASY JOURNAL','Add a New Account','docs-add-account.html','guide new tag claim'],
+      ['EASY JOURNAL','Edit an Account','docs-edit-account.html','guide rules change'],
+      ['EASY JOURNAL','Change an Account’s Stage','docs-change-stage.html','guide eval funded breached retired'],
+      ['EASY JOURNAL','Add a Cost','docs-add-cost.html','guide reset fee purchase'],
+      ['EASY JOURNAL','Add a Withdrawal','docs-add-withdrawal.html','guide payout'],
+      ['EASY JOURNAL','Add Commission Rates Manually','docs-commission-rates.html','guide commissions net pnl'],
+      ['EASY JOURNAL','Fix a Skipped Fill','docs-fix-skipped-fill.html','guide no action fills'],
+      ['EASY JOURNAL','Settings guide','docs-settings.html','guide options'],
+      ['EASY JOURNAL','Firm History','docs-firm-history.html','guide pre-journal totals'],
+      ['EASY JOURNAL','Rule Updates','docs-rule-updates.html','guide templates prop firm rules'],
+      ['EASY SYNC','Easy Sync setup (5 minutes)','docs-easy-sync.html','cloud relay vps key webhook snapshot'],
+      ['ALERTFILL','AlertFill setup (10 minutes)','docs-alertfill.html','tradingview webhook receiver alert automation'],
+      ['ALERTFILL','Alert syntax reference','docs-alertfill.html','buy sell close sl tp atm account ticks points quantity'],
+      ['ALERTFILL','ATM templates &amp; precedence','docs-alertfill.html','atm chart trader template'],
+      ['ALERTFILL','Prop-firm accounts &amp; automation','docs-alertfill.html','prop firm rules sim stale'],
+      ['FREE TOOLS','TAH Chart Grid','docs-free-tools.html#chart-grid','tile windows layouts monitor workspace']
+    ];
+    var q = document.getElementById('hub-q'), r = document.getElementById('hub-r');
+    if(!q || !r) return;
+    function esc(t){ return t.replace(/</g,'&lt;'); }
+    q.addEventListener('input', function(){
+      var v = q.value.trim().toLowerCase();
+      if(v.length < 2){ r.style.display = 'none'; return; }
+      var hits = IDX.filter(function(a){
+        return (a[1] + ' ' + a[0] + ' ' + a[3]).toLowerCase().indexOf(v) >= 0;
+      }).slice(0, 6);
+      if(!hits.length){
+        r.innerHTML = '<a href="contact.html"><span>NO MATCHES</span>Nothing found — tell us what you were after</a>';
+      } else {
+        r.innerHTML = hits.map(function(a){
+          return '<a href="' + a[2] + '"><span>// ' + a[0] + '</span>' + a[1] + '</a>';
+        }).join('');
+      }
+      r.style.display = 'block';
+    });
+    q.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){
+        var first = r.querySelector('a');
+        if(first && r.style.display === 'block') window.location.href = first.getAttribute('href');
+      }
+      if(e.key === 'Escape'){ r.style.display = 'none'; }
+    });
+    document.addEventListener('click', function(e){
+      if(!e.target.closest('.hub-search')) r.style.display = 'none';
+    });
   })();
   </script>
 </body>

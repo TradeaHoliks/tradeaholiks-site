@@ -54,6 +54,17 @@
         <button id="logout-btn" class="btn btn-ghost btn-block" style="margin-top:12px">Log out</button>
       </div>
 
+      <!-- Easy Sync: cloud snapshot feed (shown only when a licence exists) -->
+      <div class="auth-card" id="sync-card" style="display:none;margin-top:22px">
+        <div class="eyebrow">// EASY SYNC &mdash; CLOUD SNAPSHOT FEED</div>
+        <h2 style="font-size:20px">Your NinjaTrader &rarr; your Journal, anywhere</h2>
+        <div class="sub">No shared drive, no VPN &mdash; included with your licence. Paste these two
+        things once and your Journal stays fed wherever it runs.
+        <span id="sync-status" style="display:block;margin-top:8px;font-family:var(--mono,monospace);font-size:12px;letter-spacing:1px"></span></div>
+        <div id="sync-body" style="margin-top:10px"></div>
+        <p id="sync-msg" class="note" style="display:none;margin-top:12px;white-space:pre-wrap"></p>
+      </div>
+
       <!-- Admin-only: PropFirm data publishing (hidden unless the logged-in
            account is on the app's approved-publisher list) -->
       <div class="auth-card" id="admin-pub" style="display:none;margin-top:22px">
@@ -237,7 +248,121 @@
         }).join('');
         html += '<a id="dl-journal" class="btn btn-block" style="margin-top:4px" href="' + JOURNAL_URL + '">Download Easy Journal</a>';
         box.innerHTML = html;
+        if(lic.some(function(L){ return !L.suspended; })) loadSyncKey();
       }).catch(function(){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now.</div>'; });
+    }
+    // ---- Easy Sync (cloud snapshot feed) --------------------------------
+    var SYNC_RELAY_FALLBACK = 'https://relay.tradeaholiks.com';
+    var syncKeyFull = '', syncRelay = SYNC_RELAY_FALLBACK, syncKeyShown = false;
+    function syncMsg(t, ok){
+      var m = document.getElementById('sync-msg'); if(!m) return;
+      m.textContent = t; m.style.display = 'block';
+      m.style.color = ok ? 'var(--accent)' : '#ff5d5d';
+    }
+    function syncMask(k){
+      if(!k) return '';
+      return k.length > 12 ? k.slice(0,9) + '\u2022\u2022\u2022\u2022' + k.slice(-4) : k;
+    }
+    function syncCopy(text, btn){
+      function done(){ var t = btn.textContent; btn.textContent = '\u2713 Copied';
+        setTimeout(function(){ btn.textContent = t; }, 1200); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(function(){ window.prompt('Copy this:', text); });
+      } else { window.prompt('Copy this:', text); }
+    }
+    function syncAgo(iso){
+      if(!iso) return null;
+      var ms = Date.now() - new Date(iso).getTime();
+      if(isNaN(ms)) return null;
+      var m = Math.floor(ms/60000);
+      if(m < 1) return 'just now';
+      if(m < 60) return m + ' min ago';
+      var h = Math.floor(m/60);
+      if(h < 48) return h + ' h ago';
+      return Math.floor(h/24) + ' days ago';
+    }
+    function syncRowHtml(label, valueId, shownValue, buttons){
+      return '<div style="margin-bottom:4px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">' + label + '</div>'
+        + '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">'
+        + '<div id="' + valueId + '" style="flex:1;min-width:220px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:10px;padding:10px 12px;font-family:var(--mono,monospace);font-size:13px;overflow-x:auto;white-space:nowrap">' + shownValue + '</div>'
+        + buttons + '</div>';
+    }
+    function syncBtn(id, label){
+      return '<button id="' + id + '" class="btn btn-ghost" type="button" style="padding:8px 12px;font-size:13px">' + label + '</button>';
+    }
+    function renderSync(){
+      var body = document.getElementById('sync-body'); if(!body) return;
+      var hookUrl = syncRelay + '/snap/' + syncKeyFull;
+      var html = '';
+      html += syncRowHtml('Your sync key', 'sync-key-box', syncMask(syncKeyFull),
+                syncBtn('sync-show','Show') + syncBtn('sync-copy-key','Copy') + syncBtn('sync-regen','Regenerate'));
+      html += syncRowHtml('Bridge webhook URL (NinjaTrader side)', 'sync-hook-box', syncMask(syncKeyFull) ? (syncRelay + '/snap/' + syncMask(syncKeyFull)) : '',
+                syncBtn('sync-copy-hook','Copy'));
+      html += '<div class="note" style="margin:-6px 0 12px">Paste into NinjaTrader &rarr; TAH Bridge &rarr; \u201cSnapshot webhook\u201d. Copy uses the full key.</div>';
+      html += syncRowHtml('Journal relay URL', 'sync-relay-box', syncRelay,
+                syncBtn('sync-copy-relay','Copy'));
+      html += '<div class="note" style="margin:-6px 0 12px">In Easy Journal &rarr; Settings &rarr; \u201cFeed snapshots from the relay\u201d: paste this URL and your sync key.</div>';
+      html += '<button id="sync-test" class="btn btn-block" type="button" style="margin-top:4px">Test my link</button>';
+      body.innerHTML = html;
+      document.getElementById('sync-show').addEventListener('click', function(){
+        syncKeyShown = !syncKeyShown;
+        document.getElementById('sync-key-box').textContent = syncKeyShown ? syncKeyFull : syncMask(syncKeyFull);
+        document.getElementById('sync-hook-box').textContent = syncRelay + '/snap/' + (syncKeyShown ? syncKeyFull : syncMask(syncKeyFull));
+        this.textContent = syncKeyShown ? 'Hide' : 'Show';
+      });
+      document.getElementById('sync-copy-key').addEventListener('click', function(){ syncCopy(syncKeyFull, this); });
+      document.getElementById('sync-copy-hook').addEventListener('click', function(){ syncCopy(hookUrl, this); });
+      document.getElementById('sync-copy-relay').addEventListener('click', function(){ syncCopy(syncRelay, this); });
+      document.getElementById('sync-test').addEventListener('click', function(){ syncPing(true); });
+      document.getElementById('sync-regen').addEventListener('click', function(){
+        if(!window.confirm('Regenerate your sync key?\n\nYour NinjaTrader Bridge AND your Journal will both need the new key before snapshots flow again.')) return;
+        var b = this; b.disabled = true;
+        sb.functions.invoke('my-sync-key', { body: { action: 'regenerate' } }).then(function(res){
+          b.disabled = false;
+          if(res.error || !res.data || !res.data.key){ syncMsg('Could not regenerate right now \u2014 please try again shortly.', false); return; }
+          syncKeyFull = res.data.key; syncRelay = res.data.relayBase || SYNC_RELAY_FALLBACK;
+          syncKeyShown = false; renderSync();
+          syncMsg('New key issued. Update the Bridge webhook URL and the Journal key now.', true);
+        }).catch(function(){ b.disabled = false; syncMsg('Could not regenerate right now.', false); });
+      });
+    }
+    function syncPing(fromButton){
+      var st = document.getElementById('sync-status'); if(!st || !syncKeyFull) return;
+      fetch(syncRelay + '/ping/' + syncKeyFull).then(function(r){
+        if(r.status === 401){ st.textContent = '\u25cb KEY SUSPENDED \u2014 contact support'; st.style.color = '#ff5d5d'; return null; }
+        return r.json();
+      }).then(function(j){
+        if(!j) return;
+        var ago = syncAgo(j.lastSeenUtc);
+        var txt, col;
+        if(!ago){ txt = '\u25cb WAITING FOR FIRST SNAPSHOT \u2014 follow the two steps below'; col = 'var(--muted)'; }
+        else { txt = '\u25cf FEED ACTIVE \u2014 last activity ' + ago; col = 'var(--accent)'; }
+        if(j.snapshotsQueued > 25){ txt += ' \u00b7 ' + j.snapshotsQueued + ' snapshots waiting \u2014 is your Journal running?'; col = '#ff5d5d'; }
+        st.textContent = txt; st.style.color = col;
+        if(fromButton) syncMsg('Link OK \u2014 key valid, ' + j.snapshotsQueued + ' snapshot(s) queued.', true);
+      }).catch(function(){
+        st.textContent = '\u25cb STATUS UNAVAILABLE (relay unreachable from your browser)';
+        st.style.color = 'var(--muted)';
+        if(fromButton) syncMsg('Could not reach the relay from your browser \u2014 the feed itself may still be fine.', false);
+      });
+    }
+    function loadSyncKey(){
+      var card = document.getElementById('sync-card'); if(!card) return;
+      card.style.display = 'block';
+      var body = document.getElementById('sync-body');
+      if(body) body.innerHTML = '<div style="color:var(--muted)">Setting up your sync key\u2026</div>';
+      sb.functions.invoke('my-sync-key', { body: { action: 'get' } }).then(function(res){
+        if(res.error || !res.data || !res.data.key){
+          if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your sync key right now \u2014 please try again shortly.</div>';
+          return;
+        }
+        syncKeyFull = res.data.key;
+        syncRelay = res.data.relayBase || SYNC_RELAY_FALLBACK;
+        renderSync();
+        syncPing(false);
+      }).catch(function(){
+        if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your sync key right now.</div>';
+      });
     }
     function showLoggedOut(){
       if(authGrid) authGrid.style.display='';

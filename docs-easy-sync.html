@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easy Sync Setup — Easy Journal Docs — Tradeaholiks</title>
+<meta name="description" content="Connect NinjaTrader to your Journal through the cloud in about 5 minutes — no shared drive, no VPN.">
+<link rel="stylesheet" href="assets/styles.css?v=5">
+<link rel="icon" type="image/png" href="assets/icon-tah.png">
+<style>
+.doc-article{max-width:840px;margin:0 auto}
+.doc-article p{color:var(--muted);line-height:1.75;margin-bottom:14px}
+.doc-article h2{font-size:20px;font-weight:800;color:#e6edf3;margin:30px 0 12px}
+.doc-article .step{color:var(--muted);line-height:1.75;margin-bottom:10px}
+.doc-article .stepnum{color:var(--accent);font-weight:800;font-family:var(--mono);margin-right:8px}
+.doc-article code{font-family:var(--mono);font-size:13px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:6px;padding:2px 7px}
+.doc-article .notice{margin:18px 0;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;color:var(--muted);line-height:1.7}
+.doc-nav{display:flex;justify-content:space-between;gap:12px;max-width:840px;margin:34px auto 0;font-family:var(--mono);font-size:12px}
+.doc-nav a{color:var(--accent);text-decoration:none}
+.doc-crumb{font-family:var(--mono);font-size:12px;margin-bottom:10px}
+.doc-crumb a{color:var(--faint);text-decoration:none}
+.doc-crumb a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+  <div class="ticker" data-message="EASY JOURNAL — GUIDES &amp; HOW-TOS"><span id="ticker-track">
+    <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp; <em>EASY JOURNAL — GUIDES &amp; HOW-TOS</em> &nbsp;&middot;&nbsp;
+  </span></div>
+
+  <nav class="nav"><div class="container nav-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="https://app.tradeaholiks.com/">PropFirm Browser</a>
+      <a href="news.html">News</a>
+      <a href="docs.html" class="active">Docs</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="nav-login">Log in</a>
+    </div>
+    <div class="nav-cta">
+      <a href="account.html" class="btn btn-sm">Create account</a>
+      <button class="menu-btn" aria-label="Menu">&#9776;</button>
+    </div>
+  </div></nav>
+
+  <a class="beta-band" href="beta.html"><b>BETA TESTERS WANTED</b> &mdash; free lifetime Easy Journal licence for the first crew &rarr;</a>
+
+  <header class="hero" style="padding:52px 0 10px"><div class="container doc-article">
+    <div class="doc-crumb"><a href="docs.html#guides">&larr; All Easy Journal guides</a></div>
+    <div class="badge">// HOW-TO</div>
+    <h1>Easy Sync setup</h1>
+    <p class="lead" style="margin-bottom:0">NinjaTrader anywhere &rarr; your Journal anywhere, through the cloud. About 5 minutes, two paste jobs, no shared drive, no VPN.</p>
+  </div></header>
+
+  <section class="section tight"><div class="container">
+    <div class="doc-article">
+
+      <h2>What Easy Sync is</h2>
+      <p>Normally the Bridge writes snapshot files into a folder and the Journal reads them from that folder &mdash; which works great when both run on the same PC or share a drive. Easy Sync is for when they don't: NinjaTrader on a VPS and the Journal on your home PC, or a laptop that moves around. The Bridge sends each snapshot to the Tradeaholiks relay, and your Journal collects it seconds later &mdash; wherever it is. Both machines only make outgoing connections, so there is nothing to open, forward or network. Easy Sync is included with your Easy Journal licence.</p>
+
+      <div class="notice"><b>Before you start:</b> log in at <a href="account.html" style="color:var(--accent)">tradeaholiks.com/account</a> and open the <b>Easy Sync</b> tab. Everything you'll paste below has a Copy button there.</div>
+
+      <h2>Step 1 &mdash; NinjaTrader side (the machine that trades)</h2>
+      <p class="step"><span class="stepnum">1.</span>On your account page's Easy Sync tab, click <b>Copy</b> next to <b>Bridge webhook URL</b>.</p>
+      <p class="step"><span class="stepnum">2.</span>On the NinjaTrader machine: Control Center &rarr; <b>New</b> &rarr; <b>TAH Bridge</b> (the Bridge window opens).</p>
+      <p class="step"><span class="stepnum">3.</span>Find the <b>Snapshot webhook</b> section, tick the box to turn it on, and paste the copied URL into the field next to it.</p>
+      <p class="step"><span class="stepnum">4.</span>That's the whole NT side. The Bridge keeps writing its normal files too &mdash; the webhook is an extra copy, so nothing about your current setup breaks.</p>
+
+      <h2>Step 2 &mdash; Journal side (the machine you read on)</h2>
+      <p class="step"><span class="stepnum">1.</span>On your account page, click <b>Copy</b> next to your <b>sync key</b>.</p>
+      <p class="step"><span class="stepnum">2.</span>In Easy Journal: <b>Settings</b> &rarr; the <b>Bridge source</b> card &rarr; tick <b>Feed snapshots from the relay</b>.</p>
+      <p class="step"><span class="stepnum">3.</span>Leave the Relay URL as <code>https://relay.tradeaholiks.com</code> and paste your sync key into the <b>Relay key</b> box.</p>
+      <p class="step"><span class="stepnum">4.</span>Click <b>Apply</b>, then <b>Test relay</b> &mdash; you want a green tick.</p>
+
+      <h2>Check it's flowing</h2>
+      <p>Place a trade (SIM is fine) or press SYNC NOW in the Bridge, then give it a minute. Your account page's Easy Sync tab should flip to <b>FEED ACTIVE</b>, and the trade appears in your Journal. From then on it's automatic &mdash; snapshots arrive within a minute or two of every fill, and if either machine is off for a while, everything queued is delivered when it comes back. Nothing is ever lost.</p>
+
+      <h2>If something's off</h2>
+      <p><b>Test relay fails:</b> re-copy the key from your account page (don't retype it) and check the URL has no extra spaces. <b>Feed says "waiting":</b> the Bridge side hasn't sent anything yet &mdash; check the Snapshot webhook box is ticked and the URL pasted is the full one from your account page. <b>"Snapshots waiting" keeps climbing:</b> your Journal isn't collecting &mdash; make sure it's running and the relay feed box is ticked. Still stuck? Use Report a Problem in the Journal, or the <a href="contact.html" style="color:var(--accent)">contact page</a>.</p>
+
+    </div>
+    <div class="doc-nav">
+      <div><a href="docs-settings.html">&larr; Settings</a></div>
+      <div><a href="docs.html#guides">All guides &rarr;</a></div>
+    </div>
+  </div></section>
+
+  <footer class="site"><div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html"><img class="brand-logo foot-logo" src="assets/logo-full.png" alt="Tradeaholiks — Strategies. Indicators. Results."></a>
+        <p>Strategies. Indicators. Results. Trading tools built by traders, for traders.</p>
+      </div>
+      <div class="foot-col"><h4>Tools</h4>
+        <a href="tools.html">Free indicators</a>
+        <a href="tools.html">Free add-ons</a>
+        <a href="product.html">The Easy Journal</a>
+        <a href="docs.html">Docs</a>
+      </div>
+      <div class="foot-col"><h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="account.html">Create account</a>
+        <a href="account.html">Log in</a>
+      </div>
+      <div class="foot-col"><h4>Follow</h4>
+        <a href="https://www.youtube.com/@tradeaholiks" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://x.com/tradeaholiks" target="_blank" rel="noopener">X / Twitter</a>
+        <a href="https://www.instagram.com/tradeaholiks/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>&copy; 2026 Tradeaholiks &middot; tradeaholiks.com</div>
+      <div class="legal-links" style="font-size:13px;opacity:.85"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refund.html">Refunds</a></div>
+    </div>
+  </div></footer>
+
+  <script src="assets/site.js"></script>
+  <script src="assets/auth-nav.js"></script>
+  <script src="assets/ticker.js"></script>
+</body>
+</html>

@@ -110,11 +110,12 @@
         </div>
 
         <div class="tabpane" id="pane-downloads">
-          <div class="eyebrow" style="margin-top:18px">// Free tools</div>
-          <ul class="ticklist" style="margin:12px 0 20px">
-            <li>Download all free indicators &amp; add-ons</li>
-          </ul>
-          <a class="btn btn-block" href="tools.html">Browse the free tools</a>
+          <div class="eyebrow" style="margin-top:18px">// Your products</div>
+          <div id="dl-products" style="margin-top:12px"><div style="color:var(--muted)">Checking what you own&hellip;</div></div>
+          <div class="eyebrow" style="margin-top:24px">// Free tools</div>
+          <div class="sub" style="margin-top:6px">Yours with your free account &mdash; screenshots and full descriptions on the <a href="tools.html" style="color:var(--accent)">Tools page</a>.</div>
+          <div id="dl-list" style="margin-top:12px"><div style="color:var(--muted)">Loading the tool list&hellip;</div></div>
+          <p id="dl-msg" class="note" style="display:none;margin-top:12px"></p>
         </div>
 
         <div class="tabpane" id="pane-admin">
@@ -253,7 +254,88 @@
       if(liveEmail) liveEmail.textContent = (user && user.email) || '';
       loadLicences();
       loadAlertFill();
+      loadDownloads();
       checkPublisher();
+    }
+    // ---- Downloads tab: everything you can download, grouped -------------
+    // Product ownership state feeding the "Your products" rows:
+    //   jrnOwned: null = still checking, true/false once the licence check lands
+    //   afOwn:    'loading' | 'licensed' | 'trial' | 'none'
+    var jrnOwned = null, afOwn = 'loading';
+    function dlPill(text, good){
+      var col = good ? '#38d178' : 'var(--muted)';
+      return '<span style="font-family:var(--mono,monospace);font-size:10px;letter-spacing:1px;color:' + col + ';border:1px solid ' + (good ? '#38d178' : 'var(--line,#2a2e37)') + ';border-radius:999px;padding:3px 9px;white-space:nowrap">' + text + '</span>';
+    }
+    function dlRow(icon, name, meta, right, owned){
+      return '<div style="display:flex;gap:12px;align-items:center;background:var(--panel-2,#1d2027);border:1px solid ' + (owned ? 'rgba(245,166,35,.45)' : 'var(--line,#2a2e37)') + ';border-radius:10px;padding:12px 14px;margin-bottom:8px;flex-wrap:wrap">'
+           + '<div style="font-size:20px">' + icon + '</div>'
+           + '<div style="flex:1;min-width:160px">'
+           + '<div style="font-weight:700">' + name + '</div>'
+           + '<div style="font-size:12px;color:var(--muted)">' + meta + '</div>'
+           + '</div><div style="display:flex;gap:8px;align-items:center">' + right + '</div></div>';
+    }
+    function renderProductDownloads(){
+      var box = document.getElementById('dl-products'); if(!box) return;
+      var ghost = 'class="btn btn-ghost" style="padding:8px 14px;font-size:13px;white-space:nowrap"';
+      var html = '';
+      // Easy Journal installer
+      if(jrnOwned === true){
+        html += dlRow('&#128202;', 'Easy Journal installer', 'Windows &middot; licensed to you',
+                      dlPill('OWNED', true) + '<a ' + ghost + ' href="' + JOURNAL_URL + '">Download</a>', true);
+      } else if(jrnOwned === false){
+        html += dlRow('&#128202;', 'Easy Journal', 'Desktop trading journal &middot; $149 one-time',
+                      dlPill('NOT OWNED', false) + '<a ' + ghost + ' href="product.html">See the Journal</a>', false);
+      } else {
+        html += dlRow('&#128202;', 'Easy Journal installer', 'Checking your licence&hellip;', '', false);
+      }
+      // AlertFill receiver
+      if(afOwn === 'licensed' || afOwn === 'trial'){
+        html += dlRow('&#9889;', 'TAH AlertFill receiver', 'NinjaTrader 8 &middot; ' + (afOwn === 'trial' ? 'trial active' : 'licensed to you'),
+                      dlPill(afOwn === 'trial' ? 'TRIAL' : 'OWNED', true)
+                      + '<button ' + ghost.replace('class="', 'type="button" class="dl-btn ') + ' data-file="TAH_AlertFill.zip">Download</button>', true);
+      } else if(afOwn === 'none'){
+        html += dlRow('&#9889;', 'AlertFill', 'TradingView automation &middot; $149 one-time &middot; free 7-day trial',
+                      dlPill('NOT OWNED', false) + '<a ' + ghost + ' href="alertfill.html">See AlertFill</a>', false);
+      } else {
+        html += dlRow('&#9889;', 'TAH AlertFill receiver', 'Checking your key&hellip;', '', false);
+      }
+      box.innerHTML = html;
+    }
+    var dlLoaded = false;
+    function loadDownloads(){
+      if(dlLoaded) return; dlLoaded = true;
+      renderProductDownloads();
+      // one shared click handler for every signed-URL download on this tab
+      var pane = document.getElementById('pane-downloads');
+      if(pane){
+        pane.addEventListener('click', function(e){
+          var b = e.target.closest ? e.target.closest('.dl-btn') : null;
+          if(!b) return;
+          var m = document.getElementById('dl-msg');
+          function dmsg(t, ok){ if(m){ m.textContent = t; m.style.display = 'block'; m.style.color = ok ? 'var(--accent)' : '#ff5d5d'; } }
+          b.disabled = true;
+          sb.storage.from('tools').createSignedUrl(b.getAttribute('data-file'), 120, { download: true }).then(function(res){
+            b.disabled = false;
+            if(res.error || !res.data || !res.data.signedUrl){ dmsg('Could not start the download — please try again shortly.', false); return; }
+            window.location.href = res.data.signedUrl;
+          }).catch(function(){ b.disabled = false; dmsg('Could not start the download — please try again shortly.', false); });
+        });
+      }
+      var box = document.getElementById('dl-list'); if(!box) return;
+      fetch('tools.json').then(function(r){ return r.json(); }).then(function(j){
+        var items = [].concat((j && j.indicators) || [], (j && j.addons) || []);
+        if(!items.length){ box.innerHTML = '<div style="color:var(--muted)">No tools published yet — check back soon.</div>'; return; }
+        var html = items.map(function(t){
+          var btn = t.file
+            ? '<button class="btn btn-ghost dl-btn" data-file="' + t.file + '" type="button" style="padding:8px 14px;font-size:13px;white-space:nowrap">Download</button>'
+            : dlPill('COMING SOON', false);
+          return dlRow(t.icon || '&#128295;', t.name,
+                       (t.platform || '') + (t.version ? ' &middot; v' + t.version : ''), btn, false);
+        }).join('');
+        box.innerHTML = html;
+      }).catch(function(){
+        box.innerHTML = '<div style="color:var(--muted)">Couldn’t load the tool list — <a href="tools.html" style="color:var(--accent)">use the Tools page</a> instead.</div>';
+      });
     }
     // ---- Admin-only PropFirm data publishing (panel stays hidden for everyone else) ----
     var PUB_APP = 'https://app.tradeaholiks.com';
@@ -306,6 +388,7 @@
         if(!lic.length){
           box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your Easy Journal key will appear here after you buy it.</div>';
           setDot('journal', 'd');
+          jrnOwned = false; renderProductDownloads();
           syncNoLicence();
           return;
         }
@@ -321,6 +404,7 @@
         box.innerHTML = html;
         var anyActive = lic.some(function(L){ return !L.suspended; });
         setDot('journal', anyActive ? 'g' : 'r');
+        jrnOwned = anyActive; renderProductDownloads();
         if(anyActive){ loadSyncKey(); } else { syncNoLicence(); }
       }).catch(function(){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now.</div>'; });
     }
@@ -461,6 +545,7 @@
       cb(null);
     }
     function afShowTeaser(){
+      afOwn = 'none'; renderProductDownloads();
       setDot('alertfill', 'd');
       var t = document.getElementById('af-teaser');
       var o = document.getElementById('af-owned');
@@ -501,6 +586,7 @@
         if(d.expiresUtc){ afTrialEnd = new Date(d.expiresUtc); }
         else if(d.trialStartedAt){ afTrialEnd = new Date(new Date(d.trialStartedAt).getTime() + 7*86400000); }
       }
+      afOwn = afTrial ? 'trial' : 'licensed'; renderProductDownloads();
       afRender(); afPing(false); afOrders();
     }
     function afRender(){

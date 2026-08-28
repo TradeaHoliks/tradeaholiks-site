@@ -84,25 +84,46 @@
       <p class="step"><span class="stepnum">1.</span>On your account page's AlertFill tab, click <b>Copy</b> next to <b>TradingView webhook URL</b>.</p>
       <p class="step"><span class="stepnum">2.</span>In TradingView, create an alert as usual (or edit an existing one).</p>
       <p class="step"><span class="stepnum">3.</span>In the alert dialog, open the <b>Notifications</b> tab, tick <b>Webhook URL</b>, and paste the copied URL.</p>
-      <p class="step"><span class="stepnum">4.</span>In the <b>Message</b> box, write the order &mdash; for example: <code>buy NQ q=1 sl=40t tp=80t</code></p>
+      <p class="step"><span class="stepnum">4.</span>In the <b>Message</b> box, write the order &mdash; for example: <code>buy NQ 09-26 q=1 sl=40t tp=80t</code> (the full formula and every option are just below).</p>
       <p class="step"><span class="stepnum">5.</span>Save the alert. When it fires, the order appears in NinjaTrader about a second later. Watch the first few on SIM.</p>
 
       <h2>Writing the alert message</h2>
-      <p>The message is one line: an action, a symbol, then any options in <code>key=value</code> form, separated by spaces.</p>
+      <p>Every message follows one formula &mdash; an action, a symbol, then any options, all on one line separated by spaces:</p>
+      <pre style="background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:10px;padding:14px 18px;font-family:var(--mono,monospace);font-size:15px;color:#e6edf3;overflow-x:auto"><span style="color:var(--accent)">action</span>  <span style="color:var(--accent)">symbol</span>  [options in any order]</pre>
+
+      <h3>The two required parts</h3>
       <table>
-        <tr><th>Part</th><th>What it does</th></tr>
-        <tr><td>buy &nbsp;/&nbsp; long</td><td>Market buy.</td></tr>
-        <tr><td>sell &nbsp;/&nbsp; short</td><td>Market sell.</td></tr>
-        <tr><td>close &nbsp;/&nbsp; flat &nbsp;/&nbsp; flatten &nbsp;/&nbsp; exit</td><td>Close the open position (and cancel its bracket orders).</td></tr>
-        <tr><td>NQ &nbsp;or&nbsp; NQ 09-26</td><td>The instrument. On its own the front contract is used; add the contract month to pin one.</td></tr>
-        <tr><td>q=2 &nbsp;/&nbsp; qty=2</td><td>Quantity. Default 1 (or the window's default).</td></tr>
-        <tr><td>sl=29500 &nbsp;/&nbsp; sl=40t &nbsp;/&nbsp; sl=10p</td><td>Stop loss: a price, ticks (<code>40t</code>, <code>40ticks</code>) or points (<code>10p</code>, <code>10pts</code>). Also <code>stop=</code>.</td></tr>
-        <tr><td>tp=29650 &nbsp;/&nbsp; tp=80t &nbsp;/&nbsp; tp=20p</td><td>Take profit, same formats. Also <code>target=</code>. Tick/point distances are measured from your actual fill price.</td></tr>
-        <tr><td>account=Sim101</td><td>Send this alert to a different account than the window's selection. Also <code>acct=</code>.</td></tr>
-        <tr><td>atm=Scalp &nbsp;/&nbsp; atm="My ATM Name"</td><td>Hand the trade to a NinjaTrader ATM strategy template. Names with spaces need the quotes.</td></tr>
+        <tr><th>Field</th><th></th><th>What you can type</th></tr>
+        <tr><td>action</td><td><span style="font-family:var(--mono);font-size:9.5px;letter-spacing:1px;color:#ff9d5d;border:1px solid #ff9d5d;border-radius:999px;padding:2px 8px;white-space:nowrap">REQUIRED</span></td><td>The first word of the message. <code>buy</code> or <code>long</code> to go long &middot; <code>sell</code> or <code>short</code> to go short &middot; <code>close</code>, <code>flat</code>, <code>flatten</code> or <code>exit</code> to get out (also cancels that position's bracket orders).</td></tr>
+        <tr><td>symbol</td><td><span style="font-family:var(--mono);font-size:9.5px;letter-spacing:1px;color:#ff9d5d;border:1px solid #ff9d5d;border-radius:999px;padding:2px 8px;white-space:nowrap">REQUIRED*</span></td><td>The instrument exactly as NinjaTrader names it: <code>NQ 09-26</code>, <code>ES 09-26</code>, <code>MNQ 09-26</code>. Futures include the contract month &mdash; or set a mapping once in the receiver window (e.g. <code>NQ=NQ 09-26</code>) and just type <code>NQ</code>; one field to update at rollover. *A bare <code>flatten</code> with no symbol closes everything.</td></tr>
       </table>
-      <p>Examples: <code>buy NQ q=1 sl=40t tp=80t</code> &nbsp;&middot;&nbsp; <code>sell ES 09-26 q=2 sl=6410.25 tp=6395</code> &nbsp;&middot;&nbsp; <code>long NQ atm="Morning Scalp"</code> &nbsp;&middot;&nbsp; <code>flat NQ</code></p>
-      <p>TradingView placeholders work anywhere in the message &mdash; e.g. <code>{{ticker}}</code> or <code>q={{strategy.order.contracts}}</code> &mdash; TradingView fills them in before sending. JSON-style messages are also accepted (<code>{"action":"buy","symbol":"NQ","qty":1}</code>) if your strategy already produces them.</p>
+
+      <h3>The options</h3>
+      <p>All optional, any order. Always <code>name=value</code> with <b>no spaces around the =</b>.</p>
+      <table>
+        <tr><th>Option</th><th>Also accepts</th><th>What it does</th><th>Examples</th></tr>
+        <tr><td>q=</td><td><code>qty=</code></td><td>How many contracts. Left out, the receiver's default quantity is used. Always capped by the receiver's max-quantity setting.</td><td><code>q=1</code> &nbsp;<code>q=3</code></td></tr>
+        <tr><td>sl=</td><td><code>stop=</code></td><td>Stop loss &mdash; a price, ticks or points. Tick/point distances are measured from your ACTUAL fill price and rounded to tick size.</td><td><code>sl=29500</code> &nbsp;<code>sl=40t</code> &nbsp;<code>sl=10p</code></td></tr>
+        <tr><td>tp=</td><td><code>target=</code></td><td>Take profit &mdash; same three formats.</td><td><code>tp=29650</code> &nbsp;<code>tp=80t</code> &nbsp;<code>tp=20p</code></td></tr>
+        <tr><td>account=</td><td><code>acct=</code></td><td>Send this alert to a specific account instead of the one selected in the receiver window.</td><td><code>account=Sim101</code></td></tr>
+        <tr><td>atm=</td><td>&mdash;</td><td>Run the trade under a NinjaTrader ATM template &mdash; the ATM then owns the stop and target, so any <code>sl=</code>/<code>tp=</code> in the alert is ignored. Names with spaces need quotes.</td><td><code>atm=Scalp</code> &nbsp;<code>atm="Morning Scalp"</code></td></tr>
+      </table>
+      <p>Units for <code>sl=</code> / <code>tp=</code>: no unit = a price &middot; <code>t</code>, <code>tick</code> or <code>ticks</code> = ticks &middot; <code>p</code>, <code>pt</code> or <code>pts</code> = points.</p>
+
+      <h3>Ready to paste</h3>
+      <p>Complete messages for every common case &mdash; copy one and edit the symbol and numbers:</p>
+      <table>
+        <tr><th>You want</th><th>Message</th></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Market buy, 1 contract</td><td><code>buy NQ 09-26 q=1</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy with a bracket in ticks</td><td><code>buy NQ 09-26 q=1 sl=40t tp=80t</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Sell with exact prices</td><td><code>sell ES 09-26 q=2 sl=6410.25 tp=6395</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy under an ATM template</td><td><code>long NQ 09-26 atm="Morning Scalp"</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Route to a specific account</td><td><code>buy MNQ 09-26 q=2 account=Sim101</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close one instrument</td><td><code>flat NQ 09-26</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close everything</td><td><code>flatten</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">From a Pine STRATEGY alert</td><td><code>{{strategy.order.alert_message}}</code> &mdash; your script builds the message (see Step 2 above)</td></tr>
+      </table>
+      <p>TradingView placeholders work anywhere in the message &mdash; e.g. <code>q={{strategy.order.contracts}}</code> &mdash; TradingView fills them in before sending. JSON-style messages are also accepted (<code>{"action":"buy","symbol":"NQ 09-26","qty":1}</code>) if your strategy already produces them.</p>
 
       <h3>How ATM templates are chosen</h3>
       <p>Three levels, first one wins: <b>1)</b> <code>atm=</code> named in the alert &middot; <b>2)</b> the ATM template currently selected in Chart Trader on that instrument's open chart &middot; <b>3)</b> the default ATM set in the AlertFill window. When an ATM runs the trade, the ATM owns the stop and target &mdash; any <code>sl=</code>/<code>tp=</code> in the alert is ignored. No ATM anywhere? AlertFill places its own bracket from <code>sl=</code>/<code>tp=</code>.</p>

@@ -68,11 +68,12 @@
       <p>Two safety rules are built in. If your NinjaTrader is offline when an alert fires, the order queues and is delivered the moment the receiver reconnects &mdash; <b>unless it is older than 30 seconds</b>, in which case it is discarded and logged. A stale entry signal never fires into a market that has moved on. Second: everything is visible &mdash; every alert shows up in the receiver's activity log and on your account page.</p>
 
       <h2>What you'll need</h2>
-      <p>NinjaTrader 8 on Windows; a <b>paid TradingView plan</b> (webhook alerts unlock at their Essential tier and up); and an AlertFill key &mdash; free 7-day trial or full licence, both on your <a href="account.html" style="color:var(--accent)">account page</a>.</p>
+      <p><b>NinjaTrader 8</b> or <b>Quantower</b> on Windows &mdash; one licence covers both, and you can run both at the same time; a <b>paid TradingView plan</b> (webhook alerts unlock at their Essential tier and up); and an AlertFill key &mdash; free 7-day trial or full licence, both on your <a href="account.html" style="color:var(--accent)">account page</a>.</p>
 
       <div class="notice"><b>Before you start:</b> log in at <a href="account.html" style="color:var(--accent)">tradeaholiks.com/account</a> and open the <b>AlertFill</b> tab. No licence yet? Press <b>Start my free 7-day trial</b> &mdash; full product, no card. Everything you'll paste below has a Copy button on that tab.</div>
 
-      <h2>Step 1 &mdash; install the receiver in NinjaTrader</h2>
+      <h2 id="install-nt">Step 1a &mdash; install the receiver in NinjaTrader</h2>
+      <p>Using Quantower instead? Skip to <a href="#install-qt" style="color:var(--accent)">Step 1b</a>. Running both? Do both &mdash; they share one key and both receive every alert.</p>
       <p class="step"><span class="stepnum">1.</span>Download <b>TAH_AlertFill.zip</b> from your account page's <b>AlertFill</b> tab (the download button under your key). Don't unzip it.</p>
       <p class="step"><span class="stepnum">2.</span>In NinjaTrader: <b>Tools</b> &rarr; <b>Import</b> &rarr; <b>NinjaScript Add-On...</b> and pick the zip. Restart NinjaTrader.</p>
       <p class="step"><span class="stepnum">3.</span>Open <b>Control Center</b> &rarr; <b>New</b> &rarr; <b>TAH AlertFill</b>. The AlertFill window opens.</p>
@@ -80,12 +81,27 @@
       <p class="step"><span class="stepnum">5.</span>Pick your <b>account</b> from the dropdown &mdash; it lists the accounts currently connected in NinjaTrader. <b>Start with a SIM account.</b></p>
       <p class="step"><span class="stepnum">6.</span>Click <b>Start</b>. The status light goes green and your account page flips to <b>RECEIVER CONNECTED</b>. Tick <b>Start automatically when NinjaTrader opens</b> once you're happy with it.</p>
 
+      <h2 id="install-qt">Step 1b &mdash; install the panel in Quantower</h2>
+      <p class="step"><span class="stepnum">1.</span>Download <b>TAH_AlertFill_QT.zip</b> from your account page's <b>AlertFill</b> tab and unzip it. You'll get a folder called <b>TAH_AlertFill_QT</b>.</p>
+      <p class="step"><span class="stepnum">2.</span><b>Close Quantower completely.</b> This matters: Quantower keeps a plugin loaded until it restarts, so installing while it's open appears to work and does nothing.</p>
+      <p class="step"><span class="stepnum">3.</span>Copy that whole folder into your Quantower folder, under <b>Settings\Scripts\plug-ins\</b> &mdash; note the hyphen in <b>plug-ins</b>. Create the folder if it isn't there. You should end up with <code>...\Settings\Scripts\plug-ins\TAH_AlertFill_QT\TAH_AlertFill_QT.dll</code>.</p>
+      <p class="step"><span class="stepnum">4.</span>Start Quantower and connect to your broker. Click the <b>Quantower logo</b> (top left) &rarr; <b>Trading</b> &rarr; <b>TAH AlertFill</b>.</p>
+      <p class="step"><span class="stepnum">5.</span>Pick your <b>account</b> in the dropdown, then press <b>ENABLE ACCOUNT</b>. Nothing will trade until you do &mdash; it's the safety catch, and it's remembered per account. Check the balance it logs is the account you meant. <b>Start with a demo account.</b></p>
+      <p class="step"><span class="stepnum">6.</span>Paste your key and press <b>START</b>. The dot goes green and your account page flips to <b>RECEIVER CONNECTED</b>.</p>
+
+      <div class="notice"><b>START is remembered.</b> If it was running when you closed Quantower, it's running when you open it &mdash; automation you have to re-arm every morning isn't automation. What protects you is the per-account permission, which no restart can grant on your behalf.</div>
+
+      <h3>What's different on Quantower</h3>
+      <p class="step"><span class="stepnum">&bull;</span><b>No ATM templates</b> &mdash; Quantower doesn't have them and doesn't need them: the stop and target attach to the order itself. An <code>atm=</code> in your alert is ignored, and noted in the log so you know.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>Symbols sort themselves out.</b> <code>MNQ</code> is enough &mdash; the front contract is worked out for you. Some data feeds rename the big contracts (on CQG the E-mini Nasdaq is <code>ENQ</code>, not <code>NQ</code>); that's handled. If a symbol won't resolve, open <b>DIAGNOSTICS</b> &rarr; <b>LIST ROOTS</b> to see what your feed calls it.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>Everything else is identical</b> &mdash; same key, same webhook URL, same alert syntax below.</p>
+
       <h2>Step 2 &mdash; point a TradingView alert at it</h2>
       <p class="step"><span class="stepnum">1.</span>On your account page's AlertFill tab, click <b>Copy</b> next to <b>TradingView webhook URL</b>.</p>
       <p class="step"><span class="stepnum">2.</span>In TradingView, create an alert as usual (or edit an existing one).</p>
       <p class="step"><span class="stepnum">3.</span>In the alert dialog, open the <b>Notifications</b> tab, tick <b>Webhook URL</b>, and paste the copied URL.</p>
       <p class="step"><span class="stepnum">4.</span>In the <b>Message</b> box, write the order &mdash; for example: <code>buy NQ 09-26 q=1 sl=40t tp=80t</code> (the full formula and every option are just below).</p>
-      <p class="step"><span class="stepnum">5.</span>Save the alert. When it fires, the order appears in NinjaTrader about a second later. Watch the first few on SIM.</p>
+      <p class="step"><span class="stepnum">5.</span>Save the alert. When it fires, the order appears in your platform about a second later &mdash; in both, if you're running both. Watch the first few on SIM.</p>
 
       <h2>Writing the alert message</h2>
       <p>Every message follows one formula &mdash; an action, a symbol, then any options, all on one line separated by spaces:</p>

@@ -86,7 +86,7 @@
             &mdash; and about a second later the order is in your platform, stop and target attached.</div>
             <ul class="ticklist" style="margin:14px 0 16px">
               <li>Instant delivery &mdash; alerts pushed live, no polling delay</li>
-              <li>NinjaTrader first, MetaTrader 5 next for forex traders</li>
+              <li>NinjaTrader and Quantower &mdash; run both at once on one key</li>
               <li>Stops &amp; targets in ticks, points or price &mdash; or hand the trade to your NinjaTrader ATM template</li>
               <li>Prop-firm-friendly guardrails: quantity caps, SIM-first safety, stale alerts never fire into a moved market</li>
             </ul>
@@ -293,6 +293,9 @@
         html += dlRow('&#9889;', 'TAH AlertFill receiver', 'NinjaTrader 8 &middot; ' + (afOwn === 'trial' ? 'trial active' : 'licensed to you'),
                       dlPill(afOwn === 'trial' ? 'TRIAL' : 'OWNED', true)
                       + '<button ' + ghost.replace('class="', 'type="button" class="dl-btn ') + ' data-file="TAH_AlertFill.zip">Download</button>', true);
+        html += dlRow('&#9889;', 'TAH AlertFill panel', 'Quantower &middot; ' + (afOwn === 'trial' ? 'trial active' : 'licensed to you'),
+                      dlPill(afOwn === 'trial' ? 'TRIAL' : 'OWNED', true)
+                      + '<button ' + ghost.replace('class="', 'type="button" class="dl-btn ') + ' data-file="TAH_AlertFill_QT.zip">Download</button>', true);
       } else if(afOwn === 'none'){
         html += dlRow('&#9889;', 'AlertFill', 'TradingView automation &middot; $149 one-time &middot; free 7-day trial',
                       dlPill('NOT OWNED', false) + '<a ' + ghost + ' href="alertfill.html">See AlertFill</a>', false);
@@ -633,17 +636,27 @@
                 syncBtn('af-copy-hook','Copy'), true);
       html += '<div class="note" style="margin:-6px 0 12px">Paste into your TradingView alert &rarr; Notifications &rarr; “Webhook URL”. Copy uses the full key. Then write the order in the alert message, e.g. <span style="font-family:var(--mono,monospace)">buy NQ q=1 sl=40t tp=80t</span>.</div>';
       html += '<button id="af-test" class="btn btn-block" type="button" style="margin-top:4px">Test my link</button>';
-      html += '<button id="af-download" class="btn btn-ghost btn-block" type="button" style="margin-top:10px">Download the NinjaTrader receiver (TAH_AlertFill.zip)</button>';
-      html += '<p class="note" style="margin-top:12px"><a href="docs-alertfill.html" style="color:var(--accent)">Setup guide &rarr; TradingView to NinjaTrader in 10 minutes</a></p>';
+      html += '<button id="af-download" class="btn btn-ghost btn-block" type="button" data-file="TAH_AlertFill.zip" style="margin-top:10px">Download the NinjaTrader receiver (TAH_AlertFill.zip)</button>';
+      html += '<button id="af-download-qt" class="btn btn-ghost btn-block" type="button" data-file="TAH_AlertFill_QT.zip" style="margin-top:8px">Download the Quantower panel (TAH_AlertFill_QT.zip)</button>';
+      html += '<p class="note" style="margin-top:8px">One key covers both platforms &mdash; and both can run at the same time.</p>';
+      html += '<p class="note" style="margin-top:12px"><a href="docs-alertfill.html" style="color:var(--accent)">Setup guide &rarr; TradingView to NinjaTrader or Quantower in 10 minutes</a></p>';
       body.innerHTML = html;
-      document.getElementById('af-download').addEventListener('click', function(){
-        var b = this; b.disabled = true;
-        sb.storage.from('tools').createSignedUrl('TAH_AlertFill.zip', 120, { download: true }).then(function(res){
-          b.disabled = false;
-          if(res.error || !res.data || !res.data.signedUrl){ afMsg('Could not start the download — please try again shortly.', false); return; }
-          window.location.href = res.data.signedUrl;
-        }).catch(function(){ b.disabled = false; afMsg('Could not start the download — please try again shortly.', false); });
-      });
+      // One handler for both downloads; the button says which file it wants.
+      function afWireDownload(id){
+        var el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener('click', function(){
+          var b = this, file = b.getAttribute('data-file');
+          b.disabled = true;
+          sb.storage.from('tools').createSignedUrl(file, 120, { download: true }).then(function(res){
+            b.disabled = false;
+            if(res.error || !res.data || !res.data.signedUrl){ afMsg('Could not start the download — please try again shortly.', false); return; }
+            window.location.href = res.data.signedUrl;
+          }).catch(function(){ b.disabled = false; afMsg('Could not start the download — please try again shortly.', false); });
+        });
+      }
+      afWireDownload('af-download');
+      afWireDownload('af-download-qt');
       document.getElementById('af-show').addEventListener('click', function(){
         afShown = !afShown;
         var kb = document.getElementById('af-key-box'), hb = document.getElementById('af-hook-box');

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AlertFill — TradingView to NinjaTrader Automation — Tradeaholiks</title>
-<meta name="description" content="AlertFill turns TradingView alerts into live NinjaTrader orders in about a second. Stops and targets in ticks, ATM support, prop-firm-friendly. $149 one-time — no subscription, ever.">
+<title>AlertFill — TradingView to NinjaTrader &amp; Quantower — Tradeaholiks</title>
+<meta name="description" content="AlertFill turns TradingView alerts into live NinjaTrader and Quantower orders in about a second. Stops and targets in ticks, ATM support, prop-firm-friendly. $149 one-time — no subscription, ever.">
 <link rel="stylesheet" href="assets/styles.css?v=5">
 <link rel="icon" type="image/png" href="assets/icon-tah.png">
 </head>
@@ -37,7 +37,7 @@
   <header class="hero" style="padding-bottom:40px"><div class="container">
     <div class="badge">// ALERTFILL</div>
     <h1>Your TradingView alerts, <span class="glow">filled.</span></h1>
-    <p class="lead">An alert fires on TradingView &mdash; and about a second later the order is live in NinjaTrader, stop and target attached. No browser extension, no PC glued on, no subscription.</p>
+    <p class="lead">An alert fires on TradingView &mdash; and about a second later the order is live in NinjaTrader or Quantower, stop and target attached. Run both at once on one licence. No browser extension, no PC glued on, no subscription.</p>
     <div class="hero-actions">
       <a href="account.html" class="btn">Start the free 7-day trial</a>
       <a href="docs-alertfill.html" class="btn btn-ghost">Read the setup guide</a>
@@ -50,7 +50,7 @@
       <div>
         <div class="eyebrow">// Instant, not "usually fast"</div>
         <h2>Pushed live, never polled</h2>
-        <p>Your NinjaTrader receiver holds one open connection to the relay. The instant TradingView posts your alert, the order is pushed down that wire &mdash; measured at around 80&nbsp;ms across the public internet, before your platform even blinks.</p>
+        <p>Your receiver holds one open connection to the relay. The instant TradingView posts your alert, the order is pushed down that wire &mdash; measured at around 80&nbsp;ms across the public internet, before your platform even blinks.</p>
         <ul class="ticklist">
           <li>Live push delivery &mdash; no polling gap at all</li>
           <li>Offline? Orders queue and deliver on reconnect</li>
@@ -66,7 +66,7 @@
       <div>
         <div class="eyebrow">// You write the order in the alert</div>
         <h2>One line does the lot</h2>
-        <p><code style="font-family:var(--mono);font-size:14px">buy NQ q=2 sl=40t tp=80t</code> &mdash; that's a complete order: side, symbol, size, stop and target in ticks, points or price. Or skip the bracket and hand the trade to your NinjaTrader ATM template &mdash; even the one already selected on your chart.</p>
+        <p><code style="font-family:var(--mono);font-size:14px">buy NQ q=2 sl=40t tp=80t</code> &mdash; that's a complete order: side, symbol, size, stop and target in ticks, points or price. Or skip the bracket and hand the trade to your NinjaTrader ATM template &mdash; even the one already selected on your chart. On Quantower the stop and target attach to the order itself, so there is nothing to set up.</p>
         <ul class="ticklist">
           <li>Stops &amp; targets in ticks, points or price &mdash; from your real fill price</li>
           <li>ATM templates: named in the alert, picked from the chart, or a default</li>
@@ -101,7 +101,7 @@
     <div class="grid">
       <div class="card"><div class="ico">&#9889;</div><h3>~80 ms delivery</h3><p>Alert to platform across the public internet, measured &mdash; not marketing maths.</p></div>
       <div class="card"><div class="ico">&#128274;</div><h3>Your own key</h3><p>A private key and isolated queue per customer. Regenerate it any time from your account.</p></div>
-      <div class="card"><div class="ico">&#128640;</div><h3>MT5 next</h3><p>NinjaTrader today; MetaTrader 5 support lands as a free update for forex traders.</p></div>
+      <div class="card"><div class="ico">&#128640;</div><h3>Two platforms, one key</h3><p>NinjaTrader and Quantower today, side by side on the same licence. MetaTrader 5 lands as a free update for forex traders.</p></div>
     </div>
   </div></section>
 
@@ -113,7 +113,8 @@
       <ul class="ticklist" style="display:inline-block;text-align:left;margin:14px auto 26px">
         <li>Free 7-day trial first &mdash; full product, no card</li>
         <li>Unlimited alerts &amp; strategies, no per-trade fees</li>
-        <li>NinjaTrader now, MetaTrader 5 free when released</li>
+        <li>NinjaTrader and Quantower now &mdash; run both at once</li>
+        <li>MetaTrader 5 free when released</li>
         <li>Needs a paid TradingView plan (webhooks unlock at Essential)</li>
       </ul>
       <div class="hero-actions" style="justify-content:center">

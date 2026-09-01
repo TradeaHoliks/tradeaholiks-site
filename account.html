@@ -387,8 +387,32 @@
       // ---- scan coverage report (UPDATE36) ----
       var sbtn = document.getElementById('scan-btn');
       var sout = document.getElementById('scan-msg');
-      function smsg(t, ok){ sout.textContent = t; sout.style.display='block';
-        sout.style.color = ok ? '' : '#ff5d5d'; }
+      var SCAN_COL = { GREEN:'#00e08a', AMBER:'#F5A623', RED:'#ff5d5d' };
+      function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function scanHTML(t){                      // colour the plain-text report by section
+        var sec = '', out = [];
+        t.split('\n').forEach(function(line){
+          var m = /^(GREEN|AMBER|RED)\b/.exec(line);
+          if(m){ sec = m[1]; }
+          else if(/^[A-Z][A-Z ]+/.test(line) && !/^\s/.test(line)){ sec = ''; }   // other heading (DATA AGE...)
+          var html = esc(line);
+          if(/^Firms \d+/.test(line)){          // summary line: colour each count
+            html = html.replace(/(GREEN|AMBER|RED) (\d+)/g, function(_, k, n){
+              return '<b style="color:' + SCAN_COL[k] + '">' + k + ' ' + n + '</b>'; });
+          } else if(m){
+            html = '<b style="color:' + SCAN_COL[sec] + '">' + html + '</b>';
+          } else if(sec && /^\s/.test(line)){
+            html = '<span style="color:' + SCAN_COL[sec] + '">' + html + '</span>';
+          } else if(/^SCAN COVERAGE/.test(line)){
+            html = '<b>' + html + '</b>';
+          }
+          out.push(html);
+        });
+        return out.join('\n');
+      }
+      function smsg(t, ok){ sout.style.display='block';
+        if(ok){ sout.innerHTML = scanHTML(t); sout.style.color=''; }
+        else { sout.textContent = t; sout.style.color = '#ff5d5d'; } }
       if(sbtn){ sbtn.addEventListener('click', function(){
         sbtn.disabled = true; smsg('Checking\u2026', true);
         pubToken(function(tok){

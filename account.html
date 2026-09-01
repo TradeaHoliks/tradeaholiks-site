@@ -131,7 +131,7 @@
           <div class="sub">Is every firm being checked by the daily detector? GREEN = all its pages loaded in the latest run,
           AMBER = some pages failed, RED = unreachable / not scanned. Also shows how old each firm's data is.</div>
           <button id="scan-btn" class="btn btn-ghost btn-block" type="button">Check scan coverage</button>
-          <pre id="scan-msg" class="note" style="display:none;margin-top:14px;white-space:pre-wrap;font-family:Consolas,monospace;font-size:12px;line-height:1.5;max-height:60vh;overflow:auto"></pre>
+          <div id="scan-msg" class="note" style="display:none;margin-top:14px;max-height:65vh;overflow:auto"></div>
         </div>
 
         <button id="logout-btn" class="btn btn-ghost btn-block" style="margin-top:24px">Log out</button>
@@ -410,15 +410,52 @@
         });
         return out.join('\n');
       }
-      function smsg(t, ok){ sout.style.display='block';
-        if(ok){ sout.innerHTML = scanHTML(t); sout.style.color=''; }
+      function ageDays(iso){ if(!iso) return null; var d=new Date(iso+'T00:00:00Z'); return Math.round((Date.now()-d.getTime())/86400000); }
+      function scanTable(r){                     // structured report -> HTML table
+        var TD = 'padding:5px 10px;border-bottom:1px solid rgba(38,52,74,.6);vertical-align:top;font-size:12.5px;';
+        var TH = 'padding:6px 10px;text-align:left;font-family:Consolas,monospace;font-size:11px;letter-spacing:1px;color:var(--accent);border-bottom:1px solid #26344A;white-space:nowrap;';
+        var h = '<div style="font-family:Consolas,monospace;font-size:12px;color:var(--muted);margin-bottom:6px">Latest detector run ' + esc(r.run_at) + '</div>';
+        h += '<div style="font-size:14px;margin-bottom:12px"><b>' + r.firms + ' firms</b> &nbsp; '
+           + '<b style="color:' + SCAN_COL.GREEN + '">' + r.green + ' green</b> &nbsp; '
+           + '<b style="color:' + SCAN_COL.AMBER + '">' + r.amber + ' amber</b> &nbsp; '
+           + '<b style="color:' + SCAN_COL.RED + '">' + r.red + ' red</b>'
+           + (r.no_home ? ' &nbsp; <span style="color:var(--muted);font-size:12px">(' + r.no_home + ' rows have no homepage - never scanned)</span>' : '') + '</div>';
+        h += '<table style="width:100%;border-collapse:collapse"><thead><tr>'
+           + '<th style="' + TH + '"></th><th style="' + TH + '">Firm</th><th style="' + TH + 'text-align:center">Pages</th>'
+           + '<th style="' + TH + '">Result</th><th style="' + TH + '">Last updated</th><th style="' + TH + '">Note</th></tr></thead><tbody>';
+        r.table.forEach(function(x){
+          var col = SCAN_COL[x.colour];
+          var age = ageDays(x.last_updated);
+          var ageCol = age == null ? '#ff5d5d' : age <= 30 ? '' : age <= 60 ? SCAN_COL.AMBER : SCAN_COL.RED;
+          var lu = x.last_updated ? x.last_updated + ' <span style="color:var(--muted)">(' + age + 'd)</span>' : 'no date';
+          h += '<tr>'
+             + '<td style="' + TD + 'width:14px"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + col + '"></span></td>'
+             + '<td style="' + TD + 'white-space:nowrap">' + esc(x.firm) + ' <span style="color:var(--muted);font-size:11px">' + x.rows + ' rows</span></td>'
+             + '<td style="' + TD + 'text-align:center;white-space:nowrap;color:' + (x.pages_ok === x.pages_total && x.pages_total ? '' : col) + '">' + x.pages_ok + ' / ' + x.pages_total + '</td>'
+             + '<td style="' + TD + 'white-space:nowrap;color:' + (x.colour === 'GREEN' ? (x.result === 'changed' ? SCAN_COL.AMBER : SCAN_COL.GREEN) : col) + '">' + esc(x.result) + '</td>'
+             + '<td style="' + TD + 'white-space:nowrap;color:' + ageCol + '">' + lu + '</td>'
+             + '<td style="' + TD + 'color:var(--muted);word-break:break-all">' + esc(x.note || '') + '</td>'
+             + '</tr>';
+        });
+        h += '</tbody></table>';
+        var ages = Object.keys(r.age || {}).map(function(k){ return k + ' <b>' + r.age[k] + '</b>'; }).join(' &nbsp;&middot;&nbsp; ');
+        h += '<div style="margin-top:12px;font-size:12.5px;color:var(--muted)"><b style="color:var(--ink)">Data age (rows\' Last updated):</b> ' + ages + '</div>';
+        if(r.oldest && r.oldest.length){
+          h += '<div style="margin-top:4px;font-size:12.5px;color:var(--muted)"><b style="color:var(--ink)">Oldest firms:</b> '
+             + r.oldest.map(function(o){ return esc(o.firm) + ' (' + o.date + ')'; }).join(', ') + '</div>';
+        }
+        return h;
+      }
+      function smsg(t, ok, report){ sout.style.display='block';
+        if(ok && report){ sout.innerHTML = scanTable(report); sout.style.color=''; }
+        else if(ok){ sout.innerHTML = '<pre style="white-space:pre-wrap;font-family:Consolas,monospace;font-size:12px;line-height:1.5;margin:0">' + scanHTML(t) + '</pre>'; sout.style.color=''; }
         else { sout.textContent = t; sout.style.color = '#ff5d5d'; } }
       if(sbtn){ sbtn.addEventListener('click', function(){
         sbtn.disabled = true; smsg('Checking\u2026', true);
         pubToken(function(tok){
           fetch(PUB_APP + '/publish/scan', { headers: { 'Authorization': 'Bearer ' + tok } })
             .then(function(r){ return r.json(); })
-            .then(function(j){ smsg(j.message, j.ok); sbtn.disabled = false; })
+            .then(function(j){ smsg(j.message, j.ok, j.report); sbtn.disabled = false; })
             .catch(function(e){ smsg('Check failed: ' + e, false); sbtn.disabled = false; });
         });
       }); }

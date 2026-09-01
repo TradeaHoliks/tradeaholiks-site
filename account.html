@@ -127,6 +127,11 @@
           <div class="field"><input id="pub-files" type="file" multiple></div>
           <button id="pub-btn" class="btn btn-block" type="button">Check &amp; publish to app.tradeaholiks.com</button>
           <p id="pub-msg" class="note" style="display:none;margin-top:14px;white-space:pre-wrap"></p>
+          <div class="eyebrow" style="margin-top:26px">// Admin &mdash; daily scan coverage</div>
+          <div class="sub">Is every firm being checked by the daily detector? GREEN = all its pages loaded in the latest run,
+          AMBER = some pages failed, RED = unreachable / not scanned. Also shows how old each firm's data is.</div>
+          <button id="scan-btn" class="btn btn-ghost btn-block" type="button">Check scan coverage</button>
+          <pre id="scan-msg" class="note" style="display:none;margin-top:14px;white-space:pre-wrap;font-family:Consolas,monospace;font-size:12px;line-height:1.5;max-height:60vh;overflow:auto"></pre>
         </div>
 
         <button id="logout-btn" class="btn btn-ghost btn-block" style="margin-top:24px">Log out</button>
@@ -379,6 +384,20 @@
             .catch(function(e){ pmsg('Upload failed: ' + e, false); btn.disabled = false; });
         });
       });
+      // ---- scan coverage report (UPDATE36) ----
+      var sbtn = document.getElementById('scan-btn');
+      var sout = document.getElementById('scan-msg');
+      function smsg(t, ok){ sout.textContent = t; sout.style.display='block';
+        sout.style.color = ok ? '' : '#ff5d5d'; }
+      if(sbtn){ sbtn.addEventListener('click', function(){
+        sbtn.disabled = true; smsg('Checking\u2026', true);
+        pubToken(function(tok){
+          fetch(PUB_APP + '/publish/scan', { headers: { 'Authorization': 'Bearer ' + tok } })
+            .then(function(r){ return r.json(); })
+            .then(function(j){ smsg(j.message, j.ok); sbtn.disabled = false; })
+            .catch(function(e){ smsg('Check failed: ' + e, false); sbtn.disabled = false; });
+        });
+      }); }
     }
     var JOURNAL_URL = "https://downloads.tradeaholiks.com/EasyJournal_Setup.zip"; // Journal installer on Cloudflare R2 (update if the file name changes)
     function loadLicences(){

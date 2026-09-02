@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AlertFill Setup — TradingView to NinjaTrader — Tradeaholiks</title>
-<meta name="description" content="Connect TradingView alerts to NinjaTrader with AlertFill in about 10 minutes — instant order delivery, stops and targets in ticks, ATM support.">
+<title>AlertFill Setup — TradingView to NinjaTrader, Quantower or MetaTrader 5 — Tradeaholiks</title>
+<meta name="description" content="Connect TradingView alerts to NinjaTrader, Quantower or MetaTrader 5 with AlertFill in about 10 minutes — instant order delivery, stops and targets in ticks, ATM support.">
 <link rel="stylesheet" href="assets/styles.css?v=5">
 <link rel="icon" type="image/png" href="assets/icon-tah.png">
 <style>
@@ -57,23 +57,23 @@
     <div class="doc-crumb"><a href="docs.html">&larr; All docs</a></div>
     <div class="badge">// HOW-TO</div>
     <h1>AlertFill setup</h1>
-    <p class="lead" style="margin-bottom:0">TradingView alert &rarr; order in NinjaTrader, in about a second. Setup takes ten minutes; run it on SIM first.</p>
+    <p class="lead" style="margin-bottom:0">TradingView alert &rarr; order in NinjaTrader, Quantower or MetaTrader 5, in about a second. Setup takes ten minutes; run it on SIM first.</p>
   </div></header>
 
   <section class="section tight"><div class="container">
     <div class="doc-article">
 
       <h2>What AlertFill is</h2>
-      <p>You already have alerts on TradingView &mdash; a strategy, an indicator, a price level. AlertFill turns those alerts into real orders in NinjaTrader. The alert fires, TradingView posts it to your personal AlertFill webhook, and the Tradeaholiks relay pushes it straight down a live connection to a small receiver running inside NinjaTrader &mdash; which places the order, stop and target attached. No polling, no browser extension, no PC-to-PC networking.</p>
-      <p>Two safety rules are built in. If your NinjaTrader is offline when an alert fires, the order queues and is delivered the moment the receiver reconnects &mdash; <b>unless it is older than 30 seconds</b>, in which case it is discarded and logged. A stale entry signal never fires into a market that has moved on. Second: everything is visible &mdash; every alert shows up in the receiver's activity log and on your account page.</p>
+      <p>You already have alerts on TradingView &mdash; a strategy, an indicator, a price level. AlertFill turns those alerts into real orders in NinjaTrader, Quantower or MetaTrader 5. The alert fires, TradingView posts it to your personal AlertFill webhook, and the Tradeaholiks relay pushes it straight down a live connection to a small receiver running inside your platform &mdash; which places the order, stop and target attached. No polling, no browser extension, no PC-to-PC networking.</p>
+      <p>Two safety rules are built in. If your platform is offline when an alert fires, the order queues and is delivered the moment the receiver reconnects &mdash; <b>unless it is older than 30 seconds</b>, in which case it is discarded and logged. A stale entry signal never fires into a market that has moved on. Second: everything is visible &mdash; every alert shows up in the receiver's activity log and on your account page.</p>
 
       <h2>What you'll need</h2>
-      <p><b>NinjaTrader 8</b> or <b>Quantower</b> on Windows &mdash; one licence covers both, and you can run both at the same time; a <b>paid TradingView plan</b> (webhook alerts unlock at their Essential tier and up); and an AlertFill key &mdash; free 7-day trial or full licence, both on your <a href="account.html" style="color:var(--accent)">account page</a>.</p>
+      <p><b>NinjaTrader 8</b>, <b>Quantower</b> or <b>MetaTrader 5</b> on Windows &mdash; one licence covers all three, and you can run them at the same time; a <b>paid TradingView plan</b> (webhook alerts unlock at their Essential tier and up); and an AlertFill key &mdash; free 7-day trial or full licence, both on your <a href="account.html" style="color:var(--accent)">account page</a>.</p>
 
       <div class="notice"><b>Before you start:</b> log in at <a href="account.html" style="color:var(--accent)">tradeaholiks.com/account</a> and open the <b>AlertFill</b> tab. No licence yet? Press <b>Start my free 7-day trial</b> &mdash; full product, no card. Everything you'll paste below has a Copy button on that tab.</div>
 
       <h2 id="install-nt">Step 1a &mdash; install the receiver in NinjaTrader</h2>
-      <p>Using Quantower instead? Skip to <a href="#install-qt" style="color:var(--accent)">Step 1b</a>. Running both? Do both &mdash; they share one key and both receive every alert.</p>
+      <p>Using Quantower? Skip to <a href="#install-qt" style="color:var(--accent)">Step 1b</a>. MetaTrader 5? <a href="#install-mt5" style="color:var(--accent)">Step 1c</a>. Running more than one? Install each &mdash; they share one key and every one of them receives every alert.</p>
       <p class="step"><span class="stepnum">1.</span>Download <b>TAH_AlertFill.zip</b> from your account page's <b>AlertFill</b> tab (the download button under your key). Don't unzip it.</p>
       <p class="step"><span class="stepnum">2.</span>In NinjaTrader: <b>Tools</b> &rarr; <b>Import</b> &rarr; <b>NinjaScript Add-On...</b> and pick the zip. Restart NinjaTrader.</p>
       <p class="step"><span class="stepnum">3.</span>Open <b>Control Center</b> &rarr; <b>New</b> &rarr; <b>TAH AlertFill</b>. The AlertFill window opens.</p>
@@ -94,6 +94,26 @@
       <h3>What's different on Quantower</h3>
       <p class="step"><span class="stepnum">&bull;</span><b>No ATM templates</b> &mdash; Quantower doesn't have them and doesn't need them: the stop and target attach to the order itself. An <code>atm=</code> in your alert is ignored, and noted in the log so you know.</p>
       <p class="step"><span class="stepnum">&bull;</span><b>Symbols sort themselves out.</b> <code>MNQ</code> is enough &mdash; the front contract is worked out for you. Some data feeds rename the big contracts (on CQG the E-mini Nasdaq is <code>ENQ</code>, not <code>NQ</code>); that's handled. If a symbol won't resolve, open <b>DIAGNOSTICS</b> &rarr; <b>LIST ROOTS</b> to see what your feed calls it.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>Everything else is identical</b> &mdash; same key, same webhook URL, same alert syntax below.</p>
+
+      <h2 id="install-mt5">Step 1c &mdash; install the Expert Advisor in MetaTrader 5</h2>
+      <p class="step"><span class="stepnum">1.</span>Download <b>TAH_AlertFill_MT5.zip</b> from your account page's <b>AlertFill</b> tab and unzip it. You'll get <b>AlertFill.mq5</b>.</p>
+      <p class="step"><span class="stepnum">2.</span>In MetaTrader 5: <b>File</b> &rarr; <b>Open Data Folder</b>, go into <code>MQL5\Experts</code>, and drop <b>AlertFill.mq5</b> in there.</p>
+      <p class="step"><span class="stepnum">3.</span><b>Tools</b> &rarr; <b>Options</b> &rarr; <b>Expert Advisors</b> tab. Tick <b>Allow WebRequest for listed URL</b> and add this address exactly: <code>https://hooks.tradeaholiks.com</code></p>
+      <p class="step"><span class="stepnum">4.</span>Press <b>F4</b> to open MetaEditor, find <b>AlertFill</b> under Experts, open it and press <b>F7</b> to compile. You want <b>0 errors</b>.</p>
+      <p class="step"><span class="stepnum">5.</span>Back in MetaTrader, drag <b>AlertFill</b> from the Navigator onto <b>one</b> chart &mdash; any symbol, any timeframe. It handles every symbol; a second copy would fill every alert twice.</p>
+      <p class="step"><span class="stepnum">6.</span>On the <b>Common</b> tab tick <b>Allow Algo Trading</b>. On the <b>Inputs</b> tab paste your key, and leave <b>Demo only</b> set to true until you've watched it work. Press <b>OK</b>, then check the <b>Algo Trading</b> button in the toolbar is green.</p>
+      <p>The panel on the chart shows <b>&#9679; CONNECTED</b> within a couple of seconds, and your account page flips to <b>RECEIVER CONNECTED</b>.</p>
+
+      <div class="notice"><b>Step 3 is not optional.</b> MetaTrader blocks all outbound network access until that address is on the list, and the socket the EA uses needs the same entry as WebRequest. Skip it and the EA looks like it has a dead internet connection rather than a permissions problem &mdash; the log will show error 5272.</div>
+
+      <h3>What's different on MetaTrader 5</h3>
+      <p class="step"><span class="stepnum">&bull;</span><b><code>q=</code> is in lots, not contracts.</b> <code>q=0.01</code> is a micro lot. Sending <code>q=1</code> out of NinjaTrader habit is a full standard lot &mdash; which is why <b>Max lots</b> is a hard ceiling in the inputs that no alert can talk its way past.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>A tick is not a pip.</b> On 5-digit pricing one tick is 0.00001, so <code>sl=200ticks</code> is a 20 pip stop. Multiply your pips by 10.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>Broker symbol names.</b> Most brokers add a suffix &mdash; <code>EURUSD.r</code>, <code>EURUSD.a</code>, <code>EURUSDm</code>. Put just the suffix (e.g. <code>.r</code>) in the <b>Broker symbol suffix</b> input, with no quotes, and keep writing plain <code>EURUSD</code> in your alerts. For names that don't follow a pattern use the overrides box: <code>GOLD=XAUUSD,US100=NAS100</code>.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>No ATM templates</b> &mdash; MetaTrader has no equivalent. The stop and target attach to the position itself. An <code>atm=</code> in your alert is ignored and noted in the log.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>Hedging and netting accounts both work.</b> On a hedging account a second <code>buy</code> opens a second position; on a netting account the existing one grows. Both are correct &mdash; the EA says which kind it's on in its first log line.</p>
+      <p class="step"><span class="stepnum">&bull;</span><b>Position sizing</b> can be fixed lots, a % of equity, or a fixed cash risk. The two risk modes need a stop in the alert to size against; without one the EA falls back to fixed lots and says so.</p>
       <p class="step"><span class="stepnum">&bull;</span><b>Everything else is identical</b> &mdash; same key, same webhook URL, same alert syntax below.</p>
 
       <h2>Step 2 &mdash; point a TradingView alert at it</h2>
@@ -118,13 +138,14 @@
       <p>All optional, any order. Always <code>name=value</code> with <b>no spaces around the =</b>.</p>
       <table>
         <tr><th>Option</th><th>Also accepts</th><th>What it does</th><th>Examples</th></tr>
-        <tr><td>q=</td><td><code>qty=</code></td><td>How many contracts. Left out, the receiver's default quantity is used. Always capped by the receiver's max-quantity setting.</td><td><code>q=1</code> &nbsp;<code>q=3</code></td></tr>
+        <tr><td>q=</td><td><code>qty=</code></td><td>How many contracts &mdash; or <b>lots</b> on MetaTrader 5, where <code>q=0.01</code> is a micro lot. Left out, the receiver's default size is used. Always capped by the receiver's max-quantity setting.</td><td><code>q=1</code> &nbsp;<code>q=3</code> &nbsp;<code>q=0.01</code></td></tr>
         <tr><td>sl=</td><td><code>stop=</code></td><td>Stop loss &mdash; a price, ticks or points. Tick/point distances are measured from your ACTUAL fill price and rounded to tick size.</td><td><code>sl=29500</code> &nbsp;<code>sl=40t</code> &nbsp;<code>sl=10p</code></td></tr>
         <tr><td>tp=</td><td><code>target=</code></td><td>Take profit &mdash; same three formats.</td><td><code>tp=29650</code> &nbsp;<code>tp=80t</code> &nbsp;<code>tp=20p</code></td></tr>
-        <tr><td>account=</td><td><code>acct=</code></td><td>Send this alert to a specific account instead of the one selected in the receiver window.</td><td><code>account=Sim101</code></td></tr>
-        <tr><td>atm=</td><td>&mdash;</td><td>Run the trade under a NinjaTrader ATM template &mdash; the ATM then owns the stop and target, so any <code>sl=</code>/<code>tp=</code> in the alert is ignored. Names with spaces need quotes.</td><td><code>atm=Scalp</code> &nbsp;<code>atm="Morning Scalp"</code></td></tr>
+        <tr><td>account=</td><td><code>acct=</code></td><td>Send this alert to a specific account instead of the one selected in the receiver window. NinjaTrader only &mdash; Quantower and MetaTrader 5 trade the account you picked in the receiver, and an <code>account=</code> there is ignored and logged.</td><td><code>account=Sim101</code></td></tr>
+        <tr><td>atm=</td><td>&mdash;</td><td>Run the trade under a NinjaTrader ATM template &mdash; the ATM then owns the stop and target, so any <code>sl=</code>/<code>tp=</code> in the alert is ignored. Names with spaces need quotes. NinjaTrader only; ignored and logged elsewhere.</td><td><code>atm=Scalp</code> &nbsp;<code>atm="Morning Scalp"</code></td></tr>
       </table>
       <p>Units for <code>sl=</code> / <code>tp=</code>: no unit = a price &middot; <code>t</code>, <code>tick</code> or <code>ticks</code> = ticks &middot; <code>p</code>, <code>pt</code> or <code>pts</code> = points.</p>
+      <div class="notice"><b>On MetaTrader 5 a tick is not a pip.</b> Your broker's tick is the smallest price step, so on a 5-digit EURUSD one tick is 0.00001 and <code>sl=200ticks</code> is a <b>20 pip</b> stop &mdash; not 200. Multiply your pips by 10 on 5- and 3-digit pricing. <code>pips</code> is deliberately not accepted as a unit: guessing wrong would put the stop 20 whole price units away, so a malformed alert is refused and logged instead.</div>
 
       <h3>Ready to paste</h3>
       <p>Complete messages for every common case &mdash; copy one and edit the symbol and numbers:</p>
@@ -143,6 +164,17 @@
         <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close everything</td><td><code>flatten</code></td></tr>
         <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">From a Pine STRATEGY alert</td><td><code>{{strategy.order.alert_message}}</code> &mdash; your script builds the message (see Step 2 above)</td></tr>
       </table>
+
+      <p>On <b>MetaTrader 5</b> the same messages work &mdash; just remember <code>q=</code> is lots and a tick is a broker tick:</p>
+      <table>
+        <tr><th>You want</th><th>Message</th></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Market buy, one micro lot</td><td><code>buy EURUSD q=0.01</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy with a 20 pip stop and 40 pip target</td><td><code>buy EURUSD q=0.01 sl=200ticks tp=400ticks</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Sell an index CFD with exact prices</td><td><code>sell NAS100 q=0.1 sl=23150 tp=22800</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Move the stop to breakeven</td><td><code>update EURUSD sl=be</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close half of a 0.02 position</td><td><code>close EURUSD q=0.01</code></td></tr>
+        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Reverse, same size, fresh stop</td><td><code>reverse EURUSD sl=200ticks</code></td></tr>
+      </table>
       <h3>Managing a trade that's already on</h3>
       <p><b>Adding to a position</b> just works &mdash; send another <code>buy</code> and it stacks, each entry bringing its own bracket. <b>update</b> measures ticks/points from your position's average price, cancels AlertFill's existing exit orders on that instrument and places one fresh bracket sized to the whole position; leave <code>sl=</code> or <code>tp=</code> out to keep that level as it is, and <code>sl=be</code> parks the stop at breakeven. <b>close q=N</b> takes profit on part of the position and re-sizes the bracket to what's left. <b>reverse</b> flattens, then enters the opposite way at the same size (or <code>q=</code> for a different size) with a new bracket from <code>sl=</code>/<code>tp=</code> if given. Note: <code>update</code> manages brackets placed by AlertFill &mdash; a trade running under an ATM template is owned by the ATM, so adjust that in NinjaTrader.</p>
       <p>TradingView placeholders work anywhere in the message &mdash; e.g. <code>q={{strategy.order.contracts}}</code> &mdash; TradingView fills them in before sending. JSON-style messages are also accepted (<code>{"action":"buy","symbol":"NQ 09-26","qty":1}</code>) if your strategy already produces them.</p>
@@ -155,6 +187,9 @@
 
       <h2>If something's off</h2>
       <p><b>No order arrived:</b> check the receiver window is started (green status) and your account page says RECEIVER CONNECTED; then check the alert actually fired in TradingView (its alert log) and that the webhook URL is the full copied one &mdash; copy it again, don't retype. <b>"ignored (couldn't parse)" in the log:</b> the message must start with buy/sell/long/short/close &mdash; check for typos in the first word. <b>ATM error in the log:</b> the template name in <code>atm=</code> must match a saved ATM template exactly; names with spaces need quotes. <b>Order marked discarded on the account page:</b> it arrived more than 30 seconds old (receiver was offline) &mdash; that's the safety net doing its job. Still stuck? The <a href="contact.html" style="color:var(--accent)">contact page</a>.</p>
+
+      <h3>MetaTrader 5 in particular</h3>
+      <p><b>The panel never says CONNECTED, or the log shows error 5272:</b> <code>https://hooks.tradeaholiks.com</code> isn't on the allow-list &mdash; Tools &rarr; Options &rarr; Expert Advisors, and check it's typed exactly, with no trailing slash. <b>"no such symbol":</b> the log prints what it tried and what your prefix/suffix inputs are set to. Most brokers add a suffix &mdash; check the exact spelling with <b>Ctrl+U</b> in MetaTrader, then put just the suffix (e.g. <code>.r</code>) in the input, no quotes. <b>"exists but has no price yet":</b> the symbol is fine, the market is shut or it hasn't ticked since being added to Market Watch. <b>The stop looks ten times too far or too near:</b> ticks aren't pips &mdash; on 5-digit pricing multiply your pips by 10. <b>Nothing trades and the log says REFUSED:</b> either <b>Demo only</b> is on and this is a live account, or the Algo Trading button isn't green.</p>
 
     </div>
     <div class="doc-nav">

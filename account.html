@@ -692,6 +692,58 @@
       afOwn = afTrial ? 'trial' : 'licensed'; renderProductDownloads();
       afRender(); afPing(false); afOrders();
     }
+    // ---- AlertFill platforms (2 Sep 2026) ---------------------------
+    // Install steps are condensed from docs-alertfill.html - if that page
+    // changes, change these with it.
+    var AF_PLATFORMS = [
+      { id:'nt', name:'NinjaTrader', sub:'Futures &mdash; NT8 addon',
+        file:'TAH_AlertFill.zip', dl:'the NinjaTrader addon',
+        eg:'NQ 09-26', qty:'1',
+        steps:'<li>Download the zip &mdash; do <b>not</b> unzip it.</li>'
+             +'<li>NinjaTrader: <b>Tools &rarr; Import &rarr; NinjaScript Add-On&hellip;</b> and pick the zip. Restart NinjaTrader.</li>'
+             +'<li><b>Control Center &rarr; New &rarr; TAH AlertFill</b>.</li>'
+             +'<li>Paste the key from step 3 below, then tick <b>ENABLE</b>. Start on a SIM account.</li>' },
+      { id:'qt', name:'Quantower', sub:'Futures &mdash; trading panel',
+        file:'TAH_AlertFill_QT.zip', dl:'the Quantower panel',
+        eg:'NQ', qty:'1',
+        steps:'<li>Download and unzip &mdash; you get a <b>TAH_AlertFill_QT</b> folder.</li>'
+             +'<li><b>Close Quantower completely.</b> It keeps plug-ins loaded until it restarts, so installing while it is open looks like it worked and does nothing.</li>'
+             +'<li>Copy that folder into <code>&hellip;\\Settings\\Scripts\\plug-ins\\</code> &mdash; note the hyphen in <b>plug-ins</b>.</li>'
+             +'<li>Start Quantower and connect, then <b>logo &rarr; Trading &rarr; TAH AlertFill</b>.</li>'
+             +'<li>Pick your account, press <b>ENABLE ACCOUNT</b>, paste your key, press <b>START</b>. Start on a demo account.</li>' },
+      { id:'mt5', name:'MetaTrader 5', sub:'Forex &amp; CFDs &mdash; Expert Advisor',
+        file:'TAH_AlertFill_MT5.zip', dl:'the MT5 Expert Advisor', soon:true,
+        eg:'EURUSD', qty:'0.01',
+        steps:'<li>Download and unzip &mdash; you get <b>AlertFill.mq5</b>.</li>'
+             +'<li>MT5: <b>File &rarr; Open Data Folder</b>, then into <code>MQL5\\Experts</code>, and drop the file in.</li>'
+             +'<li><b>Tools &rarr; Options &rarr; Expert Advisors</b>: tick <b>Allow WebRequest for listed URL</b> and add <code>https://hooks.tradeaholiks.com</code>. Without this line it cannot connect at all.</li>'
+             +'<li>Press <b>F4</b>, open AlertFill, press <b>F7</b> to compile. You want 0 errors.</li>'
+             +'<li>Drag it onto <b>one</b> chart, tick <b>Allow Algo Trading</b>, paste your key. If your broker adds a suffix (<code>EURUSD.r</code>), put it in the <b>suffix</b> input. Start on a demo account.</li>' }
+    ];
+
+    // Selection lives in a variable; localStorage only REMEMBERS it between
+    // visits. Reading it as the source of truth broke the tiles outright for
+    // anyone whose browser blocks site data - the click stored nothing, the
+    // re-render read nothing back, and the panel just sat on NinjaTrader.
+    var afPlatSel = null;
+    function afPlatform(){
+      var v = afPlatSel;
+      if(!v){ try { v = localStorage.getItem('af_platform'); } catch(e){} }
+      for(var i = 0; i < AF_PLATFORMS.length; i++) if(AF_PLATFORMS[i].id === v) return v;
+      return 'nt';
+    }
+    function afPlat(id){
+      for(var i = 0; i < AF_PLATFORMS.length; i++) if(AF_PLATFORMS[i].id === id) return AF_PLATFORMS[i];
+      return AF_PLATFORMS[0];
+    }
+    function afStep(n, title){
+      return '<div style="display:flex;align-items:center;gap:12px;margin:0 0 12px">'
+           + '<span style="flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:1px solid var(--accent);'
+           + 'color:var(--accent);font-family:var(--mono,monospace);font-size:12px;display:flex;'
+           + 'align-items:center;justify-content:center">' + n + '</span>'
+           + '<span style="font-size:15px;font-weight:700;color:var(--fg,#e6eaf0)">' + title + '</span></div>';
+    }
+
     function afRender(){
       var t = document.getElementById('af-teaser');
       var o = document.getElementById('af-owned');
@@ -708,19 +760,70 @@
       var buy = document.getElementById('af-buy-line');
       if(buy) buy.style.display = afTrial ? '' : 'none';
       var body = document.getElementById('af-body'); if(!body) return;
+      // ---- three-step layout (Boss's call, 2 Sep 2026) --------------
+      // Platform first, then the receiver for THAT platform, then the
+      // key. The old pane threw every download at the customer at once
+      // and left them to work out which one was theirs.
+      var plat = afPlatform();
       var html = '';
-      html += syncRowHtml('Your AlertFill key', 'af-key-box', syncMask(afKey),
+
+      html += afStep(1, 'Choose your platform');
+      html += '<div id="af-plats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:0 0 20px 38px">';
+      for(var i = 0; i < AF_PLATFORMS.length; i++){
+        var P = AF_PLATFORMS[i], on = (P.id === plat);
+        html += '<button type="button" class="af-plat" data-plat="' + P.id + '" style="'
+             +  'text-align:left;padding:12px 14px;border-radius:10px;cursor:pointer;'
+             +  'background:' + (on ? 'rgba(245,166,35,.07)' : 'transparent') + ';'
+             +  'border:1px solid ' + (on ? 'var(--accent)' : 'var(--line,#2a2e37)') + ';">'
+             +  '<div style="font-size:15px;font-weight:700;color:var(--fg,#e6eaf0)">' + P.name + '</div>'
+             +  '<div class="note" style="margin:2px 0 0">' + P.sub + '</div>'
+             +  '</button>';
+      }
+      html += '</div>';
+
+      var SEL = afPlat(plat);
+      html += afStep(2, 'Install the receiver');
+      html += '<div style="margin:0 0 8px 38px">';
+      html += '<button id="af-download" class="btn" type="button" data-file="' + SEL.file + '">Download ' + SEL.dl + '</button>';
+      if(SEL.soon) html += '<span class="note" style="margin-left:10px">Packaging in progress &mdash; ask support if the download 404s.</span>';
+      html += '<details style="margin-top:10px;border:1px solid var(--line,#2a2e37);border-radius:8px;padding:10px 12px">'
+           +  '<summary style="cursor:pointer;font-family:var(--mono,monospace);font-size:12px;color:var(--muted,#8fa0bb)">install_steps.txt</summary>'
+           +  '<ol class="note" style="margin:10px 0 2px 18px;line-height:1.7">' + SEL.steps + '</ol></details>';
+      html += '</div>';
+
+      html += afStep(3, 'Point TradingView at your webhook');
+      html += '<div style="margin-left:38px">';
+      html += syncRowHtml('Your signal key', 'af-key-box', syncMask(afKey),
                 syncBtn('af-show','Show') + syncBtn('af-copy-key','Copy')
                 + (afLicensed ? syncBtn('af-regen','Regenerate') : ''), true);
-      html += syncRowHtml('TradingView webhook URL', 'af-hook-box', afBase + '/hook/' + syncMask(afKey),
+      html += syncRowHtml('Alert webhook URL', 'af-hook-box', afBase + '/hook/' + syncMask(afKey),
                 syncBtn('af-copy-hook','Copy'), true);
-      html += '<div class="note" style="margin:-6px 0 12px">Paste into your TradingView alert &rarr; Notifications &rarr; “Webhook URL”. Copy uses the full key. Then write the order in the alert message, e.g. <span style="font-family:var(--mono,monospace)">buy NQ q=1 sl=40t tp=80t</span>.</div>';
-      html += '<button id="af-test" class="btn btn-block" type="button" style="margin-top:4px">Test my link</button>';
-      html += '<button id="af-download" class="btn btn-ghost btn-block" type="button" data-file="TAH_AlertFill.zip" style="margin-top:10px">Download the NinjaTrader receiver (TAH_AlertFill.zip)</button>';
-      html += '<button id="af-download-qt" class="btn btn-ghost btn-block" type="button" data-file="TAH_AlertFill_QT.zip" style="margin-top:8px">Download the Quantower panel (TAH_AlertFill_QT.zip)</button>';
-      html += '<p class="note" style="margin-top:8px">One key covers both platforms &mdash; and both can run at the same time.</p>';
-      html += '<p class="note" style="margin-top:12px"><a href="docs-alertfill.html" style="color:var(--accent)">Setup guide &rarr; TradingView to NinjaTrader or Quantower in 10 minutes</a></p>';
+      html += '<div class="note" style="margin:-6px 0 10px">In your TradingView alert &rarr; Notifications &rarr; Webhook URL. Copy uses the full key. Needs a paid TradingView plan (Essential or higher).</div>';
+      html += '<details style="border:1px solid var(--line,#2a2e37);border-radius:8px;padding:10px 12px">'
+           +  '<summary style="cursor:pointer;font-family:var(--mono,monospace);font-size:12px;color:var(--muted,#8fa0bb)">alert_message_format.txt</summary>'
+           +  '<div class="note" style="margin-top:10px;line-height:1.8">'
+           +  '<span style="font-family:var(--mono,monospace);color:var(--accent)">buy ' + SEL.eg + ' q=' + SEL.qty + ' sl=40t tp=80t</span><br>'
+           +  'Also: <span style="font-family:var(--mono,monospace)">sell</span>, '
+           +  '<span style="font-family:var(--mono,monospace)">close</span>, '
+           +  '<span style="font-family:var(--mono,monospace)">update &hellip; sl=be</span>, '
+           +  '<span style="font-family:var(--mono,monospace)">reverse</span>, '
+           +  '<span style="font-family:var(--mono,monospace)">flatten</span>. '
+           +  'Stops and targets take a price, ticks (<span style="font-family:var(--mono,monospace)">40t</span>) or points (<span style="font-family:var(--mono,monospace)">40p</span>).'
+           +  ' <a href="docs-alertfill.html" style="color:var(--accent)">Full guide &rarr;</a></div></details>';
+      html += '<button id="af-test" class="btn btn-block" type="button" style="margin-top:12px">Test my link</button>';
+      html += '</div>';
+      html += '<p class="note" style="margin:14px 0 0 38px">One key covers all three platforms, and they can run at the same time.</p>';
       body.innerHTML = html;
+
+      // tiles re-render the pane for the chosen platform
+      var tiles = body.querySelectorAll('.af-plat');
+      for(var t = 0; t < tiles.length; t++){
+        tiles[t].addEventListener('click', function(){
+          afPlatSel = this.getAttribute('data-plat');
+          try { localStorage.setItem('af_platform', afPlatSel); } catch(e){}
+          afRender();
+        });
+      }
       // One handler for both downloads; the button says which file it wants.
       function afWireDownload(id){
         var el = document.getElementById(id);
@@ -736,7 +839,6 @@
         });
       }
       afWireDownload('af-download');
-      afWireDownload('af-download-qt');
       document.getElementById('af-show').addEventListener('click', function(){
         afShown = !afShown;
         var kb = document.getElementById('af-key-box'), hb = document.getElementById('af-hook-box');

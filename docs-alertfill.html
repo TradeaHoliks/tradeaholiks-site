@@ -15,6 +15,11 @@
 .doc-article .step{color:var(--muted);line-height:1.75;margin-bottom:10px}
 .doc-article .stepnum{color:var(--accent);font-weight:800;font-family:var(--mono);margin-right:8px}
 .doc-article code{font-family:var(--mono);font-size:13px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:6px;padding:2px 7px}
+.sx-tabs{display:flex;gap:8px;margin:16px 0 14px;flex-wrap:wrap}
+.sx-tab{padding:8px 15px;border-radius:8px;border:1px solid var(--line,#2a2e37);background:transparent;color:var(--muted,#8fa0bb);font-size:14px;font-family:inherit;cursor:pointer}
+.sx-tab:hover{color:var(--fg,#e6eaf0)}
+.sx-tab.on{border-color:var(--accent);color:var(--accent);background:rgba(245,166,35,.07)}
+.doc-article h4{margin:22px 0 6px;font-size:15px;color:var(--fg,#e6eaf0)}
 .doc-article .notice{display:block;margin:18px 0;background:none;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;color:var(--muted);line-height:1.7;font-size:15px}
 .doc-article table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:14px}
 .doc-article th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--line);padding:8px 10px}
@@ -134,47 +139,89 @@
         <tr><td>symbol</td><td><span style="font-family:var(--mono);font-size:9.5px;letter-spacing:1px;color:#ff9d5d;border:1px solid #ff9d5d;border-radius:999px;padding:2px 8px;white-space:nowrap">REQUIRED*</span></td><td>The instrument exactly as NinjaTrader names it: <code>NQ 09-26</code>, <code>ES 09-26</code>, <code>MNQ 09-26</code>. Futures include the contract month &mdash; or set a mapping once in the receiver window (e.g. <code>NQ=NQ 09-26</code>) and just type <code>NQ</code>; one field to update at rollover. *A bare <code>flatten</code> with no symbol closes everything.</td></tr>
       </table>
 
-      <h3>The options</h3>
-      <p>All optional, any order. Always <code>name=value</code> with <b>no spaces around the =</b>.</p>
-      <table>
-        <tr><th>Option</th><th>Also accepts</th><th>What it does</th><th>Examples</th></tr>
-        <tr><td>q=</td><td><code>qty=</code></td><td>How many contracts &mdash; or <b>lots</b> on MetaTrader 5, where <code>q=0.01</code> is a micro lot. Left out, the receiver's default size is used. Always capped by the receiver's max-quantity setting.</td><td><code>q=1</code> &nbsp;<code>q=3</code> &nbsp;<code>q=0.01</code></td></tr>
-        <tr><td>sl=</td><td><code>stop=</code></td><td>Stop loss &mdash; a price, ticks or points. Tick/point distances are measured from your ACTUAL fill price and rounded to tick size.</td><td><code>sl=29500</code> &nbsp;<code>sl=40t</code> &nbsp;<code>sl=10p</code></td></tr>
-        <tr><td>tp=</td><td><code>target=</code></td><td>Take profit &mdash; same three formats.</td><td><code>tp=29650</code> &nbsp;<code>tp=80t</code> &nbsp;<code>tp=20p</code></td></tr>
-        <tr><td>account=</td><td><code>acct=</code></td><td>Send this alert to a specific account instead of the one selected in the receiver window. NinjaTrader only &mdash; Quantower and MetaTrader 5 trade the account you picked in the receiver, and an <code>account=</code> there is ignored and logged.</td><td><code>account=Sim101</code></td></tr>
-        <tr><td>atm=</td><td>&mdash;</td><td>Run the trade under a NinjaTrader ATM template &mdash; the ATM then owns the stop and target, so any <code>sl=</code>/<code>tp=</code> in the alert is ignored. Names with spaces need quotes. NinjaTrader only; ignored and logged elsewhere.</td><td><code>atm=Scalp</code> &nbsp;<code>atm="Morning Scalp"</code></td></tr>
-      </table>
-      <p>Units for <code>sl=</code> / <code>tp=</code>: no unit = a price &middot; <code>t</code>, <code>tick</code> or <code>ticks</code> = ticks &middot; <code>p</code>, <code>pt</code> or <code>pts</code> = points.</p>
-      <div class="notice"><b>On MetaTrader 5 a tick is not a pip.</b> Your broker's tick is the smallest price step, so on a 5-digit EURUSD one tick is 0.00001 and <code>sl=200ticks</code> is a <b>20 pip</b> stop &mdash; not 200. Multiply your pips by 10 on 5- and 3-digit pricing. <code>pips</code> is deliberately not accepted as a unit: guessing wrong would put the stop 20 whole price units away, so a malformed alert is refused and logged instead.</div>
+      <h3>The options, for your platform</h3>
+      <p>All optional, any order. Always <code>name=value</code> with <b>no spaces around the =</b>. Pick your platform &mdash; futures and forex genuinely differ here, so you only see what applies to you.</p>
 
-      <h3>Ready to paste</h3>
-      <p>Complete messages for every common case &mdash; copy one and edit the symbol and numbers:</p>
-      <table>
-        <tr><th>You want</th><th>Message</th></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Market buy, 1 contract</td><td><code>buy NQ 09-26 q=1</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy with a bracket in ticks</td><td><code>buy NQ 09-26 q=1 sl=40t tp=80t</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Sell with exact prices</td><td><code>sell ES 09-26 q=2 sl=6410.25 tp=6395</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy under an ATM template</td><td><code>long NQ 09-26 atm="Morning Scalp"</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Route to a specific account</td><td><code>buy MNQ 09-26 q=2 account=Sim101</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Move the stop &amp; target on an open trade</td><td><code>update NQ 09-26 sl=30t tp=100t</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Move the stop to breakeven</td><td><code>update NQ 09-26 sl=be</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Take partial profit (close 1 of the position)</td><td><code>close NQ 09-26 q=1</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Reverse the position (same size, new bracket)</td><td><code>reverse NQ 09-26 sl=40t tp=80t</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close one instrument</td><td><code>flat NQ 09-26</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close everything</td><td><code>flatten</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">From a Pine STRATEGY alert</td><td><code>{{strategy.order.alert_message}}</code> &mdash; your script builds the message (see Step 2 above)</td></tr>
-      </table>
+      <div class="sx-tabs">
+        <button type="button" class="sx-tab on" data-sx="nt">NinjaTrader</button>
+        <button type="button" class="sx-tab" data-sx="qt">Quantower</button>
+        <button type="button" class="sx-tab" data-sx="mt5">MetaTrader 5</button>
+      </div>
 
-      <p>On <b>MetaTrader 5</b> the same messages work &mdash; just remember <code>q=</code> is lots and a tick is a broker tick:</p>
-      <table>
-        <tr><th>You want</th><th>Message</th></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Market buy, one micro lot</td><td><code>buy EURUSD q=0.01</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy with a 20 pip stop and 40 pip target</td><td><code>buy EURUSD q=0.01 sl=200ticks tp=400ticks</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Sell an index CFD with exact prices</td><td><code>sell NAS100 q=0.1 sl=23150 tp=22800</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Move the stop to breakeven</td><td><code>update EURUSD sl=be</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close half of a 0.02 position</td><td><code>close EURUSD q=0.01</code></td></tr>
-        <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Reverse, same size, fresh stop</td><td><code>reverse EURUSD sl=200ticks</code></td></tr>
-      </table>
+      <div class="sx-pane" id="sx-nt">
+        <p><b>Symbols</b> are named as NinjaTrader names them, contract month included: <code>NQ 09-26</code>, <code>ES 09-26</code>. Or set a mapping once in the receiver (<code>NQ=NQ 09-26</code>) and type just <code>NQ</code> &mdash; one field to change at rollover.</p>
+        <table>
+          <tr><th>Option</th><th>What it does</th><th>Examples</th></tr>
+          <tr><td>q=</td><td>How many <b>contracts</b>. Left out, the receiver's default is used. Always capped by its max-quantity setting.</td><td><code>q=1</code> &nbsp;<code>q=3</code></td></tr>
+          <tr><td>sl=</td><td>Stop loss &mdash; a price, or a distance in ticks (<code>t</code>) or points (<code>p</code>), measured from your actual fill.</td><td><code>sl=20890.25</code> &nbsp;<code>sl=40t</code> &nbsp;<code>sl=10p</code></td></tr>
+          <tr><td>tp=</td><td>Take profit &mdash; same three formats.</td><td><code>tp=21050</code> &nbsp;<code>tp=80t</code></td></tr>
+          <tr><td>account=</td><td>Send this alert to a named account instead of the one selected in the receiver.</td><td><code>account=Sim101</code></td></tr>
+          <tr><td>atm=</td><td>Run under an ATM template &mdash; the ATM then owns the stop and target, so <code>sl=</code>/<code>tp=</code> are ignored. Names with spaces need quotes.</td><td><code>atm=Scalp</code> &nbsp;<code>atm="Morning Scalp"</code></td></tr>
+        </table>
+        <h4>Ready to paste</h4>
+        <table>
+          <tr><th>You want</th><th>Message</th></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Market buy, 1 contract</td><td><code>buy NQ 09-26 q=1</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy with a bracket in ticks</td><td><code>buy NQ 09-26 q=1 sl=40t tp=80t</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Sell with exact prices</td><td><code>sell ES 09-26 q=2 sl=6410.25 tp=6395</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy under an ATM template</td><td><code>long NQ 09-26 atm="Morning Scalp"</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Stop to breakeven</td><td><code>update NQ 09-26 sl=be</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Take partial profit</td><td><code>close NQ 09-26 q=1</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close everything</td><td><code>flatten</code></td></tr>
+        </table>
+      </div>
+
+      <div class="sx-pane" id="sx-qt" hidden>
+        <p><b>Symbols sort themselves out.</b> <code>MNQ</code> is enough &mdash; the front contract is worked out for you. Some feeds rename the big contracts (on CQG the E-mini Nasdaq is <code>ENQ</code>); that's handled. <b>DIAGNOSTICS &rarr; LIST ROOTS</b> shows what your feed calls things.</p>
+        <table>
+          <tr><th>Option</th><th>What it does</th><th>Examples</th></tr>
+          <tr><td>q=</td><td>How many <b>contracts</b>. Left out, the panel's default is used, capped by its max-quantity setting.</td><td><code>q=1</code> &nbsp;<code>q=3</code></td></tr>
+          <tr><td>sl=</td><td>Stop loss &mdash; a price, or a distance in ticks (<code>t</code>) or points (<code>p</code>), measured from your actual fill. The stop attaches to the order itself.</td><td><code>sl=20890.25</code> &nbsp;<code>sl=40t</code></td></tr>
+          <tr><td>tp=</td><td>Take profit &mdash; same three formats.</td><td><code>tp=80t</code> &nbsp;<code>tp=10p</code></td></tr>
+        </table>
+        <p class="note">No <code>atm=</code> &mdash; Quantower has no ATM templates and doesn't need them. No <code>account=</code> &mdash; the panel trades the account you enabled. Both are ignored and noted in the log if they appear.</p>
+        <h4>Ready to paste</h4>
+        <table>
+          <tr><th>You want</th><th>Message</th></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Market buy, 1 contract</td><td><code>buy MNQ q=1</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy with a bracket in ticks</td><td><code>buy MNQ q=1 sl=40t tp=80t</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Stop to breakeven</td><td><code>update MNQ sl=be</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Reverse the position</td><td><code>reverse MNQ sl=40t</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close everything</td><td><code>flatten</code></td></tr>
+        </table>
+      </div>
+
+      <div class="sx-pane" id="sx-mt5" hidden>
+        <p><b>Symbols</b> are written plainly &mdash; <code>EURUSD</code>, <code>XAUUSD</code>, <code>NAS100</code>. Most brokers add a suffix (<code>EURUSD.r</code>); put just the suffix in the EA's <b>Broker symbol suffix</b> input and keep your alerts clean. Odd names go in the overrides box: <code>GOLD=XAUUSD</code>.</p>
+        <table>
+          <tr><th>Option</th><th>What it does</th><th>Examples</th></tr>
+          <tr><td>q=</td><td>How many <b>lots</b>. <code>0.01</code> is a micro lot. Always capped by the EA's <b>Max lots</b>.</td><td><code>q=0.01</code> &nbsp;<code>q=0.5</code></td></tr>
+          <tr><td>risk=</td><td>Size off a <b>percent of equity</b> instead of a fixed lot. Needs a stop in the same alert. The <code>%</code> is optional &mdash; this field is always a percentage.</td><td><code>risk=1%</code> &nbsp;<code>risk=0.5</code></td></tr>
+          <tr><td>riskcash=</td><td>Size off a fixed amount of <b>account currency</b>. Needs a stop in the same alert.</td><td><code>riskcash=50</code></td></tr>
+          <tr><td>sl=</td><td>Stop loss &mdash; a price, or a distance in <b>pips</b>, <b>percent</b>, ticks or points. Measured from your actual fill.</td><td><code>sl=1.0850</code> &nbsp;<code>sl=20pips</code> &nbsp;<code>sl=1%</code></td></tr>
+          <tr><td>tp=</td><td>Take profit &mdash; same formats.</td><td><code>tp=40pips</code> &nbsp;<code>tp=2%</code></td></tr>
+        </table>
+        <p class="note">No <code>atm=</code> and no <code>account=</code> &mdash; MetaTrader has neither. Both are ignored and noted in the log.</p>
+        <div class="notice"><b>What a pip is here.</b> A pip is <b>10 points on 5-digit and 3-digit pricing</b> (EURUSD, USDJPY) and 1 point everywhere else &mdash; so gold and the indices fall back to points, which is how those are quoted anyway. The EA logs the exact pip size for your chart's symbol when it starts. <code>ticks</code> and <code>points</code> still work if you prefer them: on a 5-digit EURUSD, <code>sl=20pips</code> and <code>sl=200ticks</code> are the same stop.</div>
+        <h4>Ready to paste</h4>
+        <table>
+          <tr><th>You want</th><th>Message</th></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Market buy, one micro lot</td><td><code>buy EURUSD q=0.01</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Buy, 20 pip stop, 40 pip target</td><td><code>buy EURUSD q=0.01 sl=20pips tp=40pips</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Risk 1% of equity on this trade</td><td><code>buy EURUSD risk=1% sl=20pips tp=40pips</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Risk a flat $50</td><td><code>sell GBPUSD riskcash=50 sl=25pips</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Percent-based stop on an index</td><td><code>buy NAS100 q=0.1 sl=1% tp=2%</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Sell with exact prices</td><td><code>sell EURUSD q=0.02 sl=1.0900 tp=1.0800</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Stop to breakeven</td><td><code>update EURUSD sl=be</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close half of a 0.02 position</td><td><code>close EURUSD q=0.01</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Reverse, same size, fresh stop</td><td><code>reverse EURUSD sl=20pips</code></td></tr>
+          <tr><td style="font-family:inherit;white-space:normal;color:var(--muted)">Close everything</td><td><code>flatten</code></td></tr>
+        </table>
+      </div>
+
+      <p class="note">From a Pine <b>strategy</b> alert, put <code>{{strategy.order.alert_message}}</code> in the alert box and let your script build the line (Step 2 above).</p>
+
+
       <h3>Managing a trade that's already on</h3>
       <p><b>Adding to a position</b> just works &mdash; send another <code>buy</code> and it stacks, each entry bringing its own bracket. <b>update</b> measures ticks/points from your position's average price, cancels AlertFill's existing exit orders on that instrument and places one fresh bracket sized to the whole position; leave <code>sl=</code> or <code>tp=</code> out to keep that level as it is, and <code>sl=be</code> parks the stop at breakeven. <b>close q=N</b> takes profit on part of the position and re-sizes the bracket to what's left. <b>reverse</b> flattens, then enters the opposite way at the same size (or <code>q=</code> for a different size) with a new bracket from <code>sl=</code>/<code>tp=</code> if given. Note: <code>update</code> manages brackets placed by AlertFill &mdash; a trade running under an ATM template is owned by the ATM, so adjust that in NinjaTrader.</p>
       <p>TradingView placeholders work anywhere in the message &mdash; e.g. <code>q={{strategy.order.contracts}}</code> &mdash; TradingView fills them in before sending. JSON-style messages are also accepted (<code>{"action":"buy","symbol":"NQ 09-26","qty":1}</code>) if your strategy already produces them.</p>
@@ -232,5 +279,30 @@
   <script src="assets/site.js"></script>
   <script src="assets/auth-nav.js"></script>
   <script src="assets/ticker.js"></script>
+<script>
+(function(){
+  // Platform tabs on the syntax reference. Plain show/hide, no dependency -
+  // and if the script never runs, every pane is visible rather than blank,
+  // which is the right way round for a docs page.
+  var tabs = document.querySelectorAll('.sx-tab');
+  function pick(id){
+    for(var i=0;i<tabs.length;i++){
+      var on = tabs[i].getAttribute('data-sx') === id;
+      tabs[i].className = on ? 'sx-tab on' : 'sx-tab';
+      var pane = document.getElementById('sx-' + tabs[i].getAttribute('data-sx'));
+      if(pane) pane.hidden = !on;
+    }
+    try { localStorage.setItem('af_docs_platform', id); } catch(e){}
+  }
+  for(var i=0;i<tabs.length;i++){
+    tabs[i].addEventListener('click', function(){ pick(this.getAttribute('data-sx')); });
+  }
+  var want = null;
+  try { want = localStorage.getItem('af_docs_platform'); } catch(e){}
+  if(location.hash === '#install-mt5') want = 'mt5';
+  else if(location.hash === '#install-qt') want = 'qt';
+  if(want && document.getElementById('sx-' + want)) pick(want);
+})();
+</script>
 </body>
 </html>

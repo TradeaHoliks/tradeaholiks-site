@@ -101,7 +101,7 @@
       <p>We may update this policy from time to time. The date at the top shows when it was last changed.</p>
 
       <h2>Contact</h2>
-      <p>Questions about your privacy? Email <a href="mailto:tradeaholiks@gmail.com">tradeaholiks@gmail.com</a> or use our <a href="contact.html">contact page</a>.</p>
+      <p>Questions about your privacy? Email <a class="eml" data-u="support" data-d="tradeaholiks.com">support [at] tradeaholiks.com</a> or use our <a href="contact.html">contact page</a>.</p>
     </div>
   </div></section>
 
@@ -138,5 +138,9 @@
   <script src="assets/site.js"></script>
   <script src="assets/auth-nav.js"></script>
   <script src="assets/ticker.js"></script>
+  <script>
+  /* Email links are assembled in the browser, so no readable address sits in the page source. */
+  (function(){var L=document.querySelectorAll("a.eml");for(var i=0;i<L.length;i++){var u=L[i].getAttribute("data-u"),d=L[i].getAttribute("data-d");if(!u||!d)continue;var e=u+String.fromCharCode(64)+d;L[i].href="mai"+"lto:"+e;L[i].textContent=e;}})();
+  </script>
 </body>
 </html>

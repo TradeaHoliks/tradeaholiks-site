@@ -68,7 +68,7 @@
       </ul>
 
       <h2>How to request a refund</h2>
-      <p>Email <a href="mailto:support@tradeaholiks.com">support@tradeaholiks.com</a> (or use our <a href="contact.html">contact page</a>) from the email address you bought with, and mention that you&rsquo;d like a refund. Payments and refunds are handled by <b>Creem</b>, our Merchant of Record, and are returned to your original payment method &mdash; usually within a few business days.</p>
+      <p>Email <a class="eml" data-u="support" data-d="tradeaholiks.com">support [at] tradeaholiks.com</a> (or use our <a href="contact.html">contact page</a>) from the email address you bought with, and mention that you&rsquo;d like a refund. Payments and refunds are handled by <b>Creem</b>, our Merchant of Record, and are returned to your original payment method &mdash; usually within a few business days.</p>
 
       <h2>Your statutory rights</h2>
       <p>Nothing in this policy limits any rights you have under the Australian Consumer Law or the consumer protection laws of your own country.</p>
@@ -77,7 +77,7 @@
       <p>Refunds relate to the software only. We can&rsquo;t refund trading losses &mdash; our software is a tracking, analysis and order-routing tool &mdash; not financial advice, and not a trading strategy or signal service.</p>
 
       <h2>Contact</h2>
-      <p>Email <a href="mailto:support@tradeaholiks.com">support@tradeaholiks.com</a> or use our <a href="contact.html">contact page</a>.</p>
+      <p>Email <a class="eml" data-u="support" data-d="tradeaholiks.com">support [at] tradeaholiks.com</a> or use our <a href="contact.html">contact page</a>.</p>
     </div>
   </div></section>
 
@@ -114,5 +114,9 @@
   <script src="assets/site.js"></script>
   <script src="assets/auth-nav.js"></script>
   <script src="assets/ticker.js"></script>
+  <script>
+  /* Email links are assembled in the browser, so no readable address sits in the page source. */
+  (function(){var L=document.querySelectorAll("a.eml");for(var i=0;i<L.length;i++){var u=L[i].getAttribute("data-u"),d=L[i].getAttribute("data-d");if(!u||!d)continue;var e=u+String.fromCharCode(64)+d;L[i].href="mai"+"lto:"+e;L[i].textContent=e;}})();
+  </script>
 </body>
 </html>

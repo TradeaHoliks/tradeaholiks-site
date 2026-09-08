@@ -152,7 +152,7 @@
         if (msg) {
           msg.textContent = data.success
             ? "Application received — thanks! If you're picked for this round, your licence key lands in your inbox."
-            : 'Sorry, something went wrong. Please email us directly at tradeaholiks@gmail.com.';
+            : 'Sorry, something went wrong. Please use our contact page.';
           msg.style.color = data.success ? 'var(--accent)' : '#ff5d5d';
           msg.style.display = 'block';
         }
@@ -160,7 +160,7 @@
         if (send) { send.disabled = false; send.textContent = 'Apply for the beta'; }
       }).catch(function () {
         if (msg) {
-          msg.textContent = 'Network error — please email us directly at tradeaholiks@gmail.com.';
+          msg.textContent = 'Network error — please use our contact page.';
           msg.style.color = '#ff5d5d';
           msg.style.display = 'block';
         }

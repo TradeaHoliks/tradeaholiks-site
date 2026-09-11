@@ -63,7 +63,7 @@
 
       <div class="notice" style="border-color:var(--accent)"><b>What goes where &mdash; the whole setup in three lines:</b><br>
       &bull; The <b>NinjaTrader machine</b> gets ONE thing: the <b>Bridge webhook URL</b>.<br>
-      &bull; The <b>Journal machine</b> gets TWO things: the <b>Relay URL</b> + your <b>sync key</b>.<br>
+      &bull; The <b>Journal machine</b> gets TWO things: the <b>Relay URL</b> + your <b>relay key</b>.<br>
       &bull; All three come from the Easy Sync tab on your account page &mdash; always use the <b>Copy</b> buttons, never retype them.</div>
 
       <h2>Step 1 &mdash; NinjaTrader side (the machine that trades)</h2>
@@ -73,9 +73,9 @@
       <p class="step"><span class="stepnum">4.</span>That's the whole NT side. The Bridge keeps writing its normal files too &mdash; the webhook is an extra copy, so nothing about your current setup breaks.</p>
 
       <h2>Step 2 &mdash; Journal side (the machine you read on)</h2>
-      <p class="step"><span class="stepnum">1.</span>On your account page, click <b>Copy</b> next to your <b>sync key</b>.</p>
+      <p class="step"><span class="stepnum">1.</span>On your account page, click <b>Copy</b> next to your <b>relay key</b>.</p>
       <p class="step"><span class="stepnum">2.</span>In Easy Journal: <b>Settings</b> &rarr; the <b>Bridge source</b> card &rarr; tick <b>Feed snapshots from the relay</b>.</p>
-      <p class="step"><span class="stepnum">3.</span>Leave the Relay URL as <code>https://relay.tradeaholiks.com</code> and paste your sync key into the <b>Relay key</b> box.</p>
+      <p class="step"><span class="stepnum">3.</span>Leave the Relay URL as <code>https://relay.tradeaholiks.com</code> and paste your relay key into the <b>Relay key</b> box.</p>
       <p class="step"><span class="stepnum">4.</span>Click <b>Apply</b>, then <b>Test relay</b> &mdash; you want the <b>green tick</b>. If you get a red cross instead, re-copy the key from your account page and try again.</p>
 
       <h2>Check it's flowing</h2>

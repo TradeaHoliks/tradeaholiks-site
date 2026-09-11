@@ -555,16 +555,16 @@
       var html = '';
       var stepHead = function(t){ return '<div style="margin:16px 0 10px;font-weight:800;font-size:14px;letter-spacing:.5px;color:var(--accent)">' + t + '</div>'; };
       html += '<div class="note" style="margin:2px 0 0">Two paste jobs \u2014 one on each machine. Do the steps in order.</div>';
-      html += stepHead('STEP 1 \u2014 NinjaTrader machine (the one that trades)');
-      html += syncRowHtml('Bridge webhook URL', 'sync-hook-box', syncMask(syncKeyFull) ? (syncRelay + '/snap/' + syncMask(syncKeyFull)) : '',
+      html += stepHead('STEP 1 \u2014 NinjaTrader TAH Bridge Addon');
+      html += '<div class="note" style="margin:0 0 8px">Tick Enable <b>Snapshot webhook</b></div>';
+      html += syncRowHtml('Bridge snapshot webhook URL', 'sync-hook-box', syncMask(syncKeyFull) ? (syncRelay + '/snap/' + syncMask(syncKeyFull)) : '',
                 syncBtn('sync-copy-hook','Copy'), true);
-      html += '<div class="note" style="margin:-6px 0 4px">Click Copy, then on the NinjaTrader machine: Control Center &rarr; New &rarr; TAH Bridge &rarr; tick <b>Snapshot webhook</b> &rarr; paste this URL in the field next to it. That\u2019s the whole NT side \u2014 the Bridge now sends every snapshot to the cloud.</div>';
-      html += stepHead('STEP 2 \u2014 Journal machine (the one you read on)');
+      html += stepHead('STEP 2 \u2014 Easy Journal');
+      html += '<div class="note" style="margin:0 0 8px">In Settings, enable <b>Feed snapshots from relay</b></div>';
       html += syncRowHtml('Relay URL', 'sync-relay-box', syncRelay,
                 syncBtn('sync-copy-relay','Copy'));
-      html += syncRowHtml('Your sync key', 'sync-key-box', syncMask(syncKeyFull),
+      html += syncRowHtml('Relay key', 'sync-key-box', syncMask(syncKeyFull),
                 syncBtn('sync-show','Show') + syncBtn('sync-copy-key','Copy'), true);
-      html += '<div class="note" style="margin:-6px 0 4px">In Easy Journal: Settings &rarr; Bridge source card &rarr; tick <b>Feed snapshots from the relay</b> &rarr; paste the Relay URL and your sync key &rarr; <b>Apply</b> &rarr; <b>Test relay</b> \u2014 you want the green tick.</div>';
       html += stepHead('STEP 3 \u2014 Check it\u2019s flowing');
       html += '<button id="sync-test" class="btn btn-block" type="button" style="margin-top:2px">Test my link</button>';
       html += '<div class="note" style="margin:8px 0 0">Take a SIM trade or press <b>SYNC NOW</b> in the Bridge, wait a minute \u2014 the status at the top flips to \u25cf FEED ACTIVE.</div>';
@@ -584,7 +584,7 @@
       document.getElementById('sync-copy-relay').addEventListener('click', function(){ syncCopy(syncRelay, this); });
       document.getElementById('sync-test').addEventListener('click', function(){ syncPing(true); });
       document.getElementById('sync-regen').addEventListener('click', function(){
-        if(!window.confirm('Regenerate your sync key?\n\nYour NinjaTrader Bridge AND your Journal will both need the new key before snapshots flow again.')) return;
+        if(!window.confirm('Regenerate your relay key?\n\nYour NinjaTrader Bridge AND your Journal will both need the new key before snapshots flow again.')) return;
         var b = this; b.disabled = true;
         sb.functions.invoke('my-sync-key', { body: { action: 'regenerate' } }).then(function(res){
           b.disabled = false;
@@ -618,14 +618,14 @@
     function syncNoLicence(){
       setDot('sync', 'd');
       var body = document.getElementById('sync-body');
-      if(body) body.innerHTML = '<div style="color:var(--muted)">Easy Sync comes with your Easy Journal licence \u2014 your sync key will appear here once you own one.</div>';
+      if(body) body.innerHTML = '<div style="color:var(--muted)">Easy Sync comes with your Easy Journal licence \u2014 your relay key will appear here once you own one.</div>';
     }
     function loadSyncKey(){
       var body = document.getElementById('sync-body');
-      if(body) body.innerHTML = '<div style="color:var(--muted)">Setting up your sync key\u2026</div>';
+      if(body) body.innerHTML = '<div style="color:var(--muted)">Setting up your relay key\u2026</div>';
       sb.functions.invoke('my-sync-key', { body: { action: 'get' } }).then(function(res){
         if(res.error || !res.data || !res.data.key){
-          if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your sync key right now \u2014 please try again shortly.</div>';
+          if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your relay key right now \u2014 please try again shortly.</div>';
           setDot('sync', 'd');
           return;
         }
@@ -634,7 +634,7 @@
         renderSync();
         syncPing(false);
       }).catch(function(){
-        if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your sync key right now.</div>';
+        if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your relay key right now.</div>';
       });
     }
     // ---- AlertFill (TradingView -> NinjaTrader order relay) --------------

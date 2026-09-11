@@ -553,15 +553,22 @@
       var body = document.getElementById('sync-body'); if(!body) return;
       var hookUrl = syncRelay + '/snap/' + syncKeyFull;
       var html = '';
-      html += syncRowHtml('Your sync key', 'sync-key-box', syncMask(syncKeyFull),
-                syncBtn('sync-show','Show') + syncBtn('sync-copy-key','Copy') + syncBtn('sync-regen','Regenerate'), true);
-      html += syncRowHtml('Bridge webhook URL (NinjaTrader side)', 'sync-hook-box', syncMask(syncKeyFull) ? (syncRelay + '/snap/' + syncMask(syncKeyFull)) : '',
+      var stepHead = function(t){ return '<div style="margin:16px 0 10px;font-weight:800;font-size:14px;letter-spacing:.5px;color:var(--accent)">' + t + '</div>'; };
+      html += '<div class="note" style="margin:2px 0 0">Two paste jobs \u2014 one on each machine. Do the steps in order.</div>';
+      html += stepHead('STEP 1 \u2014 NinjaTrader machine (the one that trades)');
+      html += syncRowHtml('Bridge webhook URL', 'sync-hook-box', syncMask(syncKeyFull) ? (syncRelay + '/snap/' + syncMask(syncKeyFull)) : '',
                 syncBtn('sync-copy-hook','Copy'), true);
-      html += '<div class="note" style="margin:-6px 0 12px">Paste into NinjaTrader &rarr; TAH Bridge &rarr; \u201cSnapshot webhook\u201d. Copy uses the full key.</div>';
-      html += syncRowHtml('Journal relay URL', 'sync-relay-box', syncRelay,
+      html += '<div class="note" style="margin:-6px 0 4px">Click Copy, then on the NinjaTrader machine: Control Center &rarr; New &rarr; TAH Bridge &rarr; tick <b>Snapshot webhook</b> &rarr; paste this URL in the field next to it. That\u2019s the whole NT side \u2014 the Bridge now sends every snapshot to the cloud.</div>';
+      html += stepHead('STEP 2 \u2014 Journal machine (the one you read on)');
+      html += syncRowHtml('Relay URL', 'sync-relay-box', syncRelay,
                 syncBtn('sync-copy-relay','Copy'));
-      html += '<div class="note" style="margin:-6px 0 12px">In Easy Journal &rarr; Settings &rarr; \u201cFeed snapshots from the relay\u201d: paste this URL and your sync key.</div>';
-      html += '<button id="sync-test" class="btn btn-block" type="button" style="margin-top:4px">Test my link</button>';
+      html += syncRowHtml('Your sync key', 'sync-key-box', syncMask(syncKeyFull),
+                syncBtn('sync-show','Show') + syncBtn('sync-copy-key','Copy'), true);
+      html += '<div class="note" style="margin:-6px 0 4px">In Easy Journal: Settings &rarr; Bridge source card &rarr; tick <b>Feed snapshots from the relay</b> &rarr; paste the Relay URL and your sync key &rarr; <b>Apply</b> &rarr; <b>Test relay</b> \u2014 you want the green tick.</div>';
+      html += stepHead('STEP 3 \u2014 Check it\u2019s flowing');
+      html += '<button id="sync-test" class="btn btn-block" type="button" style="margin-top:2px">Test my link</button>';
+      html += '<div class="note" style="margin:8px 0 0">Take a SIM trade or press <b>SYNC NOW</b> in the Bridge, wait a minute \u2014 the status at the top flips to \u25cf FEED ACTIVE.</div>';
+      html += '<div class="note" style="margin:14px 0 0;border-top:1px solid var(--line,#2a2e37);padding-top:10px">Need a new key? ' + syncBtn('sync-regen','Regenerate') + ' <span style="opacity:.8">\u2014 both sides need the new key before snapshots flow again.</span></div>';
       body.innerHTML = html;
       document.getElementById('sync-show').addEventListener('click', function(){
         syncKeyShown = !syncKeyShown;

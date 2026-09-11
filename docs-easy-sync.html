@@ -61,6 +61,11 @@
 
       <div class="notice"><b>Before you start:</b> log in at <a href="account.html" style="color:var(--accent)">tradeaholiks.com/account</a> and open the <b>Easy Sync</b> tab. Everything you'll paste below has a Copy button there.</div>
 
+      <div class="notice" style="border-color:var(--accent)"><b>What goes where &mdash; the whole setup in three lines:</b><br>
+      &bull; The <b>NinjaTrader machine</b> gets ONE thing: the <b>Bridge webhook URL</b>.<br>
+      &bull; The <b>Journal machine</b> gets TWO things: the <b>Relay URL</b> + your <b>sync key</b>.<br>
+      &bull; All three come from the Easy Sync tab on your account page &mdash; always use the <b>Copy</b> buttons, never retype them.</div>
+
       <h2>Step 1 &mdash; NinjaTrader side (the machine that trades)</h2>
       <p class="step"><span class="stepnum">1.</span>On your account page's Easy Sync tab, click <b>Copy</b> next to <b>Bridge webhook URL</b>.</p>
       <p class="step"><span class="stepnum">2.</span>On the NinjaTrader machine: Control Center &rarr; <b>New</b> &rarr; <b>TAH Bridge</b> (the Bridge window opens).</p>
@@ -71,10 +76,10 @@
       <p class="step"><span class="stepnum">1.</span>On your account page, click <b>Copy</b> next to your <b>sync key</b>.</p>
       <p class="step"><span class="stepnum">2.</span>In Easy Journal: <b>Settings</b> &rarr; the <b>Bridge source</b> card &rarr; tick <b>Feed snapshots from the relay</b>.</p>
       <p class="step"><span class="stepnum">3.</span>Leave the Relay URL as <code>https://relay.tradeaholiks.com</code> and paste your sync key into the <b>Relay key</b> box.</p>
-      <p class="step"><span class="stepnum">4.</span>Click <b>Apply</b>, then <b>Test relay</b> &mdash; you want a green tick.</p>
+      <p class="step"><span class="stepnum">4.</span>Click <b>Apply</b>, then <b>Test relay</b> &mdash; you want the <b>green tick</b>. If you get a red cross instead, re-copy the key from your account page and try again.</p>
 
       <h2>Check it's flowing</h2>
-      <p>Place a trade (SIM is fine) or press SYNC NOW in the Bridge, then give it a minute. Your account page's Easy Sync tab should flip to <b>FEED ACTIVE</b>, and the trade appears in your Journal. From then on it's automatic &mdash; snapshots arrive within a minute or two of every fill, and if either machine is off for a while, everything queued is delivered when it comes back. Nothing is ever lost.</p>
+      <p>Place a trade (SIM is fine) or press <b>SYNC NOW</b> in the Bridge, then give it a minute. Two things tell you it works: your account page's Easy Sync tab flips to <b>&#9679; FEED ACTIVE</b>, and the trade appears in your Journal. From then on it's automatic &mdash; snapshots arrive within a minute or two of every fill, and if either machine is off for a while, everything queued is delivered when it comes back. Nothing is ever lost.</p>
 
       <h2>If something's off</h2>
       <p><b>Test relay fails:</b> re-copy the key from your account page (don't retype it) and check the URL has no extra spaces. <b>Feed says "waiting":</b> the Bridge side hasn't sent anything yet &mdash; check the Snapshot webhook box is ticked and the URL pasted is the full one from your account page. <b>"Snapshots waiting" keeps climbing:</b> your Journal isn't collecting &mdash; make sure it's running and the relay feed box is ticked. Still stuck? Use Report a Problem in the Journal, or the <a href="contact.html" style="color:var(--accent)">contact page</a>.</p>

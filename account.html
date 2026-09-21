@@ -226,6 +226,35 @@
   (function(){
     if(!window.supabase){ return; }
     var sb = supabase.createClient(window.TAH_SUPABASE_URL, window.TAH_SUPABASE_KEY);
+    // ---- Safety net: never wait forever on a slow server (21 Sep 2026) --
+    // callFn wraps sb.functions.invoke with a time limit. A call that takes
+    // too long resolves as { error: { timeout: true } } instead of hanging.
+    // retry=true (read-only calls only) tries once more after a short pause
+    // when the failure looks temporary (time-out, network, or 5xx).
+    var FN_TIMEOUT_MS = 15000;
+    function fnTransient(res){
+      if(!res || !res.error) return false;
+      var st = res.error.context && res.error.context.status;
+      return !!(res.error.timeout || !st || st >= 500);
+    }
+    function callFn(name, opts, retry){
+      function once(){
+        return Promise.race([
+          sb.functions.invoke(name, opts),
+          new Promise(function(r){ setTimeout(function(){ r({ data: null, error: { timeout: true, message: 'timeout' } }); }, FN_TIMEOUT_MS); })
+        ]).catch(function(e){ return { data: null, error: { message: String(e) } }; });
+      }
+      return once().then(function(res){
+        if(retry && fnTransient(res)){ return new Promise(function(r){ setTimeout(r, 1500); }).then(once); }
+        return res;
+      });
+    }
+    function retryLink(el, text, fn){
+      if(!el) return;
+      el.innerHTML = '<div style="color:var(--muted)">' + text + ' <a href="#" class="tah-retry" style="color:var(--accent)">Try again</a></div>';
+      var a = el.querySelector('.tah-retry');
+      if(a) a.addEventListener('click', function(e){ e.preventDefault(); fn(); });
+    }
     var signupForm = document.getElementById('signup-form');
     var loginForm  = document.getElementById('login-form');
     var authGrid   = document.getElementById('auth-grid');
@@ -467,8 +496,12 @@
       var box = document.getElementById('licence-box');
       if(!box) return;
       box.innerHTML = '<div style="color:var(--muted)">Checking your licence\u2026</div>';
-      sb.functions.invoke('my-licenses').then(function(res){
-        if(res.error || !res.data){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now \u2014 please try again shortly.</div>'; return; }
+      var slowT = setTimeout(function(){
+        if(/Checking your licence/.test(box.innerText)) box.innerHTML = '<div style="color:var(--muted)">Still checking \u2014 the licence server is slow right now\u2026</div>';
+      }, 6000);
+      callFn('my-licenses', undefined, true).then(function(res){
+        clearTimeout(slowT);
+        if(res.error || !res.data){ retryLink(box, 'Couldn\u2019t load your licence right now.', loadLicences); return; }
         var lic = res.data.licences || [];
         if(!lic.length){
           box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your Easy Journal key will appear here after you buy it.</div>';
@@ -491,7 +524,7 @@
         setDot('journal', anyActive ? 'g' : 'r');
         jrnOwned = anyActive; renderProductDownloads();
         if(anyActive){ loadSyncKey(); } else { syncNoLicence(); }
-      }).catch(function(){ box.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your licence right now.</div>'; });
+      }).catch(function(){ clearTimeout(slowT); retryLink(box, 'Couldn\u2019t load your licence right now.', loadLicences); });
     }
     // ---- Easy Sync (cloud snapshot feed) --------------------------------
     var SYNC_RELAY_FALLBACK = 'https://relay.tradeaholiks.com';
@@ -623,9 +656,9 @@
     function loadSyncKey(){
       var body = document.getElementById('sync-body');
       if(body) body.innerHTML = '<div style="color:var(--muted)">Setting up your relay key\u2026</div>';
-      sb.functions.invoke('my-sync-key', { body: { action: 'get' } }).then(function(res){
+      callFn('my-sync-key', { body: { action: 'get' } }, false).then(function(res){
         if(res.error || !res.data || !res.data.key){
-          if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your relay key right now \u2014 please try again shortly.</div>';
+          retryLink(body, 'Couldn\u2019t load your relay key right now.', loadSyncKey);
           setDot('sync', 'd');
           return;
         }
@@ -634,7 +667,7 @@
         renderSync();
         syncPing(false);
       }).catch(function(){
-        if(body) body.innerHTML = '<div style="color:var(--muted)">Couldn\u2019t load your relay key right now.</div>';
+        retryLink(body, 'Couldn\u2019t load your relay key right now.', loadSyncKey);
       });
     }
     // ---- AlertFill (TradingView -> NinjaTrader order relay) --------------
@@ -924,11 +957,22 @@
         box.innerHTML = '<div style="margin:14px 0 6px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Recent alerts</div>' + rows;
       }).catch(function(){ box.innerHTML = ''; });
     }
+    function afShowUnavailable(){
+      var t = document.getElementById('af-teaser');
+      if(!t || !t.parentNode) return;
+      var u = document.getElementById('af-unavail');
+      if(!u){ u = document.createElement('div'); u.id = 'af-unavail'; u.style.margin = '0 0 10px'; t.parentNode.insertBefore(u, t); }
+      retryLink(u, 'Couldn\u2019t check your AlertFill status right now.', function(){
+        u.innerHTML = '<div style="color:var(--muted)">Checking\u2026</div>'; loadAlertFill();
+      });
+    }
     function loadAlertFill(){
-      sb.functions.invoke('my-signal-key', { body: { action: 'get' } }).then(function(res){
+      callFn('my-signal-key', { body: { action: 'get' } }, false).then(function(res){
+        if(fnTransient(res)){ afShowUnavailable(); return; }
+        var u = document.getElementById('af-unavail'); if(u && u.parentNode) u.parentNode.removeChild(u);
         if(res.error || !res.data || !res.data.key){ afShowTeaser(); return; }
         afApply(res.data);
-      }).catch(function(){ afShowTeaser(); });
+      }).catch(function(){ afShowUnavailable(); });
     }
     function showLoggedOut(){
       if(authGrid) authGrid.style.display='';

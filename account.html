@@ -84,7 +84,7 @@
             &mdash; and about a second later the order is in your platform, stop and target attached.</div>
             <ul class="ticklist" style="margin:14px 0 16px">
               <li>Instant delivery &mdash; alerts pushed live, no polling delay</li>
-              <li>NinjaTrader and Quantower &mdash; run both at once on one key</li>
+              <li>NinjaTrader, Quantower and MetaTrader 5 &mdash; all on one key</li>
               <li>Stops &amp; targets in ticks, points or price &mdash; or hand the trade to your NinjaTrader ATM template</li>
               <li>Prop-firm-friendly guardrails: quantity caps, SIM-first safety, stale alerts never fire into a moved market</li>
             </ul>
@@ -332,6 +332,9 @@
         html += dlRow('&#9889;', 'TAH AlertFill panel', 'Quantower &middot; ' + (afOwn === 'trial' ? 'trial active' : 'licensed to you'),
                       dlPill(afOwn === 'trial' ? 'TRIAL' : 'OWNED', true)
                       + '<button ' + ghost.replace('class="', 'type="button" class="dl-btn ') + ' data-file="TAH_AlertFill_QT.zip">Download</button>', true);
+        html += dlRow('&#9889;', 'TAH AlertFill Expert Advisor', 'MetaTrader 5 &middot; ' + (afOwn === 'trial' ? 'trial active' : 'licensed to you'),
+                      dlPill(afOwn === 'trial' ? 'TRIAL' : 'OWNED', true)
+                      + '<button ' + ghost.replace('class="', 'type="button" class="dl-btn ') + ' data-file="TAH_AlertFill_MT5.zip">Download</button>', true);
       } else if(afOwn === 'none'){
         html += dlRow('&#9889;', 'AlertFill', 'TradingView automation &middot; $149 one-time &middot; free 7-day trial',
                       dlPill('NOT OWNED', false) + '<a ' + ghost + ' href="alertfill.html">See AlertFill</a>', false);
@@ -754,7 +757,7 @@
              +'<li>Start Quantower and connect, then <b>logo &rarr; Trading &rarr; TAH AlertFill</b>.</li>'
              +'<li>Pick your account, press <b>ENABLE ACCOUNT</b>, paste your key, press <b>START</b>. Start on a demo account.</li>' },
       { id:'mt5', name:'MetaTrader 5', sub:'Forex &amp; CFDs &mdash; Expert Advisor',
-        file:'TAH_AlertFill_MT5.zip', dl:'the MT5 Expert Advisor', soon:true,
+        file:'TAH_AlertFill_MT5.zip', dl:'the MT5 Expert Advisor',
         eg:'EURUSD', qty:'0.01',
         steps:'<li>Download and unzip &mdash; you get <b>AlertFill.mq5</b>.</li>'
              +'<li>MT5: <b>File &rarr; Open Data Folder</b>, then into <code>MQL5\\Experts</code>, and drop the file in.</li>'

@@ -59,7 +59,16 @@
 
   <section class="section tight"><div class="container">
     <div class="split rev">
-      <div class="split-media"><div class="shot">[ Alert message examples ]<br>screenshot coming soon</div></div>
+      <div class="split-media">
+        <div style="background:linear-gradient(160deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;overflow:hidden;font-family:var(--mono);text-align:left" aria-label="Example TradingView alert messages">
+          <div style="display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:12px;color:var(--faint)"><span style="width:9px;height:9px;border-radius:50%;background:#ff5d5d;opacity:.7"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--accent);opacity:.7"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--up);opacity:.7"></span><span style="margin-left:8px">alert_message.txt</span></div>
+          <div style="padding:11px 18px;border-bottom:1px dashed var(--line);"><div style="font-size:14px;color:var(--ink);overflow-wrap:anywhere"><span style="color:var(--accent)">buy</span> MNQ q=1 sl=40t tp=80t</div><div style="font-size:12px;color:var(--faint);margin-top:3px">// buy with a stop and target, in ticks from your fill</div></div>
+          <div style="padding:11px 18px;border-bottom:1px dashed var(--line);"><div style="font-size:14px;color:var(--ink);overflow-wrap:anywhere"><span style="color:var(--accent)">long</span> NQ 09-26 atm=&quot;Morning Scalp&quot;</div><div style="font-size:12px;color:var(--faint);margin-top:3px">// buy under your NinjaTrader ATM template</div></div>
+          <div style="padding:11px 18px;border-bottom:1px dashed var(--line);"><div style="font-size:14px;color:var(--ink);overflow-wrap:anywhere"><span style="color:var(--accent)">update</span> MNQ sl=be</div><div style="font-size:12px;color:var(--faint);margin-top:3px">// move the stop to breakeven</div></div>
+          <div style="padding:11px 18px;border-bottom:1px dashed var(--line);"><div style="font-size:14px;color:var(--ink);overflow-wrap:anywhere"><span style="color:var(--accent)">buy</span> EURUSD risk=1% sl=20pips tp=40pips</div><div style="font-size:12px;color:var(--faint);margin-top:3px">// MetaTrader 5: risk 1% of equity on this trade</div></div>
+          <div style="padding:11px 18px;"><div style="font-size:14px;color:var(--ink);overflow-wrap:anywhere"><span style="color:var(--accent)">flatten</span></div><div style="font-size:12px;color:var(--faint);margin-top:3px">// close everything</div></div>
+        </div>
+      </div>
       <div>
         <div class="eyebrow">// You write the order in the alert</div>
         <h2>One line does the lot</h2>
@@ -75,7 +84,7 @@
 
   <section class="section tight"><div class="container">
     <div class="split">
-      <div class="split-media"><div class="shot">[ Account page status ]<br>screenshot coming soon</div></div>
+      <div class="split-media"><img src="assets/alertfill-window.webp" width="514" height="883" alt="The TAH AlertFill window in NinjaTrader &mdash; Sim accounts only until you allow Live, a hard quantity cap, and every alert in the activity log" loading="lazy" style="max-width:400px;width:100%;height:auto;margin:0 auto;border:1px solid var(--line);border-radius:14px;display:block;box-shadow:0 18px 50px rgba(0,0,0,.45)"></div>
       <div>
         <div class="eyebrow">// Built for prop-firm traders</div>
         <h2>Guardrails, not guesswork</h2>

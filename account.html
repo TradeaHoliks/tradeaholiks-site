@@ -98,7 +98,7 @@
             <div class="eyebrow" style="margin-top:18px">// ALERTFILL &mdash; TRADINGVIEW AUTOMATION
               <span id="af-badge" style="float:right;font-family:var(--mono,monospace);font-size:11px;letter-spacing:1px;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:3px 10px;display:none"></span></div>
             <div class="sub" style="margin-top:6px">TradingView fires the alert &mdash; the relay pushes it straight into
-            your NinjaTrader receiver.
+            your platform's AlertFill receiver.
             <span id="af-status" style="display:block;margin-top:8px;font-family:var(--mono,monospace);font-size:12px;letter-spacing:1px"></span></div>
             <div id="af-body" style="margin-top:10px"></div>
             <div id="af-activity" style="margin-top:6px"></div>
@@ -924,7 +924,12 @@
       }).then(function(j){
         if(!j) return;
         var txt, col, dot;
-        if(j.receiverConnected){ txt = '● RECEIVER CONNECTED — NinjaTrader is listening'; col = 'var(--accent)'; dot = 'g'; }
+        if(j.receiverConnected){
+          var nm = [];
+          (j.receivers || []).forEach(function(r){ var c = r && r.client; if(c && c !== 'receiver' && nm.indexOf(c) < 0) nm.push(c); });
+          txt = '● RECEIVER CONNECTED — ' + (nm.length ? nm.join(' + ') + ' listening' : 'your platform is listening');
+          col = 'var(--accent)'; dot = 'g';
+        }
         else {
           var ago = syncAgo(j.lastSeenUtc);
           txt = ago ? '○ RECEIVER OFFLINE — last connected ' + ago
@@ -940,25 +945,66 @@
         if(fromButton) afMsg('Could not reach the relay from your browser — the link itself may still be fine.', false);
       });
     }
+    // ---- AlertFill activity log (22 Sep 2026) -------------------------
+    // A window about five alerts tall that scrolls for the rest (the relay
+    // keeps up to 50 here). Each row: the alert as TradingView sent it, what
+    // happened to it, when, and the relay's own detail line - so a customer
+    // can see WHERE an alert stopped without asking us.
+    var AF_STATUS = {
+      received:    { label:'RECEIVED',      col:'#00e08a', tip:'Your platform confirmed it arrived. If no order appeared, check the AlertFill log on that platform.' },
+      delivered:   { label:'SENT',          col:'var(--accent)', tip:'Sent to your platform. Older receiver versions can’t confirm receipt — update the receiver to see RECEIVED.' },
+      queued:      { label:'QUEUED',        col:'var(--muted)', tip:'Your platform wasn’t connected. It is delivered if the receiver reconnects within 30 seconds.' },
+      unconfirmed: { label:'NOT CONFIRMED', col:'#ff9d5d', tip:'Sent, but your platform never confirmed it arrived — its connection may have dropped. Check the AlertFill log on that platform.' },
+      discarded:   { label:'DISCARDED',     col:'#ff5d5d', tip:'More than 30 seconds old before your platform was back online, so it was dropped on purpose rather than fired into a moved market.' },
+      rejected:    { label:'REJECTED',      col:'#ff5d5d', tip:'Refused by the relay and not sent anywhere — see the detail line.' }
+    };
+    function afEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function afClock(ms){
+      try { var d = new Date(ms); return d.toLocaleDateString(undefined, { day:'numeric', month:'short' }) + ' ' + d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', second:'2-digit' }); }
+      catch(e){ return ''; }
+    }
     function afOrders(){
       var box = document.getElementById('af-activity'); if(!box || !afKey) return;
-      fetch(afBase + '/orders/' + afKey).then(function(r){
+      fetch(afBase + '/orders/' + afKey + '?n=50').then(function(r){
         if(!r.ok) return null;
         return r.json();
       }).then(function(j){
-        if(!j || !j.orders || !j.orders.length){ box.innerHTML = ''; return; }
-        var rows = j.orders.slice(0, 5).map(function(o){
-          var raw = (o.order && (o.order.raw || JSON.stringify(o.order))) || '';
-          var when = o.receivedMs ? syncAgo(new Date(o.receivedMs).toISOString()) : '';
-          var col = (o.status === 'delivered') ? 'var(--accent)' : (o.status === 'queued' ? 'var(--muted)' : '#ff5d5d');
-          return '<div style="display:flex;gap:10px;align-items:baseline;padding:7px 12px;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:8px;margin-bottom:6px;font-size:13px">'
-               + '<span style="font-family:var(--mono,monospace);flex:1;overflow-x:auto;white-space:nowrap">' + raw.replace(/</g,'&lt;') + '</span>'
-               + '<span style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:' + col + '">' + (o.status||'') + '</span>'
-               + '<span style="font-size:11px;color:var(--muted)">' + (when||'') + '</span>'
-               + '</div>';
-        }).join('');
-        box.innerHTML = '<div style="margin:14px 0 6px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Recent alerts</div>' + rows;
-      }).catch(function(){ box.innerHTML = ''; });
+        var list = (j && j.orders) || [];
+        var head = '<div style="display:flex;align-items:baseline;gap:10px;margin:14px 0 6px">'
+                 + '<span style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Recent alerts</span>'
+                 + (list.length ? '<span style="font-size:11px;color:var(--faint)">' + list.length + (list.length > 5 ? ' &middot; scroll for more' : '') + '</span>' : '')
+                 + '<a href="#" id="af-log-refresh" style="margin-left:auto;font-size:12px;color:var(--accent);text-decoration:none">Refresh</a></div>';
+        var rows;
+        if(!list.length){
+          rows = '<div style="padding:14px 12px;color:var(--muted);font-size:13px">No alerts yet. Once TradingView sends one to your webhook URL it shows up here, with what happened to it.</div>';
+        } else {
+          rows = list.map(function(o){
+            var raw = (o.order && (o.order.raw != null ? o.order.raw : JSON.stringify(o.order))) || '';
+            var st = AF_STATUS[o.status] || { label:String(o.status || '').toUpperCase(), col:'var(--muted)', tip:'' };
+            var ago = o.receivedMs ? syncAgo(new Date(o.receivedMs).toISOString()) : '';
+            var when = o.receivedMs ? afClock(o.receivedMs) + (ago ? ' &middot; ' + ago : '') : '';
+            return '<div class="af-log-row" style="padding:8px 12px;border-bottom:1px solid var(--line,#2a2e37)">'
+                 +   '<div style="display:flex;gap:10px;align-items:baseline">'
+                 +     (o.id ? '<span style="font-family:var(--mono,monospace);font-size:11px;color:var(--faint);flex:0 0 auto">#' + afEsc(o.id) + '</span>' : '')
+                 +     '<span style="font-family:var(--mono,monospace);font-size:13px;flex:1;min-width:0;overflow-x:auto;white-space:nowrap">' + afEsc(raw) + '</span>'
+                 +     '<span title="' + afEsc(st.tip) + '" style="flex:0 0 auto;cursor:help;font-size:10.5px;font-weight:700;letter-spacing:1px;color:' + st.col + ';border:1px solid currentColor;border-radius:999px;padding:1px 8px;white-space:nowrap">' + afEsc(st.label) + '</span>'
+                 +   '</div>'
+                 +   '<div style="font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45">'
+                 +     '<span style="color:var(--faint)">' + when + '</span>'
+                 +     (o.detail ? ' &nbsp;' + afEsc(o.detail).replace(/ -- /g, ' &mdash; ') : '')
+                 +   '</div>'
+                 + '</div>';
+          }).join('');
+        }
+        // About five rows tall; scroll for the rest.
+        box.innerHTML = head + '<div id="af-log" style="max-height:292px;overflow-y:auto;background:var(--panel-2,#1d2027);border:1px solid var(--line,#2a2e37);border-radius:8px">' + rows + '</div>';
+        var rf = document.getElementById('af-log-refresh');
+        if(rf) rf.addEventListener('click', function(e){ e.preventDefault(); rf.textContent = 'Refreshing…'; afOrders(); afPing(false); });
+      }).catch(function(){
+        box.innerHTML = '<div style="margin:14px 0 6px;font-size:12px;color:var(--muted)">Couldn’t load your recent alerts right now. <a href="#" id="af-log-refresh" style="color:var(--accent)">Try again</a></div>';
+        var rf = document.getElementById('af-log-refresh');
+        if(rf) rf.addEventListener('click', function(e){ e.preventDefault(); afOrders(); });
+      });
     }
     function afShowUnavailable(){
       var t = document.getElementById('af-teaser');

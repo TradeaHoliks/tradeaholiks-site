@@ -92,7 +92,8 @@
             <p class="note">Every other alert-automation service charges $348&ndash;$1,188 a year. AlertFill you buy once.
             You'll need a paid TradingView plan (webhooks unlock at their Essential tier).</p>
             <button id="af-trial-btn" class="btn btn-block" type="button" style="margin-top:10px;display:none">Start my free 7-day trial</button>
-            <p class="note" id="af-trial-note" style="display:none;margin-top:10px">Full product, no card &mdash; one trial per account. Buying opens shortly; trial first, you lose nothing.</p>
+            <p class="note" id="af-trial-note" style="display:none;margin-top:10px">Full product, no card &mdash; one trial per account. Trial first; you lose nothing.</p>
+            <a href="alertfill.html" class="btn btn-block btn-ghost" data-buy="alertfill" style="margin-top:10px">Buy AlertFill &mdash; $149</a>
           </div>
           <div id="af-owned" style="display:none">
             <div class="eyebrow" style="margin-top:18px">// ALERTFILL &mdash; TRADINGVIEW AUTOMATION
@@ -102,7 +103,7 @@
             <span id="af-status" style="display:block;margin-top:8px;font-family:var(--mono,monospace);font-size:12px;letter-spacing:1px"></span></div>
             <div id="af-body" style="margin-top:10px"></div>
             <div id="af-activity" style="margin-top:6px"></div>
-            <p id="af-buy-line" class="note" style="display:none;margin-top:12px">Keep it after the trial: <b style="color:var(--accent)">$149 one-time, no subscription</b> &mdash; buying opens right here shortly.</p>
+            <p id="af-buy-line" class="note" style="display:none;margin-top:12px">Keep it after the trial: <b style="color:var(--accent)">$149 one-time, no subscription</b> &mdash; <a href="alertfill.html" data-buy="alertfill" style="color:var(--accent)">buy AlertFill now</a>.</p>
             <p id="af-msg" class="note" style="display:none;margin-top:12px;white-space:pre-wrap"></p>
           </div>
         </div>
@@ -214,6 +215,7 @@
 
   <script src="assets/site.js"></script>
   <script src="assets/auth-nav.js"></script>
+  <script src="assets/buy.js"></script>
   <script src="assets/ticker.js"></script>
 
   <!-- Supabase accounts -->
@@ -507,7 +509,8 @@
         if(res.error || !res.data){ retryLink(box, 'Couldn\u2019t load your licence right now.', loadLicences); return; }
         var lic = res.data.licences || [];
         if(!lic.length){
-          box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your Easy Journal key will appear here after you buy it.</div>';
+          box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your Easy Journal key will appear here the moment you buy it.</div>'
+                        + '<a class="btn btn-block" style="margin-top:10px" href="product.html" data-buy="journal">Buy Easy Journal \u2014 $149</a>';
           setDot('journal', 'd');
           jrnOwned = false; renderProductDownloads();
           syncNoLicence();
@@ -713,7 +716,7 @@
             if(code === 'trial_used'){
               if(b) b.style.display = 'none';
               var n = document.getElementById('af-trial-note');
-              if(n){ n.textContent = 'Your free trial has already been used on this account — buying opens right here shortly.'; n.style.display = ''; }
+              if(n){ n.textContent = 'Your free trial has already been used on this account — buy AlertFill below to keep using it.'; n.style.display = ''; }
             } else {
               var n2 = document.getElementById('af-trial-note');
               if(n2){ n2.textContent = 'Could not start the trial right now — please try again shortly.'; n2.style.display = ''; }
@@ -836,7 +839,7 @@
            +  '<ol class="note" style="margin:10px 0 2px 18px;line-height:1.7">' + SEL.steps + '</ol></details>';
       html += '</div>';
 
-      html += afStep(3, 'Point TradingView at your webhook');
+      html += afStep(3, 'AlertFill relay');
       html += '<div style="margin-left:38px">';
       html += syncRowHtml('Your signal key', 'af-key-box', syncMask(afKey),
                 syncBtn('af-show','Show') + syncBtn('af-copy-key','Copy')
@@ -914,7 +917,7 @@
       var st = document.getElementById('af-status'); if(!st || !afKey) return;
       fetch(afBase + '/ping/' + afKey).then(function(r){
         if(r.status === 401){
-          var why = afTrial ? 'TRIAL ENDED — hope you liked it! Buying opens right here shortly.'
+          var why = afTrial ? 'TRIAL ENDED — hope you liked it! Buy below to keep it.'
                             : 'KEY SUSPENDED — contact support';
           st.textContent = '○ ' + why; st.style.color = '#ff5d5d'; setDot('alertfill','r');
           if(fromButton) afMsg('This key is no longer active.', false);

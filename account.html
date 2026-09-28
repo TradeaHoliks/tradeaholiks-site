@@ -188,7 +188,7 @@
       <div class="foot-col"><h4>Tools</h4>
         <a href="tools.html">Free indicators</a>
         <a href="tools.html">Free add-ons</a>
-        <a href="product.html">The Easy Journal</a>
+        <a href="easy-journal.html">The Easy Journal</a>
         <a href="docs.html">Docs</a>
       </div>
       <div class="foot-col"><h4>Company</h4>
@@ -322,7 +322,7 @@
                       dlPill('OWNED', true) + '<a ' + ghost + ' href="' + JOURNAL_URL + '">Download</a>', true);
       } else if(jrnOwned === false){
         html += dlRow('&#128202;', 'Easy Journal', 'Desktop trading journal &middot; $149 one-time',
-                      dlPill('NOT OWNED', false) + '<a ' + ghost + ' href="product.html">See the Journal</a>', false);
+                      dlPill('NOT OWNED', false) + '<a ' + ghost + ' href="easy-journal.html">See the Journal</a>', false);
       } else {
         html += dlRow('&#128202;', 'Easy Journal installer', 'Checking your licence&hellip;', '', false);
       }
@@ -510,7 +510,7 @@
         var lic = res.data.licences || [];
         if(!lic.length){
           box.innerHTML = '<div style="color:var(--muted)">No licence yet \u2014 your Easy Journal key will appear here the moment you buy it.</div>'
-                        + '<a class="btn btn-block" style="margin-top:10px" href="product.html" data-buy="journal">Buy Easy Journal \u2014 $149</a>';
+                        + '<a class="btn btn-block" style="margin-top:10px" href="easy-journal.html" data-buy="journal">Buy Easy Journal \u2014 $149</a>';
           setDot('journal', 'd');
           jrnOwned = false; renderProductDownloads();
           syncNoLicence();
